@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
+require_once __DIR__."/Define.php";
 class Sensor
 {
     protected $dbh;
@@ -41,51 +42,61 @@ class Sensor
         return true;
     }
 
-    public function getDiscvLogHost()
-    #センサーの検出情報を一括で読み出す関数(ホストが使うため、すべてのセンサーでの検出情報を送信する)
+    public function getLastLogTime($sensorId,$for)
+    #各センサーの最後の更新時間
+    #forは誰が使うかを書く
+    {
+        if($for == HOST){
+            $getLLTSql = "SELECT sensorId,max(time) as time FROM discoveryLog WHERE sensorId = :sensorId GROUP BY sensorId";
+        }else{
+            $getLLTSql = "SELECT sensorId,max(time) as time FROM discoveryLog WHERE sensorId != :sensorId GROUP BY sensorId";
+
+        }
+        try {
+            $getLLTObj = $this->dbh->prepare($getLLTSql);
+            $getLLTObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
+            $getLLTObj->execute();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            header("Error:" . $e);
+        }
+        return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getDiscvLogSetTime($sensorId, $time)
+    #センサーの検出情報を一括で読み出す関数(特定時刻以降を指定する)
     {
         try {
-            $getDiscvLogSql = "SELECT
-            CASE WHEN FLOOR(MIN((TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, time)))/180)) > 511
-                THEN 511
-                ELSE FLOOR(MIN((TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, time)))/180))
-                END as time,
-            sensorId, userId
-            FROM `discoveryLog` GROUP BY userId ORDER BY time ASC;";
-
+            $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
+            $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
+            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);
             exit();
         }
-        return $getDiscvLogObj->fetch(PDO::FETCH_ASSOC);
+        return $getDiscvLogObj->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getDiscvLogSensor($sensorId)
-    #センサーの検出情報を一括で読み出す\関数(センサーがホストへ送信するときに使う関数)
+    public function inputDiscvLog($time, $sensorId, $userId)
+    #センサの検出情報をDBに取り込む
     {
         if (!$this->sensorExit(($sensorId))) {
             return false;
         }
+        $inputDiscvLogSql = "INSERT INTO discoveryLog (sensorId,userId,time)VALUES (:sensorId,:userId,:time)";
         try {
-            $getDiscvLogSql = "SELECT
-            CASE WHEN FLOOR(MIN((TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, time)))/180)) > 511 \
-                THEN 511
-                ELSE FLOOR(MIN((TIME_TO_SEC(TIMEDIFF(CURRENT_TIMESTAMP, time)))/180))\
-                END as time,
-            sensorId, userId
-            FROM `discoveryLog` WHERE sensorId = :sensorId GROUP BY userId ORDER BY time ASC;";
-
-            $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
-            $getDiscvLogObj->bindValue(":sensorId",$sensorId,PDO::PARAM_INT);
-            $getDiscvLogObj->execute();
+            $inputDiscvLogObj = $this->dbh->prepare($inputDiscvLogSql);
+            $inputDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
+            $inputDiscvLogObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
+            $inputDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);
             exit();
         }
-        return $getDiscvLogObj->fetch(PDO::FETCH_ASSOC);
     }
 }
