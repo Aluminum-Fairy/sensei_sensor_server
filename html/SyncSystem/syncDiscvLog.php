@@ -24,13 +24,9 @@ $resArr = json_decode($resStr,true);
 
 foreach($resArr["newDiscvLog"] as $discvLog){
     $insertRes = $Sensor2->inputDiscvLog($discvLog['time'], $discvLog['sensorId'], $discvLog['userId']);
-    if($insertRes){
-        print("InsertSuccess\n");
-    }else{
-        print("InsertFailed :". $discvLog['sensorId']."\n");
-    }
 }
 
+#応答元のセンサーの差分データをサーバへ送信
 $newDiscvLog = $Sensor2->getDiscvLog($sensorId,$resArr["lastLogTime"][0]["time"],MATCH);
 
 postCurl("http://localhost/API/insertDiscvLog.php",json_encode($newDiscvLog));

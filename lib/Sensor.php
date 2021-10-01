@@ -42,6 +42,23 @@ class Sensor
         return true;
     }
 
+    public function getSensorList(){
+        try{
+            $getSensorListSql = "SELECT * FROM sensor";
+            $getSensorListObj = $this->dbh->prepare($getSensorListSql);
+            $getSensorListObj->execute();
+            return $getSensorListObj->fetchAll();
+        }catch(PDOException $e){
+            http_response_code(500);
+            header("Error:" . $e);
+            exit();
+        }
+    }
+
+    public function syncSensorList(){
+        
+    }
+
     public function getLastLogTime($sensorId,$for)
     #各センサーの最後の更新時間
     #forは誰が使うかを書く
