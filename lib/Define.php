@@ -1,5 +1,7 @@
 <?php
 
-define("HOST",1);
-define("Sensor",2);
-define("Web",3);
+define("MATCH",1);
+define("EXCLUSION",2);
+define("WEB",3);
+define("OTHER", 4);
+define("THIS",5);

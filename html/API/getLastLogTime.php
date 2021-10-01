@@ -1,13 +1,17 @@
 <?php
 require_once __DIR__ . "/../../lib/Sensor.php";
-
+ini_set('display_errors', "On");
 $Sensor = new Sensor($loginInfo);
 
-foreach (["sensorId"] as $v) {
-    if (false === $$v = filter_input(INPUT_POST, $v)) {
-        http_response_code(400);
-        exit();
-    }
-}
+$json = file_get_contents("php://input");
 
-print(json_encode($Sensor->getLastLogTimeSensor($sensorId)));
+$sensorInfo = json_decode($json, true);
+$result = [];
+$result +=array("newDiscvLog"=>array());
+foreach ($sensorInfo["discvLogTime"] as $sensorArr) {
+    $result["newDiscvLog"]+=($Sensor->getDiscvLog($sensorArr["sensorId"], $sensorArr["time"], MATCH));
+}
+$result +=array("lastLogTime"=>array());
+$result["lastLogTime"]=$Sensor->getLastLogTime($sensorInfo["thisSensorId"],MATCH);
+
+print(json_encode($result));

@@ -10,6 +10,6 @@ $sensorInfo = json_decode($json,true);
 
 $result =[];
 foreach ($sensorInfo as $sensorArr){
-    $result+=$Sensor->getDiscvLogSetTime($sensorArr["sensorId"], $sensorArr["time"]);
+    $result+=$Sensor->getDiscvLog($sensorArr["sensorId"], $sensorArr["time"],HOST);
 }
 print(json_encode($result));

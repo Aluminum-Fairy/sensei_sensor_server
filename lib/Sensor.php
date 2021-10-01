@@ -46,10 +46,10 @@ class Sensor
     #各センサーの最後の更新時間
     #forは誰が使うかを書く
     {
-        if($for == HOST){
-            $getLLTSql = "SELECT sensorId,max(time) as time FROM discoveryLog WHERE sensorId = :sensorId GROUP BY sensorId";
+        if($for == MATCH){
+            $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId = :sensorId GROUP BY sensorId";
         }else{
-            $getLLTSql = "SELECT sensorId,max(time) as time FROM discoveryLog WHERE sensorId != :sensorId GROUP BY sensorId";
+            $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId != :sensorId GROUP BY sensorId";
 
         }
         try {
@@ -63,11 +63,19 @@ class Sensor
         return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getDiscvLogSetTime($sensorId, $time)
+    public function getDiscvLog($sensorId, $time,$for)
     #センサーの検出情報を一括で読み出す関数(特定時刻以降を指定する)
+    #forは誰が使うかを書く
     {
-        try {
+        if($for == EXCLUSION){
+            $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId != :sensorId GROUP by sensorId,userId;";
+        }elseif($for == MATCH){
             $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
+        }else{
+            header("Error:" . "Option Error");
+            exit();
+        }
+        try {
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
             $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
@@ -93,10 +101,11 @@ class Sensor
             $inputDiscvLogObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $inputDiscvLogObj->execute();
+            return true;
         } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);
-            exit();
+            return false;
         }
     }
 }

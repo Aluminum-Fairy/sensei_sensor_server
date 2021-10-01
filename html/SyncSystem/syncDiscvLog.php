@@ -1,27 +1,36 @@
 <?php
-#センサーがホストの $url のアドレスに自機のデータを送信する。
+#センサー側の同期システム
 ini_set('display_errors', "On");
 require_once __DIR__ . "/../../lib/Sensor.php";
+require_once __DIR__ . "/../../lib/Tools.php";
 
 $Sensor = new Sensor($loginInfo);
 $Sensor2 = new Sensor(array('mysql:host=localhost;dbname=sensei_sensor2;charset=utf8', $db_user, $db_pass));
 
-$sensorId = 2;
-$url = "http://localhost/API/getDiscvLog.php";
-$lastTimeArr = $Sensor2->getLastLogTime($sensorId,Sensor);
-$postData = json_encode($lastTimeArr);
+#DB上の各センサーの最新時刻を送信
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url); // 取得するURLを指定
-curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 実行結果を文字列で返す
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // サーバー証明書の検証を行わない
-curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-$discvJSON =  curl_exec($ch);
-curl_close($ch);
+$sensorId=2;
+$payload = array("discvLogTime"=>$Sensor2->getLastLogTime($sensorId, EXCLUSION));
+$payload += array("thisSensorId"=>$sensorId);
+$postData = json_encode($payload);
 
-$result = json_decode($discvJSON, true);
-foreach ($result as $resultArr) {
-    $Sensor2->inputDiscvLog($resultArr['time'], $resultArr['sensorId'], $resultArr['userId']);
+##サーバーへ送信
+$resStr=postCurl("http://localhost/API/getLastLogTime.php",$postData);
+
+#各センサーの差分データを受信,
+#応答元のセンサーの最新時刻(サーバー内の)を受信
+
+$resArr = json_decode($resStr,true);
+
+foreach($resArr["newDiscvLog"] as $discvLog){
+    $insertRes = $Sensor2->inputDiscvLog($discvLog['time'], $discvLog['sensorId'], $discvLog['userId']);
+    if($insertRes){
+        print("InsertSuccess\n");
+    }else{
+        print("InsertFailed :". $discvLog['sensorId']."\n");
+    }
 }
+
+$newDiscvLog = $Sensor2->getDiscvLog($sensorId,$resArr["lastLogTime"][0]["time"],MATCH);
+
+postCurl("http://localhost/API/insertDiscvLog.php",json_encode($newDiscvLog));
