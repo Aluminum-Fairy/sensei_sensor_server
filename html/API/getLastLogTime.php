@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../../lib/Sensor.php";
-ini_set('display_errors', "On");
+require_once __DIR__ . "/../../config/Config.php";
+
 $Sensor = new Sensor($loginInfo);
 
 $json = file_get_contents("php://input");

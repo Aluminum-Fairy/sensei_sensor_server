@@ -19,26 +19,26 @@ class Sensor
         }
     }
 
-    public function addSensor($sensorInfo)
+    public function setSensor($sensorInfo)
     #センサーをDB追加するための関数センサーID(int)と場所の名前(String)とマスターとして稼働するかどうか(intで0,1)、Webサーバー機能を搭載しているかどうか(intで0,1)
     #XSS対策として$placeNameはhtmlspecialcharsを使ってスクリプト挿入対策をしている
     {
         if ($this->sensorExit(($sensorInfo["sensorId"]))) {
-            $addSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
+            $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         }else{
-            $addSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
         }
 
         try {
-            $addSensorObj = $this->dbh->prepare($addSensorSql);
-            $addSensorObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
-            $addSensorObj->bindValue(":placeName",  htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
-            $addSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
-            $addSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
+            $setSensorObj = $this->dbh->prepare($setSensorSql);
+            $setSensorObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
+            $setSensorObj->bindValue(":placeName",  htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
+            $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
+            $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
             if ($this->sensorExit(($sensorInfo["sensorId"]))) {
-                $addSensorObj->bindValue(":updateTime",$sensorInfo["updateTime"]);
+                $setSensorObj->bindValue(":updateTime",$sensorInfo["updateTime"]);
             }
-            $addSensorObj->execute();
+            $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);

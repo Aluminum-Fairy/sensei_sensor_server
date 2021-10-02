@@ -1,6 +1,7 @@
 <?php
-ini_set('display_errors', "On");
+
 require_once __DIR__ . "/../../lib/Sensor.php";
+require_once __DIR__ . "/../../config/Config.php";
 
 $Sensor = new Sensor($loginInfo);
 
@@ -10,6 +11,6 @@ $sensorInfo = json_decode($json,true);
 
 $result =[];
 foreach ($sensorInfo as $sensorArr){
-    $result+=$Sensor->getDiscvLog($sensorArr["sensorId"], $sensorArr["time"],HOST);
+    $result+=$Sensor->getDiscvLog($sensorArr["sensorId"], $sensorArr["time"],MATCH);
 }
 print(json_encode($result));
