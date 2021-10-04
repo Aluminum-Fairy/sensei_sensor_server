@@ -23,7 +23,7 @@ class Sensor
     #センサーをDB追加するための関数センサーID(int)と場所の名前(String)とマスターとして稼働するかどうか(intで0,1)、Webサーバー機能を搭載しているかどうか(intで0,1)
     #XSS対策として$placeNameはhtmlspecialcharsを使ってスクリプト挿入対策をしている
     {
-        if ($this->sensorExit(($sensorInfo["sensorId"]))) {
+        if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         }else{
             $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
@@ -35,7 +35,7 @@ class Sensor
             $setSensorObj->bindValue(":placeName",  htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
             $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
             $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
-            if ($this->sensorExit(($sensorInfo["sensorId"]))) {
+            if ($this->sensorExist(($sensorInfo["sensorId"]))) {
                 $setSensorObj->bindValue(":updateTime",$sensorInfo["updateTime"]);
             }
             $setSensorObj->execute();
@@ -48,7 +48,7 @@ class Sensor
     }
 
     public function getSensorInfo($sensorId){
-        if (!$this->sensorExit($sensorId)) {
+        if (!$this->sensorExist($sensorId)) {
             return false;
         }
 
@@ -76,7 +76,7 @@ class Sensor
 
     public function checkSensorUpdate($sensorInfo){
         #センサのアップデート確認
-        if(!$this->sensorExit($sensorInfo["sensorId"])){
+        if(!$this->sensorExist($sensorInfo["sensorId"])){
             return 0;
         }
         $getSensorUpdateSql = "SELECT * FROM sensor WHERE updateTime >:updateTime AND sensorId = :sensorId";
@@ -162,7 +162,7 @@ class Sensor
     public function inputDiscvLog($time, $sensorId, $userId)
     #センサの検出情報をDBに取り込む
     {
-        if (!$this->sensorExit(($sensorId))) {
+        if (!$this->sensorExist(($sensorId))) {
             return false;
         }
         $inputDiscvLogSql = "INSERT INTO discoveryLog (sensorId,userId,time)VALUES (:sensorId,:userId,:time)";
