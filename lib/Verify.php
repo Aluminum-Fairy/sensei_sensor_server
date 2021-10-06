@@ -29,4 +29,16 @@ trait Verify
 
         }
     }
+
+    public function viewConfigExist($userId){
+        $checkSql = "SELECT COUNT(userId) FROM viewConfig WHERE userId = :userId";
+        try {
+            $checkObj = $this->dbh->prepare($checkSql);
+            $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $checkObj->execute();
+            return $checkObj->fetchColumin() == 1;
+        } catch (PDOException $e) {
+        }
+    }
+
 }

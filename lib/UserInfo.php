@@ -84,4 +84,26 @@ class UserInfo
         } catch (PDOException $e) {
         }
     }
+
+    public function setAllWeekCfg($userId,$startTime, $endTime)
+    #全ての登録済みの曜日における公開時間を設定する
+    {
+        if(!$this->viewConfigExist($userId)){
+            return false;
+        }
+        $setAllWeekCfgSql = "UPDATE viewConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
+        try {
+            $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
+            $setAllWeekCfgObj->bindValue(":startTime",$startTime.PDO::PARAM_STR);
+            $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_STR);
+            $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_STR);
+            $setAllWeekCfgObj->execute();
+            return $setAllWeekCfgObj->fetchAll(PDO::FETCH_COLUMN) == 1;
+
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+    }
+
+    
 }
