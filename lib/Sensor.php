@@ -182,7 +182,7 @@ class Sensor
 
     public function getAllowedDiscvList(){
         $getAllowedDiscvListSql =
-        "SELECT *FROM
+        "SELECT View.userName,View.placeName,View.time FROM
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (

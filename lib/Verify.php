@@ -6,31 +6,32 @@ trait Verify
     #センサーがすでに登録されている場合はTrueを返す。
     {
         $checkSql = "SELECT sensorId FROM sensor WHERE sensorId =:sensorId";
-        try{
+        try {
             $checkObj = $this->dbh->prepare($checkSql);
-            $checkObj->bindValue(":sensorId",$sensorId);
+            $checkObj->bindValue(":sensorId", $sensorId);
             $checkObj->execute();
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:".$e);
+            header("Error:" . $e);
             exit();
         }
         return $checkObj->fetchColumn() != 0;
     }
 
-    public function userExist($userId){
-        $checkSql ="SELECT COUNT(userId) FROM user WHERE userId = :userId";
-        try{
+    public function userExist($userId)
+    {
+        $checkSql = "SELECT COUNT(userId) FROM user WHERE userId = :userId";
+        try {
             $checkObj = $this->dbh->prepare($checkSql);
-            $checkObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $checkObj->execute();
             return $checkObj->fetchColumin() == 1;
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
     }
 
-    public function viewConfigExist($userId){
+    public function viewConfigExist($userId)
+    {
         $checkSql = "SELECT COUNT(userId) FROM viewConfig WHERE userId = :userId";
         try {
             $checkObj = $this->dbh->prepare($checkSql);
@@ -41,4 +42,28 @@ trait Verify
         }
     }
 
+    public function groupIdExist($groupId)
+    {
+        $checkSql = "SELECT COUNT(groupId) FROM userGroupList WHERE groupId = :groupId";
+        try {
+            $checkObj = $this->dbh->prepare($checkSql);
+            $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
+            $checkObj->execute();
+            return $checkObj->fetchColumin() == 1;
+        } catch (PDOException $e) {
+        }
+    }
+
+    public function relatedUserId2GroupExist($userId, $groupId)
+    {
+        $checkSql = "SELECT COUNT(groupId) FROM userGroup WHERE groupId = :groupId AND userId = :userId";
+        try {
+            $checkObj = $this->dbh->prepare($checkSql);
+            $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
+            $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $checkObj->execute();
+            return $checkObj->fetchColumin() == 1;
+        } catch (PDOException $e) {
+        }
+    }
 }
