@@ -187,9 +187,12 @@ class Sensor
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
                 SELECT user.userName,discoveryLog.userId,sensor.placeName,discoveryLog.time, viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime, 60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
-                FROM `viewConfig` LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId LEFT JOIN user ON discoveryLog.userId = user.userId LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
+                FROM `viewConfig`
+                LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
+                LEFT JOIN user ON discoveryLog.userId = user.userId
+                LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
             WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum ) as View
-        WHERE View.rownum =1;" ;
+        WHERE View.rownum =1;";
         /*
         最初のSELECTでdiscvoryLogとsensorとuserとsensorをJOINさせる、時刻計算用のTimeNumを追加
         次のSELECTでTimeNumから許可されたものを出す

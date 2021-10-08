@@ -37,6 +37,46 @@ class UserGroup{
             return false;
         }
 
+        if($this->relatedUserId2GroupExist($userId,$groupId)){
+            return false;
+        }
+
         $regUser2GroupSql = "INSERT INTO userGroup (groupId,userId)VALUES(:groupId,:userId)";
+        try{
+            $regUser2GroupObj = $this->dbh->prepare($regUser2GroupSql);
+            $regUser2GroupObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $regUser2GroupObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $regUser2GroupObj->execute();
+        }catch(PDOException $e){
+
+        }
+    }
+
+    public function getGroupList(){
+        $getGroupListSql = "SELECT * FROM userGroupList";
+
+        try{
+            $getGroupListObj = $this->dbh->prepare($getGroupListSql);
+            $getGroupListObj->execute();
+            return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            return false;
+        }
+    }
+
+    public function getGroupUser($groupId){
+        $getGroupUserSql = "SELECT user.userName,user.description,userGroupList.groupName
+                            FROM `user`
+                            RIGHT JOIN userGroup ON user.userId = userGroup.userId
+                            LEFT JOIN userGroupList ON userGroupList.groupId = userGroup.groupId
+                            WHERE userGroupList.groupId = :groupId;";
+        try{
+            $getGroupUserObj = $this->dbh->prepare($getGroupUserSql);
+            $getGroupUserObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $getGroupUserObj->execute();
+            return $getGroupUserObj->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+
+        }
     }
 }
