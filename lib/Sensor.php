@@ -36,7 +36,7 @@ class Sensor
             $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
             $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
             if ($this->sensorExist(($sensorInfo["sensorId"]))) {
-                $setSensorObj->bindValue(":updateTime",$sensorInfo["updateTime"]);
+                $setSensorObj->bindValue(":updateTime",$sensorInfo["updateTime"],PDO::PARAM_STR);
             }
             $setSensorObj->execute();
         } catch (PDOException $e) {
@@ -45,6 +45,20 @@ class Sensor
             exit();
         }
         return true;
+    }
+
+    public function changeSensorConfig($sensorId,$placeName,$isMaster,$isWebServer){
+        if(!$this->sensorExist($sensorId)){
+            return false;
+        }
+
+        $changeSensorConfigSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer";
+        try{
+            $changeSensorConfigObj = $this->dbh->prepare($changeSensorConfigSql);
+            $changeSensorConfigObj->bindValue(":placeName", htmlspecialchars($placeName),PDO::PARAM_STR);
+            $changeSensorConfigObj->bindValue(":isMaster", $isMaster, PDO::PARAM_INT);
+            $changeSensorConfigObj->bindValue(":isWebServer",$isWebServer,PDO::PARAM_INT);
+        }
     }
 
     public function getSensorInfo($sensorId){
@@ -82,8 +96,8 @@ class Sensor
         $getSensorUpdateSql = "SELECT * FROM sensor WHERE updateTime >:updateTime AND sensorId = :sensorId";
         try{
             $getSensorUpdateObj = $this->dbh->prepare($getSensorUpdateSql);
-            $getSensorUpdateObj->bindValue(":updateTime",$sensorInfo["updateTime"],PDO::PARAM_STR);
-            $getSensorUpdateObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_STR);
+            $getSensorUpdateObj->bindValue(":updateTime",$sensorInfo["updateTime"],PDO::PARAM_INT);
+            $getSensorUpdateObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
             $getSensorUpdateObj->execute();
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
         }catch(PDOException $e){
@@ -113,11 +127,11 @@ class Sensor
         }
     }
 
-    public function getLastLogTime($sensorId,$for)
+    public function getLastLogTime($sensorId,$searchConfition)
     #各センサーの最後の更新時間
     #forは誰が使うかを書く
     {
-        if($for == MATCH){
+        if($searchConfition == MATCH){
             $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId = :sensorId GROUP BY sensorId";
         }else{
             $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId != :sensorId GROUP BY sensorId";
@@ -134,13 +148,13 @@ class Sensor
         return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getDiscvLog($sensorId, $time,$for)
+    public function getDiscvLog($sensorId, $time,$searchConfition)
     #センサーの検出情報を一括で読み出す関数(特定時刻以降を指定する)
     #forは誰が使うかを書く
     {
-        if($for == EXCLUSION){
+        if($searchConfition == EXCLUSION){
             $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId != :sensorId GROUP by sensorId,userId;";
-        }elseif($for == MATCH){
+        }elseif($searchConfition == MATCH){
             $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
         }else{
             header("Error:" . "Option Error");
@@ -149,7 +163,7 @@ class Sensor
         try {
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
             $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
-            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
+            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -170,7 +184,7 @@ class Sensor
             $inputDiscvLogObj = $this->dbh->prepare($inputDiscvLogSql);
             $inputDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $inputDiscvLogObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
+            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
             $inputDiscvLogObj->execute();
             return true;
         } catch (PDOException $e) {

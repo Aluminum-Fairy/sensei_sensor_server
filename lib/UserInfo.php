@@ -26,8 +26,8 @@ class UserInfo
         try {
             $addUserObj = $this->dbh->prepare($addUserSql);
             $addUserObj->bindValue(":userName", htmlspecialchars($userName), PDO::PARAM_STR);
-            $addUserObj->bindValue(":password", password_hash($password, PASSWORD_DEFAULT));
-            $addUserObj->bindValue(":description", htmlspecialchars($description));
+            $addUserObj->bindValue(":password", password_hash($password, PASSWORD_DEFAULT),PDO::PARAM_STR);
+            $addUserObj->bindValue(":description", htmlspecialchars($description),PDO::PARAM_STR);
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
@@ -94,9 +94,9 @@ class UserInfo
         $setAllWeekCfgSql = "UPDATE viewConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
-            $setAllWeekCfgObj->bindValue(":startTime",$startTime.PDO::PARAM_STR);
-            $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_STR);
-            $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_STR);
+            $setAllWeekCfgObj->bindValue(":startTime",$startTime.PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_INT);
             $setAllWeekCfgObj->execute();
             return $setAllWeekCfgObj->fetchAll(PDO::FETCH_COLUMN) == 1;
 
