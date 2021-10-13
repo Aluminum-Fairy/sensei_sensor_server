@@ -7,7 +7,7 @@ servers:
 paths:
   /user:
     get:
-      summary: Your GET endpoint
+      summary: ユーザー情報の全取得
       tags: []
       responses:
         '200':
@@ -396,6 +396,160 @@ paths:
                     public:
                       - roomId: string
                         roomName: string
+  /users/group:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  groupList:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          required:
+                            - groupId
+                            - groupName
+                          properties:
+                            groupId:
+                              type: string
+                              minLength: 1
+                            groupName:
+                              type: string
+                              minLength: 1
+                    required:
+                      - groups
+                required:
+                  - groupList
+                x-examples:
+                  example-1:
+                    groupList:
+                      groups:
+                        - groupId: '13'
+                          groupName: なんか
+              examples:
+                example-1:
+                  value:
+                    groupList:
+                      groups:
+                        - groupId: string
+                          groupName: string
+      operationId: get-users-group
+      description: 先生のグループ情報を取得する
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+    put:
+      summary: ''
+      operationId: put-users-group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  groupList:
+                    type: object
+                    properties:
+                      groupId:
+                        type: string
+                        minLength: 1
+                      groupName:
+                        type: string
+                        minLength: 1
+                    required:
+                      - groupId
+                      - groupName
+                required:
+                  - groupList
+                x-examples:
+                  example-1:
+                    groupList:
+                      groupId: string
+                      groupName: string
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                groupList:
+                  type: object
+                  properties:
+                    groupId:
+                      type: string
+                      minLength: 1
+                    groupName:
+                      type: string
+                      minLength: 1
+                  required:
+                    - groupId
+                    - groupName
+              required:
+                - groupList
+              x-examples:
+                example-1:
+                  groupList:
+                    groupId: '13'
+                    groupName: なんか
+            examples: {}
+    post:
+      summary: ''
+      operationId: post-users-group
+      responses:
+        '200':
+          description: OK
+    delete:
+      summary: ''
+      operationId: delete-users-group
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  groupList:
+                    groups:
+                      - groupId: string
+              properties:
+                groupList:
+                  type: object
+                  properties:
+                    groupId:
+                      type: string
+              required:
+                - groupList
   '/groups/{groupId}':
     get:
       summary: Your GET endpoint
