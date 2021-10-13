@@ -557,19 +557,22 @@ paths:
                 groupName:
                   type: string
                   minLength: 1
-                groupUsers:
-                  type:
-                    - array
-                    - string
-                  items: {}
+                users:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                      userName:
+                        type: string
               required:
                 - groupName
-                - groupUsers
             examples:
               test:
                 value:
                   groupName: name
-                  groupUsers:
+                  use:
                     - id1
                     - id2
                     - id3
@@ -580,6 +583,40 @@ paths:
           in: cookie
           name: token
           description: JWT Token
+  /users/userList:
+    get:
+      summary: 'ユーザーページ: 先生一覧取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courceId:
+                    type: string
+                  courseName:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        userName:
+                          type: string
+              examples: {}
+      operationId: get-users-userList
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
   '/groups/{groupId}':
     get:
       summary: 'メインページ: グループの取得'
