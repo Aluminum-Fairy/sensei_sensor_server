@@ -632,43 +632,89 @@ paths:
         required: true
 components:
   schemas:
-    User:
-      title: User
+    sensor:
+      title: sensor
       type: object
-      description: ''
-      examples:
-        - id: 142
-          firstName: Alice
-          lastName: Smith
-          email: alice.smith@gmail.com
-          dateOfBirth: '1997-10-31'
-          emailVerified: true
-          signUpDate: '2019-08-24'
       properties:
-        id:
+        sensorId:
           type: integer
-          description: Unique identifier for the given user.
-        firstName:
+          minimum: 1
+          exclusiveMinimum: false
+        placeName:
           type: string
-        lastName:
+          example: テスト１
+        isMaster:
+          type: integer
+          minimum: 0
+          maximum: 3
+        isWebServer:
+          type: integer
+          minimum: 0
+          maximum: 3
+        updateTime:
           type: string
-        email:
+          format: date-time
+    tag:
+      title: tag
+      type: object
+      properties:
+        tagId:
+          type: integer
+          minimum: 1
+        userId:
+          type: integer
+          minimum: 1
+          exclusiveMaximum: false
+        description:
           type: string
-          format: email
-        dateOfBirth:
+        macAddress:
           type: string
-          format: date
-          example: '1997-10-31'
-        emailVerified:
-          type: boolean
-          description: Set to true if the user's email has been verified.
-        createDate:
+    user:
+      title: user
+      type: object
+      properties:
+        userId:
+          type: integer
+          minimum: 1
+        userName:
           type: string
-          format: date
-          description: The date that the user was created.
-      required:
-        - id
-        - firstName
-        - lastName
-        - email
-        - emailVerified
+        passwd:
+          type: string
+          format: password
+        description:
+          type: string
+    userGroup:
+      title: userGroup
+      type: object
+      properties:
+        groupId:
+          type: integer
+        userId:
+          type: integer
+    userGroupList:
+      title: userGroupList
+      type: object
+      properties:
+        groupId:
+          type: integer
+          minimum: 1
+        groupName:
+          type: string
+    viewConfig:
+      title: viewConfig
+      type: object
+      properties:
+        userId:
+          type: integer
+        weekNum:
+          type: integer
+          minimum: 1
+          maximum: 7
+        startTime:
+          type: integer
+          minimum: 0
+          maximum: 1440
+        endTime:
+          type: integer
+          minimum: 0
+          maximum: 1440
