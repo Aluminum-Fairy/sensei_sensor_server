@@ -5,193 +5,7 @@ info:
 servers:
   - url: 'http://localhost:3100'
 paths:
-  '/users/{userId}':
-    parameters:
-      - schema:
-          type: integer
-        name: userId
-        in: path
-        required: true
-        description: Id of an existing user.
-    get:
-      summary: Get User Info by User ID
-      tags: []
-      responses:
-        '200':
-          description: User Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Get User Alice Smith:
-                  value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
-        '404':
-          description: User Not Found
-      operationId: get-users-userId
-      description: Retrieve the information of the user with the matching user ID.
-    patch:
-      summary: Update User Information
-      operationId: patch-users-userId
-      responses:
-        '200':
-          description: User Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Updated User Rebecca Baker:
-                  value:
-                    id: 13
-                    firstName: Rebecca
-                    lastName: Baker
-                    email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
-                    createDate: '2019-08-24'
-        '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                dateOfBirth:
-                  type: string
-            examples:
-              Update First Name:
-                value:
-                  firstName: Rebecca
-              Update Email:
-                value:
-                  email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
-                value:
-                  lastName: Baker
-                  dateOfBirth: '1985-10-02'
-        description: Patch user properties to update.
   /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
-  '/GetGroup/{groupId}':
-    get:
-      summary: Your GET endpoint
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groupName:
-                    type: string
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        userName:
-                          type: string
-                        detectionTime:
-                          type: string
-                        roomName:
-                          type: string
-              examples:
-                test-group-id:
-                  value:
-                    groupName: 謎の組織
-                    users:
-                      - userName: 誰か
-                        detectionTime: '2021-10-01 10:00:11'
-                        roomName: どこか
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  group:
-                    type: string
-      operationId: get-GetGroups
-    parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
-  /GetUserSettings:
     get:
       summary: Your GET endpoint
       tags: []
@@ -279,7 +93,9 @@ paths:
                       groups:
                         - groupId: '13'
                           groupName: なんか
-      operationId: get-GetUserSettings
+        '401':
+          description: Unauthorized
+      operationId: get-user
       parameters:
         - schema:
             type: string
@@ -287,6 +103,8 @@ paths:
           name: token
           description: JWT Token
           required: true
+      description: ユーザー情報の全取得
+    parameters: []
   /users/publicationTime:
     get:
       summary: Your GET endpoint
@@ -307,6 +125,8 @@ paths:
                       end:
                         type: number
               examples: {}
+        '401':
+          description: Unauthorized
       operationId: get-users-publicationTime
       parameters:
         - schema:
@@ -321,6 +141,8 @@ paths:
       responses:
         '200':
           description: OK
+        '401':
+          description: Unauthorized
       requestBody:
         content:
           application/json:
@@ -396,6 +218,8 @@ paths:
                         wednesday: true
                         thursday: true
                         friday: true
+        '401':
+          description: Unauthorized
       operationId: get-users-publicationDays
       parameters:
         - schema:
@@ -409,7 +233,11 @@ paths:
     put:
       summary: ''
       operationId: put-users-publicationDays
-      responses: {}
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
       parameters:
         - schema:
             type: string
@@ -457,6 +285,56 @@ paths:
                       wednesday: true
                       thursday: true
                       friday: true
+  '/groups/{groupId}':
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groupName:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userName:
+                          type: string
+                        detectionTime:
+                          type: string
+                        roomName:
+                          type: string
+              examples:
+                test-group-id:
+                  value:
+                    groupName: 謎の組織
+                    users:
+                      - userName: 誰か
+                        detectionTime: '2021-10-01 10:00:11'
+                        roomName: どこか
+        '400':
+          description: Bad Request
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  group:
+                    type: string
+      operationId: get-group
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
 components:
   schemas:
     User:
