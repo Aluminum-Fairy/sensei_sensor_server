@@ -668,6 +668,44 @@ paths:
         name: groupId
         in: path
         required: true
+  /login:
+    post:
+      summary: 'ユーザーページ: ログイン'
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+          headers:
+            set-cookie:
+              schema:
+                type: string
+              description: JWT Token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userName:
+                  type: string
+                password:
+                  type: string
+  /logout:
+    post:
+      summary: ''
+      operationId: post-logout
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
 components:
   schemas:
     sensor:
