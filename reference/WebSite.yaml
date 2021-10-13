@@ -191,6 +191,101 @@ paths:
         name: groupId
         in: path
         required: true
+  /GetUserSettings:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationDays:
+                    type: object
+                    properties:
+                      monday:
+                        type: boolean
+                      tuesday:
+                        type: boolean
+                      wednesday:
+                        type: boolean
+                      thursday:
+                        type: boolean
+                      friday:
+                        type: boolean
+                  publicationTime:
+                    type: object
+                    properties:
+                      start:
+                        type: number
+                      end:
+                        type: number
+                  publicationPlace:
+                    type: object
+                    properties:
+                      private:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+                      public:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+                  groupList:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            groupId:
+                              type: string
+                            groupName:
+                              type: string
+              examples:
+                test:
+                  value:
+                    publicationDays:
+                      monday: true
+                      tuesday: true
+                      wednesday: true
+                      thursday: true
+                      friday: true
+                    publicationTime:
+                      start: 12
+                      end: 17
+                    publicationPlace:
+                      private:
+                        - roomId: '12'
+                          roomName: どこか1
+                      public:
+                        - roomId: '11'
+                          roomName: dokoka2
+                    groupList:
+                      groups:
+                        - groupId: '13'
+                          groupName: なんか
+      operationId: get-GetUserSettings
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
 components:
   schemas:
     User:
