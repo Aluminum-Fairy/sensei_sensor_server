@@ -286,6 +286,177 @@ paths:
           in: cookie
           name: token
           description: JWT Token
+          required: true
+  /users/publicationTime:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationTime:
+                    type: object
+                    properties:
+                      start:
+                        type: number
+                      end:
+                        type: number
+              examples: {}
+      operationId: get-users-publicationTime
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+    parameters: []
+    put:
+      summary: ''
+      operationId: put-users-publicationTime
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationTime:
+                  type: object
+                  properties:
+                    start:
+                      type: number
+                    end:
+                      type: number
+                  required:
+                    - start
+                    - end
+              required:
+                - publicationTime
+              x-examples:
+                example-1:
+                  publicationTime:
+                    start: 0
+                    end: 0
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+  /users/publicationDays:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationDays:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        monday:
+                          type: boolean
+                        tuesday:
+                          type: boolean
+                        wednesday:
+                          type: boolean
+                        thursday:
+                          type: boolean
+                        friday:
+                          type: boolean
+                      required:
+                        - monday
+                        - tuesday
+                        - wednesday
+                        - thursday
+                        - friday
+                required:
+                  - publicationDays
+              examples:
+                example-1:
+                  value:
+                    publicationDays:
+                      - monday: true
+                        tuesday: true
+                        wednesday: true
+                        thursday: true
+                        friday: true
+      operationId: get-users-publicationDays
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          required: true
+          name: token
+          description: JWT Token
+      description: 公開時間を取得する
+    parameters: []
+    put:
+      summary: ''
+      operationId: put-users-publicationDays
+      responses: {}
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          required: true
+          name: token
+          description: JWT Token
+      description: 公開時間を更新する
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationDays:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - monday
+                      - tuesday
+                      - wednesday
+                      - thursday
+                      - friday
+                    properties:
+                      monday:
+                        type: boolean
+                      tuesday:
+                        type: boolean
+                      wednesday:
+                        type: boolean
+                      thursday:
+                        type: boolean
+                      friday:
+                        type: boolean
+              required:
+                - publicationDays
+              x-examples:
+                example-1:
+                  publicationDays:
+                    - monday: true
+                      tuesday: true
+                      wednesday: true
+                      thursday: true
+                      friday: true
 components:
   schemas:
     User:
