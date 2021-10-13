@@ -52,12 +52,16 @@ class Sensor
             return false;
         }
 
-        $changeSensorConfigSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer";
+        $changeSensorConfigSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer WHERE sensorId = :sensorId";
         try{
             $changeSensorConfigObj = $this->dbh->prepare($changeSensorConfigSql);
             $changeSensorConfigObj->bindValue(":placeName", htmlspecialchars($placeName),PDO::PARAM_STR);
             $changeSensorConfigObj->bindValue(":isMaster", $isMaster, PDO::PARAM_INT);
             $changeSensorConfigObj->bindValue(":isWebServer",$isWebServer,PDO::PARAM_INT);
+            $changeSensorConfigObj->bindValue(":sensorId",$sensorId,PDO::PARAM_INT);
+            $changeSensorConfigObj->execute();
+        }catch(PDOException $e){
+
         }
     }
 
@@ -78,6 +82,10 @@ class Sensor
     }
 
     public function deleteSenor($sensorId){
+        if (!$this->sensorExist($sensorId)) {
+            return false;
+        }
+
         $deleteSensorSql = "DELETE FROM `sensor` WHERE sensorId = :sensorId";
         try{
             $deleteSensorObj = $this->dbh->prepare($deleteSensorSql);
