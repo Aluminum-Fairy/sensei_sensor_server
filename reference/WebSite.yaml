@@ -7,7 +7,7 @@ servers:
 paths:
   /user:
     get:
-      summary: ユーザー情報の全取得
+      summary: 'ユーザーページ: ユーザー情報の全取得'
       tags: []
       responses:
         '200':
@@ -103,11 +103,11 @@ paths:
           name: token
           description: JWT Token
           required: true
-      description: ユーザー情報の全取得
+      description: ''
     parameters: []
   /users/publicationTime:
     get:
-      summary: Your GET endpoint
+      summary: 'ユーザーページ: 公開時間の取得'
       tags: []
       responses:
         '200':
@@ -135,9 +135,10 @@ paths:
           name: token
           description: JWT Token
           required: true
+      description: ''
     parameters: []
     put:
-      summary: ''
+      summary: 'ユーザーページ: 公開時間の更新'
       operationId: put-users-publicationTime
       responses:
         '200':
@@ -176,9 +177,10 @@ paths:
           name: token
           description: JWT Token
           required: true
+      description: ''
   /users/publicationDays:
     get:
-      summary: Your GET endpoint
+      summary: 'ユーザーページ: 公開曜日の取得'
       tags: []
       responses:
         '200':
@@ -230,10 +232,10 @@ paths:
           required: true
           name: token
           description: JWT Token
-      description: 公開時間を取得する
+      description: ''
     parameters: []
     put:
-      summary: ''
+      summary: 'ユーザーページ: 公開曜日の更新'
       operationId: put-users-publicationDays
       responses:
         '200':
@@ -247,7 +249,7 @@ paths:
           required: true
           name: token
           description: JWT Token
-      description: 公開時間を更新する
+      description: ''
       requestBody:
         content:
           application/json:
@@ -289,7 +291,7 @@ paths:
                       friday: true
   /users/publicationPlace:
     get:
-      summary: Your GET endpoint
+      summary: 'ユーザーページ: 公開場所の取得'
       tags: []
       responses:
         '200':
@@ -331,10 +333,10 @@ paths:
           name: token
           description: JWT Token
           required: true
-      description: 公開場所の取得
+      description: ''
     parameters: []
     put:
-      summary: ''
+      summary: 'ユーザーページ: 公開場所の更新'
       operationId: put-users-publicationPlace
       responses:
         '200':
@@ -398,7 +400,7 @@ paths:
                         roomName: string
   /users/group:
     get:
-      summary: Your GET endpoint
+      summary: 'ユーザーページ: グループ一覧の取得'
       tags: []
       responses:
         '200':
@@ -408,6 +410,12 @@ paths:
               schema:
                 description: ''
                 type: object
+                x-examples:
+                  example-1:
+                    groupList:
+                      groups:
+                        - groupId: '13'
+                          groupName: なんか
                 properties:
                   groupList:
                     type: object
@@ -417,9 +425,7 @@ paths:
                         uniqueItems: true
                         minItems: 1
                         items:
-                          required:
-                            - groupId
-                            - groupName
+                          type: object
                           properties:
                             groupId:
                               type: string
@@ -427,25 +433,11 @@ paths:
                             groupName:
                               type: string
                               minLength: 1
-                    required:
-                      - groups
-                required:
-                  - groupList
-                x-examples:
-                  example-1:
-                    groupList:
-                      groups:
-                        - groupId: '13'
-                          groupName: なんか
-              examples:
-                example-1:
-                  value:
-                    groupList:
-                      groups:
-                        - groupId: string
-                          groupName: string
+              examples: {}
+        '401':
+          description: Unauthorized
       operationId: get-users-group
-      description: 先生のグループ情報を取得する
+      description: ''
       parameters:
         - schema:
             type: string
@@ -453,9 +445,10 @@ paths:
           name: token
           description: JWT Token
           required: true
-    put:
-      summary: ''
-      operationId: put-users-group
+    parameters: []
+    post:
+      summary: 'ユーザーページ: グループの追加'
+      operationId: post-users-group
       responses:
         '200':
           description: OK
@@ -464,69 +457,31 @@ paths:
               schema:
                 description: ''
                 type: object
+                x-examples:
+                  example-1:
+                    groupList:
+                      groups:
+                        - groupId: string
+                          groupName: string
                 properties:
                   groupList:
                     type: object
                     properties:
-                      groupId:
-                        type: string
-                        minLength: 1
-                      groupName:
-                        type: string
-                        minLength: 1
-                    required:
-                      - groupId
-                      - groupName
-                required:
-                  - groupList
-                x-examples:
-                  example-1:
-                    groupList:
-                      groupId: string
-                      groupName: string
-        '400':
-          description: Bad Request
-        '401':
-          description: Unauthorized
-      requestBody:
-        content:
-          application/json:
-            schema:
-              description: ''
-              type: object
-              properties:
-                groupList:
-                  type: object
-                  properties:
-                    groupId:
-                      type: string
-                      minLength: 1
-                    groupName:
-                      type: string
-                      minLength: 1
-                  required:
-                    - groupId
-                    - groupName
-              required:
-                - groupList
-              x-examples:
-                example-1:
-                  groupList:
-                    groupId: '13'
-                    groupName: なんか
-            examples: {}
-    post:
-      summary: ''
-      operationId: post-users-group
-      responses:
-        '200':
-          description: OK
-    delete:
-      summary: ''
-      operationId: delete-users-group
-      responses:
-        '200':
-          description: OK
+                      groups:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            groupId:
+                              type: string
+                              minLength: 1
+                            groupName:
+                              type: string
+                              minLength: 1
+                          required:
+                            - groupId
         '400':
           description: Bad Request
         '401':
@@ -541,18 +496,93 @@ paths:
                 example-1:
                   groupList:
                     groups:
-                      - groupId: string
+                      - groupName: string
               properties:
-                groupList:
-                  type: object
-                  properties:
-                    groupId:
-                      type: string
+                groupName:
+                  type: string
               required:
-                - groupList
+                - groupName
+            examples: {}
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+  '/users/groups/{groupId}':
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
+    delete:
+      summary: 'ユーザーページ: グループの削除'
+      operationId: delete-users-groups-groupId
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+    put:
+      summary: 'ユーザーページ: グループの編集'
+      operationId: put-users-groups-groupId
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  groupName: string
+                  groupUsers:
+                    - ぱまえ
+                    - ぴまえ
+                    - ぷまえ
+                    - ぺまえ
+                    - ぽまえ
+              properties:
+                groupName:
+                  type: string
+                  minLength: 1
+                groupUsers:
+                  type:
+                    - array
+                    - string
+                  items: {}
+              required:
+                - groupName
+                - groupUsers
+            examples:
+              test:
+                value:
+                  groupName: name
+                  groupUsers:
+                    - id1
+                    - id2
+                    - id3
+                    - ...
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
   '/groups/{groupId}':
     get:
-      summary: Your GET endpoint
+      summary: 'メインページ: グループの取得'
       tags: []
       responses:
         '200':
