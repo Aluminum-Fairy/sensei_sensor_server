@@ -34,9 +34,9 @@ paths:
                     type: object
                     properties:
                       start:
-                        type: number
+                        type: integer
                       end:
-                        type: number
+                        type: integer
                   publicationPlace:
                     type: object
                     properties:
@@ -121,9 +121,9 @@ paths:
                     type: object
                     properties:
                       start:
-                        type: number
+                        type: integer
                       end:
-                        type: number
+                        type: integer
               examples: {}
         '401':
           description: Unauthorized
@@ -583,6 +583,7 @@ paths:
           in: cookie
           name: token
           description: JWT Token
+          required: true
   /users/userList:
     get:
       summary: 'ユーザーページ: 先生一覧取得'
