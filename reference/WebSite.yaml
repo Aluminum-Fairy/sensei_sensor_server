@@ -3,7 +3,7 @@ info:
   title: WebSite
   version: '1.0'
 servers:
-  - url: 'http://localhost:4010'
+  - url: 'http://localhost:3100'
 paths:
   '/users/{userId}':
     parameters:
