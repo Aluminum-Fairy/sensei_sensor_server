@@ -3,7 +3,7 @@ info:
   title: WebSite
   version: '1.0'
 servers:
-  - url: 'http://localhost:3000'
+  - url: 'http://localhost:4010'
 paths:
   '/users/{userId}':
     parameters:
@@ -171,11 +171,11 @@ paths:
               examples:
                 test-group-id:
                   value:
-                    groupName: string
+                    groupName: 謎の組織
                     users:
-                      - userName: string
-                        detectionTime: string
-                        roomName: string
+                      - userName: 誰か
+                        detectionTime: '2021-10-01 10:00:11'
+                        roomName: どこか
         '':
           content:
             application/json:
