@@ -5,195 +5,9 @@ info:
 servers:
   - url: 'http://localhost:3100'
 paths:
-  '/users/{userId}':
-    parameters:
-      - schema:
-          type: integer
-        name: userId
-        in: path
-        required: true
-        description: Id of an existing user.
-    get:
-      summary: Get User Info by User ID
-      tags: []
-      responses:
-        '200':
-          description: User Found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Get User Alice Smith:
-                  value:
-                    id: 142
-                    firstName: Alice
-                    lastName: Smith
-                    email: alice.smith@gmail.com
-                    dateOfBirth: '1997-10-31'
-                    emailVerified: true
-                    signUpDate: '2019-08-24'
-        '404':
-          description: User Not Found
-      operationId: get-users-userId
-      description: Retrieve the information of the user with the matching user ID.
-    patch:
-      summary: Update User Information
-      operationId: patch-users-userId
-      responses:
-        '200':
-          description: User Updated
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                Updated User Rebecca Baker:
-                  value:
-                    id: 13
-                    firstName: Rebecca
-                    lastName: Baker
-                    email: rebecca@gmail.com
-                    dateOfBirth: '1985-10-02'
-                    emailVerified: false
-                    createDate: '2019-08-24'
-        '404':
-          description: User Not Found
-        '409':
-          description: Email Already Taken
-      description: Update the information of an existing user.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                  description: 'If a new email is given, the user''s email verified property will be set to false.'
-                dateOfBirth:
-                  type: string
-            examples:
-              Update First Name:
-                value:
-                  firstName: Rebecca
-              Update Email:
-                value:
-                  email: rebecca@gmail.com
-              Update Last Name & Date of Birth:
-                value:
-                  lastName: Baker
-                  dateOfBirth: '1985-10-02'
-        description: Patch user properties to update.
   /user:
-    post:
-      summary: Create New User
-      operationId: post-user
-      responses:
-        '200':
-          description: User Created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-              examples:
-                New User Bob Fellow:
-                  value:
-                    id: 12
-                    firstName: Bob
-                    lastName: Fellow
-                    email: bob.fellow@gmail.com
-                    dateOfBirth: '1996-08-24'
-                    emailVerified: false
-                    createDate: '2020-11-18'
-        '400':
-          description: Missing Required Information
-        '409':
-          description: Email Already Taken
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                firstName:
-                  type: string
-                lastName:
-                  type: string
-                email:
-                  type: string
-                dateOfBirth:
-                  type: string
-                  format: date
-              required:
-                - firstName
-                - lastName
-                - email
-                - dateOfBirth
-            examples:
-              Create User Bob Fellow:
-                value:
-                  firstName: Bob
-                  lastName: Fellow
-                  email: bob.fellow@gmail.com
-                  dateOfBirth: '1996-08-24'
-        description: Post the necessary fields for the API to create a new user.
-      description: Create a new user.
-  '/GetGroup/{groupId}':
     get:
-      summary: Your GET endpoint
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groupName:
-                    type: string
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        userName:
-                          type: string
-                        detectionTime:
-                          type: string
-                        roomName:
-                          type: string
-              examples:
-                test-group-id:
-                  value:
-                    groupName: 謎の組織
-                    users:
-                      - userName: 誰か
-                        detectionTime: '2021-10-01 10:00:11'
-                        roomName: どこか
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  group:
-                    type: string
-      operationId: get-GetGroups
-    parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
-  /GetUserSettings:
-    get:
-      summary: Your GET endpoint
+      summary: 'ユーザーページ: ユーザー情報の全取得'
       tags: []
       responses:
         '200':
@@ -220,9 +34,9 @@ paths:
                     type: object
                     properties:
                       start:
-                        type: number
+                        type: integer
                       end:
-                        type: number
+                        type: integer
                   publicationPlace:
                     type: object
                     properties:
@@ -279,13 +93,581 @@ paths:
                       groups:
                         - groupId: '13'
                           groupName: なんか
-      operationId: get-GetUserSettings
+        '401':
+          description: Unauthorized
+      operationId: get-user
       parameters:
         - schema:
             type: string
           in: cookie
           name: token
           description: JWT Token
+          required: true
+      description: ''
+    parameters: []
+  /users/publicationTime:
+    get:
+      summary: 'ユーザーページ: 公開時間の取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationTime:
+                    type: object
+                    properties:
+                      start:
+                        type: integer
+                      end:
+                        type: integer
+              examples: {}
+        '401':
+          description: Unauthorized
+      operationId: get-users-publicationTime
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+      description: ''
+    parameters: []
+    put:
+      summary: 'ユーザーページ: 公開時間の更新'
+      operationId: put-users-publicationTime
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationTime:
+                  type: object
+                  properties:
+                    start:
+                      type: number
+                    end:
+                      type: number
+                  required:
+                    - start
+                    - end
+              required:
+                - publicationTime
+              x-examples:
+                example-1:
+                  publicationTime:
+                    start: 0
+                    end: 0
+        description: ''
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+      description: ''
+  /users/publicationDays:
+    get:
+      summary: 'ユーザーページ: 公開曜日の取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationDays:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        monday:
+                          type: boolean
+                        tuesday:
+                          type: boolean
+                        wednesday:
+                          type: boolean
+                        thursday:
+                          type: boolean
+                        friday:
+                          type: boolean
+                      required:
+                        - monday
+                        - tuesday
+                        - wednesday
+                        - thursday
+                        - friday
+                required:
+                  - publicationDays
+              examples:
+                example-1:
+                  value:
+                    publicationDays:
+                      - monday: true
+                        tuesday: true
+                        wednesday: true
+                        thursday: true
+                        friday: true
+        '401':
+          description: Unauthorized
+      operationId: get-users-publicationDays
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          required: true
+          name: token
+          description: JWT Token
+      description: ''
+    parameters: []
+    put:
+      summary: 'ユーザーページ: 公開曜日の更新'
+      operationId: put-users-publicationDays
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          required: true
+          name: token
+          description: JWT Token
+      description: ''
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationDays:
+                  type: array
+                  uniqueItems: true
+                  minItems: 1
+                  items:
+                    required:
+                      - monday
+                      - tuesday
+                      - wednesday
+                      - thursday
+                      - friday
+                    properties:
+                      monday:
+                        type: boolean
+                      tuesday:
+                        type: boolean
+                      wednesday:
+                        type: boolean
+                      thursday:
+                        type: boolean
+                      friday:
+                        type: boolean
+              required:
+                - publicationDays
+              x-examples:
+                example-1:
+                  publicationDays:
+                    - monday: true
+                      tuesday: true
+                      wednesday: true
+                      thursday: true
+                      friday: true
+  /users/publicationPlace:
+    get:
+      summary: 'ユーザーページ: 公開場所の取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationPlace:
+                    type: object
+                    properties:
+                      private:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+                      public:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+              examples: {}
+        '401':
+          description: Unauthorized
+      operationId: get-users-publicationPlace
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+      description: ''
+    parameters: []
+    put:
+      summary: 'ユーザーページ: 公開場所の更新'
+      operationId: put-users-publicationPlace
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: 公開場所の更新
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationPlace:
+                  type: object
+                  properties:
+                    private:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - roomId
+                          - roomName
+                        properties:
+                          roomId:
+                            type: string
+                            minLength: 1
+                          roomName:
+                            type: string
+                            minLength: 1
+                    public:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - roomId
+                          - roomName
+                        properties:
+                          roomId:
+                            type: string
+                            minLength: 1
+                          roomName:
+                            type: string
+                            minLength: 1
+                  required:
+                    - private
+                    - public
+              required:
+                - publicationPlace
+              x-examples:
+                example-1:
+                  publicationPlace:
+                    private:
+                      - roomId: string
+                        roomName: string
+                    public:
+                      - roomId: string
+                        roomName: string
+  /users/group:
+    get:
+      summary: 'ユーザーページ: グループ一覧の取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    groupList:
+                      groups:
+                        - groupId: '13'
+                          groupName: なんか
+                properties:
+                  groupList:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            groupId:
+                              type: string
+                              minLength: 1
+                            groupName:
+                              type: string
+                              minLength: 1
+              examples: {}
+        '401':
+          description: Unauthorized
+      operationId: get-users-group
+      description: ''
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+    parameters: []
+    post:
+      summary: 'ユーザーページ: グループの追加'
+      operationId: post-users-group
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                x-examples:
+                  example-1:
+                    groupList:
+                      groups:
+                        - groupId: string
+                          groupName: string
+                properties:
+                  groupList:
+                    type: object
+                    properties:
+                      groups:
+                        type: array
+                        uniqueItems: true
+                        minItems: 1
+                        items:
+                          type: object
+                          properties:
+                            groupId:
+                              type: string
+                              minLength: 1
+                            groupName:
+                              type: string
+                              minLength: 1
+                          required:
+                            - groupId
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  groupList:
+                    groups:
+                      - groupName: string
+              properties:
+                groupName:
+                  type: string
+              required:
+                - groupName
+            examples: {}
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+  '/users/groups/{groupId}':
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
+    delete:
+      summary: 'ユーザーページ: グループの削除'
+      operationId: delete-users-groups-groupId
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+    put:
+      summary: 'ユーザーページ: グループの編集'
+      operationId: put-users-groups-groupId
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              x-examples:
+                example-1:
+                  groupName: string
+                  groupUsers:
+                    - ぱまえ
+                    - ぴまえ
+                    - ぷまえ
+                    - ぺまえ
+                    - ぽまえ
+              properties:
+                groupName:
+                  type: string
+                  minLength: 1
+                users:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      userId:
+                        type: string
+                      userName:
+                        type: string
+              required:
+                - groupName
+            examples:
+              test:
+                value:
+                  groupName: name
+                  use:
+                    - id1
+                    - id2
+                    - id3
+                    - ...
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+  /users/userList:
+    get:
+      summary: 'ユーザーページ: 先生一覧取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  courceId:
+                    type: string
+                  courseName:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: string
+                        userName:
+                          type: string
+              examples: {}
+      operationId: get-users-userList
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+  '/groups/{groupId}':
+    get:
+      summary: 'メインページ: グループの取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groupName:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userName:
+                          type: string
+                        detectionTime:
+                          type: string
+                        roomName:
+                          type: string
+              examples:
+                test-group-id:
+                  value:
+                    groupName: 謎の組織
+                    users:
+                      - userName: 誰か
+                        detectionTime: '2021-10-01 10:00:11'
+                        roomName: どこか
+        '400':
+          description: Bad Request
+        '':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  group:
+                    type: string
+      operationId: get-group
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
 components:
   schemas:
     sensor:
