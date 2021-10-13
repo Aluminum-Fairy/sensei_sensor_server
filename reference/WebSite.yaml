@@ -134,6 +134,7 @@ paths:
           in: cookie
           name: token
           description: JWT Token
+          required: true
     parameters: []
     put:
       summary: ''
@@ -174,6 +175,7 @@ paths:
           in: cookie
           name: token
           description: JWT Token
+          required: true
   /users/publicationDays:
     get:
       summary: Your GET endpoint
@@ -285,6 +287,115 @@ paths:
                       wednesday: true
                       thursday: true
                       friday: true
+  /users/publicationPlace:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  publicationPlace:
+                    type: object
+                    properties:
+                      private:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+                      public:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            roomId:
+                              type: string
+                            roomName:
+                              type: string
+              examples: {}
+        '401':
+          description: Unauthorized
+      operationId: get-users-publicationPlace
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+      description: 公開場所の取得
+    parameters: []
+    put:
+      summary: ''
+      operationId: put-users-publicationPlace
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      description: 公開場所の更新
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                publicationPlace:
+                  type: object
+                  properties:
+                    private:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - roomId
+                          - roomName
+                        properties:
+                          roomId:
+                            type: string
+                            minLength: 1
+                          roomName:
+                            type: string
+                            minLength: 1
+                    public:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - roomId
+                          - roomName
+                        properties:
+                          roomId:
+                            type: string
+                            minLength: 1
+                          roomName:
+                            type: string
+                            minLength: 1
+                  required:
+                    - private
+                    - public
+              required:
+                - publicationPlace
+              x-examples:
+                example-1:
+                  publicationPlace:
+                    private:
+                      - roomId: string
+                        roomName: string
+                    public:
+                      - roomId: string
+                        roomName: string
   '/groups/{groupId}':
     get:
       summary: Your GET endpoint
