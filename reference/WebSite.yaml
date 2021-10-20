@@ -653,14 +653,6 @@ paths:
                         roomName: どこか
         '400':
           description: Bad Request
-        '':
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  group:
-                    type: string
       operationId: get-group
     parameters:
       - schema:
