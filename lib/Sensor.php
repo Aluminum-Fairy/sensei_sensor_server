@@ -171,7 +171,7 @@ class Sensor
         try {
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
             $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
-            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
+            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -192,7 +192,7 @@ class Sensor
             $inputDiscvLogObj = $this->dbh->prepare($inputDiscvLogSql);
             $inputDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $inputDiscvLogObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
+            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $inputDiscvLogObj->execute();
             return true;
         } catch (PDOException $e) {

@@ -1,2 +1,2 @@
 <?php
-define("ThisSensorId",2);
+define("ThisSensorId",1);
