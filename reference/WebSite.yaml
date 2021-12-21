@@ -322,7 +322,16 @@ paths:
                               type: string
                             roomName:
                               type: string
-              examples: {}
+              examples:
+                example-1:
+                  value:
+                    publicationPlace:
+                      private:
+                        - roomId: string
+                          roomName: string
+                      public:
+                        - roomId: string
+                          roomName: string
         '401':
           description: Unauthorized
       operationId: get-users-publicationPlace
@@ -433,7 +442,13 @@ paths:
                             groupName:
                               type: string
                               minLength: 1
-              examples: {}
+              examples:
+                example-1:
+                  value:
+                    groupList:
+                      groups:
+                        - groupId: string
+                          groupName: string
         '401':
           description: Unauthorized
       operationId: get-users-group
@@ -482,6 +497,13 @@ paths:
                               minLength: 1
                           required:
                             - groupId
+              examples:
+                example-1:
+                  value:
+                    groupList:
+                      groups:
+                        - groupId: string
+                          groupName: string
         '400':
           description: Bad Request
         '401':
@@ -564,19 +586,65 @@ paths:
                     properties:
                       userId:
                         type: string
-                      userName:
-                        type: string
               required:
                 - groupName
+                - users
             examples:
               test:
                 value:
                   groupName: name
-                  use:
+                  users:
                     - id1
                     - id2
                     - id3
                     - ...
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          description: JWT Token
+          required: true
+    get:
+      summary: 'ユーザーページ: グループの取得'
+      operationId: get-users-groups-groupId
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  groupName:
+                    type: string
+                    minLength: 1
+                  users:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                required:
+                  - groupName
+                  - users
+                x-examples:
+                  example-1:
+                    groupName: name
+                    users:
+                      - id1
+                      - id2
+                      - id3
+                      - ...
+              examples:
+                example:
+                  value:
+                    groupName: name
+                    users:
+                      - id1
+                      - id2
+                      - id3
+                      - ...
       parameters:
         - schema:
             type: string
