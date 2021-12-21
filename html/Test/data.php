@@ -31,9 +31,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET') {
 }
 
 */
-
-require_once __DIR__ ."/../../config/SQL_Login.php";
 require_once __DIR__ ."/../../lib/JwtAuth.php";
 
 $JwtAuth = new JwtAuth($loginInfo);
-$JwtAuth->login();
+$JwtAuth->Auth();

@@ -100,4 +100,8 @@ class UserGroup
             return false;
         }
     }
+
+    public function editGroup(){
+
+    }
 }

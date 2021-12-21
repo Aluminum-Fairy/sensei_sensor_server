@@ -1,4 +1,6 @@
 <?php
+#DB Connection
+require_once __DIR__ ."/../config/SQL_Login.php";
 #composer
 require_once __DIR__ . '/../vendor/autoload.php';
 #自作ライブラリ
@@ -26,7 +28,7 @@ class JwtAuth extends JWT
         $this->UserInfo = new UserInfo($loginInfo);
     }
 
-    public function apiAuth()
+    public function auth()
     {
         // GET 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET') {
