@@ -36,18 +36,18 @@ class UserGroup
 
     public function delUserGroup($groupId)
     {
-        if(!$this->groupIdExist($groupId) || !$this->groupMemberExist($groupId) || !$this->groupMemberExist($groupId)){
+        if (!$this->groupIdExist($groupId) || !$this->groupMemberExist($groupId) || !$this->groupMemberExist($groupId)) {
             return false;
         }
 
 
 
         $delUserGroupSql = "DELETE FROM userGroupList WHERE groupid = :groupId";
-        try{
+        try {
             $delUserGroupObj = $this->dbh->prepare($delUserGroupSql);
-            $delUserGroupObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $delUserGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $delUserGroupObj->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
         }
     }
 

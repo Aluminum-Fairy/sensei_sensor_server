@@ -4,7 +4,7 @@ require_once __DIR__ . "/../../config/Config.php";
 
 $Sensor = new Sensor($loginInfo);
 
-
+ini_set()
 foreach (["sensorId","placeName","isMaster","isWebServer"] as $v){
     if(false === $$v =filter_input(INPUT_POST,$v)){
         http_response_code(400);
