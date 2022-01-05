@@ -1,6 +1,6 @@
 <?php
 
-require(__DIR__ . "/../../../lib/UserGroup.php");
+require(__DIR__ . "/../../../../lib/UserGroup.php");
 
 $UserGroup = new UserGroup($loginInfo);
 

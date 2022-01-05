@@ -3,4 +3,4 @@ RewriteBase /WebConsole/users/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /WebConsole/groups/ [L,QSA]
+RewriteRule ^.*$ /WebConsole/users/ [L,QSA]

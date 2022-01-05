@@ -1,6 +1,6 @@
 <?php
 #DB Connection
-require_once __DIR__ ."/../config/SQL_Login.php";
+require_once __DIR__ . "/../config/SQL_Login.php";
 #composer
 require_once __DIR__ . '/../vendor/autoload.php';
 #自作ライブラリ
@@ -50,7 +50,7 @@ class JwtAuth extends JWT
         return false;
     }
 
-    function login()
+    public function login()
     {
 
         // POST 時
@@ -59,8 +59,8 @@ class JwtAuth extends JWT
             $input = @json_decode($inputString, true);
 
             if (is_array($input)) {
-                $input = array_merge(array('loginUserId' => '', 'password' => ''), $input);
-                $loginUserId = $input['loginUserId'];
+                $input = array_merge(array('userName' => '', 'password' => ''), $input);
+                $loginUserId = $input['userName'];
                 $password = $input['password'];
 
                 $ok = $this->UserInfo->userAuth($loginUserId, $password); // loginUserId = test, password = test で認証 OK とする (仮)
@@ -81,5 +81,9 @@ class JwtAuth extends JWT
             // JSON 取得失敗、認証に失敗した場合は 401
             http_response_code(401);
         }
+    }
+
+    function logout(){
+        $this->JWT->;
     }
 }

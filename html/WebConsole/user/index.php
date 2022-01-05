@@ -2,9 +2,8 @@
 
 use ReCaptcha\RequestMethod;
 
-require_once(__DIR__."/../../../lib/UserGroup.php");
+require_once(__DIR__."/../../../lib/JwtAuth.php");
 require_once(__DIR__."/../../../config/Config.php");
-$UserGroup = new UserGroup($loginInfo);
 
 
 preg_match('|' . dirname($_SERVER["SCRIPT_NAME"]) . '/([\w%/]*)|', $_SERVER["REQUEST_URI"], $matches);

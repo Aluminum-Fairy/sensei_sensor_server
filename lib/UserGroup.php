@@ -21,6 +21,21 @@ class UserGroup
         }
     }
 
+    public function beginTransaction()
+    {
+        $this->dbh->beginTransaction();
+    }
+
+    public function commit()
+    {
+        $this->dbh->commit();
+    }
+
+    public function rollBack()
+    {
+        $this->dbh->rollBack();
+    }
+
     public function addUserGroup($groupName)
     {
         $addUserGroupSql = "INSERT INTO userGroupList (groupName) VALUES (:groupName)";
@@ -34,15 +49,25 @@ class UserGroup
         }
     }
 
-    public function delUserGroup($groupId)
-    {
-        if (!$this->groupIdExist($groupId) || !$this->groupMemberExist($groupId) || !$this->groupMemberExist($groupId)) {
+    public function editGroupName($groupId,$newGroupName){
+        $editGroupNameSql = "UPDATE userGroupList SET groupName = :groupName WHERE groupId = :groupId";
+        try{
+            $editGroupNameObj = $this->dbh->prepare($editGroupNameSql);
+            $editGroupNameObj->bindValue(":groupName",$newGroupName,PDO::PARAM_STR);
+            $editGroupNameObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $editGroupNameObj->execute();
+            return true;
+        }catch(PDOException $e){
             return false;
         }
+    }
 
-
-
-        $delUserGroupSql = "DELETE FROM userGroupList WHERE groupid = :groupId";
+    public function delUserGroup($groupId)
+    {
+        if (!$this->groupIdExist($groupId) || !$this->groupMemberExist($groupId)) {
+            return false;
+        }
+        $delUserGroupSql = "DELETE FROM userGroupList WHERE groupId = :groupId";
         try {
             $delUserGroupObj = $this->dbh->prepare($delUserGroupSql);
             $delUserGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
@@ -68,6 +93,19 @@ class UserGroup
             $regUser2GroupObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $regUser2GroupObj->execute();
         } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public function delAllUserFromGroup($groupId){
+        $delAllUserFromGroupSql = "DELETE FROM userGroup WHERE groupId = :groupId";
+        try{
+            $delAllUserFromGroupObj = $this->dbh->prepare($delAllUserFromGroupSql);
+            $delAllUserFromGroupObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            return $delAllUserFromGroupObj->execute();
+        }catch (PDOException $e){
+            return false;
         }
     }
 
@@ -86,7 +124,7 @@ class UserGroup
 
     public function getGroupUser($groupId)
     {
-        $getGroupUserSql = "SELECT user.userName,user.description,userGroupList.groupName
+        $getGroupUserSql = "SELECT user.userId,user.userName,user.description
                             FROM `user`
                             RIGHT JOIN userGroup ON user.userId = userGroup.userId
                             LEFT JOIN userGroupList ON userGroupList.groupId = userGroup.groupId
@@ -101,7 +139,37 @@ class UserGroup
         }
     }
 
-    public function editGroup(){
+    public function getGroupName($groupId){
+        if(!$this->groupIdExist($groupId)){
+            return false;
+        }
+        $getGroupNameSql ="SELECT groupName FROM userGroupList WHERE groupId = :groupId";
 
+        try{
+            $getGroupNameObj = $this->dbh->prepare($getGroupNameSql);
+            $getGroupNameObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $getGroupNameObj->execute();
+            return $getGroupNameObj->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+            return false;
+        }
+    }
+
+    public function editGroup($groupId,$newGroupName, $userIdArr)
+    {
+        $delGroupSql = "DELETE FROM userGroup WHERE groupId = :groupId";
+        try {
+            $delGroupObj = $this->dbh->prepare($delGroupSql);
+            $delGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
+            $delGroupObj->execute();
+            foreach ($userIdArr as $userId) {
+                if (!$this->regUser2Group($userId, $groupId)) {
+                    return false;
+                }
+            }
+            return $this->editGroupName($groupId,$newGroupName);
+        } catch (PDOException $e) {
+            return false;
+        }
     }
 }

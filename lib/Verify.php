@@ -25,7 +25,7 @@ trait Verify
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $checkObj->execute();
-            return $checkObj->fetchColumin() == 1;
+            return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
         }
     }
@@ -37,7 +37,7 @@ trait Verify
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $checkObj->execute();
-            return $checkObj->fetchColumin() == 1;
+            return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
         }
     }
@@ -49,7 +49,7 @@ trait Verify
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $checkObj->execute();
-            return $checkObj->fetchColumin() == 1;
+            return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
         }
     }
@@ -62,7 +62,7 @@ trait Verify
             $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $checkObj->execute();
-            return $checkObj->fetchColumin() == 1;
+            return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
         }
     }
@@ -74,7 +74,7 @@ trait Verify
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $checkObj->execute();
-            return $checkObj->fetchColumin() != 0;
+            return $checkObj->fetchColumn() != 0;
         }catch(PDOException $e){
 
         }
