@@ -2,4 +2,4 @@
 require_once(__DIR__ . "/../../../lib/UserGroup.php");
 $UserGroup = new UserGroup($loginInfo);
 
-$UserGroup->getGroupList()
+echo $UserGroup->getGroupList();
