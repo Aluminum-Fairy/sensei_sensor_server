@@ -49,7 +49,9 @@ jobs:
           source: "html/WebConsole/*"
           target: "/var/www/html/WebConsole/"
           rm: true
-      
+
+          
+          
       - name: copy file via ssh password 3
         uses: appleboy/scp-action@master
         with:
@@ -60,11 +62,11 @@ jobs:
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
-          source: "config/"
-          target: "/var/www/config/"
+          source: "html/API/"
+          target: "/var/www/html/API/"
           rm: true
           
-          
+
       - name: copy file via ssh password 4
         uses: appleboy/scp-action@master
         with:
@@ -74,20 +76,5 @@ jobs:
           proxy_host: ${{ secrets.PROXY_HOST }}
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
-          strip_components: 1
-          source: "API/"
-          target: "/var/www/html/API/"
-          rm: true
-          
-
-      - name: copy file via ssh password 5
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          proxy_host: ${{ secrets.PROXY_HOST }}
-          proxy_username: ${{ secrets.USERNAME }}
-          proxy_password: ${{ secrets.PASSWORD }}
-          source: "composer.json,Develop.php"
-          target: "/var/www/html/"
+          source: "composer.json"
+          target: "/var/www/"
