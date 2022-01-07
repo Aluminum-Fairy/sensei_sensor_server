@@ -5,6 +5,7 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 #自作ライブラリ
 require_once __DIR__ . "/../../lib/UserInfo.php";
 require_once __DIR__ . "/../../config/Config.php";
+
 use \Firebase\JWT\JWT;
 
 $userInfo = new UserInfo($loginInfo);
@@ -19,7 +20,7 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
         $loginUserId = $input['loginUserId'];
         $password = $input['password'];
 
-        $ok = $userInfo->userAuth($loginUserId,$password); // loginUserId = test, password = test で認証 OK とする (仮)
+        $ok = $userInfo->userAuth($loginUserId, $password); // loginUserId = test, password = test で認証 OK とする (仮)
         if ($ok) {
             $payload = array(
                 'iss' => JWT_ISSUER,

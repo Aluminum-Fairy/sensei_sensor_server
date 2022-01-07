@@ -171,7 +171,7 @@ class Sensor
         try {
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
             $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
-            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
+            $getDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -192,7 +192,7 @@ class Sensor
             $inputDiscvLogObj = $this->dbh->prepare($inputDiscvLogSql);
             $inputDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $inputDiscvLogObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_INT);
+            $inputDiscvLogObj->bindValue(":time", $time, PDO::PARAM_STR);
             $inputDiscvLogObj->execute();
             return true;
         } catch (PDOException $e) {
@@ -208,12 +208,12 @@ class Sensor
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
-                SELECT user.userName,discoveryLog.userId,sensor.placeName,discoveryLog.time, viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime, 60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
+                SELECT user.userName,discoveryLog.userId,sensor.placeName,discoveryLog.time, viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
                 FROM `viewConfig`
                 LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
                 LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
-            WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum ) as View
+            WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.publicView = 1) as View
         WHERE View.rownum =1;";
         /*
         最初のSELECTでdiscvoryLogとsensorとuserとsensorをJOINさせる、時刻計算用のTimeNumを追加

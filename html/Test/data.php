@@ -1,4 +1,5 @@
 <?php
+/*
 #composer
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
@@ -22,10 +23,15 @@ if (strtoupper($_SERVER['REQUEST_METHOD']) == 'GET') {
             http_response_code(401);
             exit();
         }
-    }else{
+    } else {
         // Bearer が取得できない、JWT のでコードに失敗した場合は 401
         http_response_code(401);
         exit();
     }
-
 }
+
+*/
+require_once __DIR__ ."/../../lib/JwtAuth.php";
+
+$JwtAuth = new JwtAuth($loginInfo);
+$JwtAuth->Auth();

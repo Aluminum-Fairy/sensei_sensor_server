@@ -1,4 +1,7 @@
 <?php
+
+use Symfony\Component\Cache\Simple\PdoCache;
+
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
@@ -19,6 +22,19 @@ class UserInfo
             exit();
         }
     }
+
+    public function beginTransaction(){
+        $this->dbh->beginTransaction();
+    }
+
+    public function commit(){
+        $this->dbh->commit();
+    }
+
+    public function rollBack(){
+        $this->dbh->rollBack();
+    }
+
 
     public function addUser($userName, $password, $description)
     {
@@ -98,10 +114,51 @@ class UserInfo
             $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_INT);
             $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_INT);
             $setAllWeekCfgObj->execute();
-            return $setAllWeekCfgObj->fetchAll(PDO::FETCH_COLUMN) == 1;
+            return true;
 
-        } catch (\Throwable $th) {
-            //throw $th;
+        } catch (PDOException $e) {
+
+        }
+    }
+
+    public function setPubViewCfg($userId,$weekNum,$value){
+        if (!$this->viewConfigExist($userId)) {
+            return false;
+        }
+
+        if($value){
+            $pubView = 1;
+        }else{
+            $pubView = 0;
+        }
+
+        $setPubViewCfgSql = "UPDATE viewConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
+        try{
+            $setPubViewCfgObj = $this->dbh->prepare($setPubViewCfgSql);
+            $setPubViewCfgObj->bindValue(":value",$pubView,PDO::PARAM_INT);
+            $setPubViewCfgObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $setPubViewCfgObj->bindValue(":weekNum",$weekNum,PDO::PARAM_INT);
+            $setPubViewCfgObj->execute();
+            return true;
+        }catch (PDOException $e){
+
+        }
+        return false;
+
+    }
+
+    public function getViewConfig($userId){
+        if (!$this->viewConfigExist($userId)) {
+            return false;
+        }
+
+        $getViewConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewConfig WHERE userId =:userId";
+        try{
+            $getViewConfigObj = $this->dbh->prepare($getViewConfigSql);
+            $getViewConfigObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $getViewConfigObj->execute();
+            return $getViewConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+        }catch (PDOException $e){
         }
     }
 }
