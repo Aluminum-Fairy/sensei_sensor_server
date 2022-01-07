@@ -46,7 +46,7 @@ jobs:
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
-          source: "WebConsole/"
+          source: "WebConsole/*"
           target: "/var/www/html/WebConsole/"
           rm: true
       
