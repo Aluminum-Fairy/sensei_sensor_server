@@ -16,7 +16,7 @@ MariaDB [(none)] > exit;
 sudo systemctl restart mysqld
 
 COMMENTOUT
-
+## phpMyAdmin URL : https://www.phpmyadmin.net/
 ## phpMyAdmin Config
 
 << COMMENTOUT
@@ -31,7 +31,7 @@ COMMENTOUT
 
 sudo apt update
 sudo apt upgrade
-sudo apt install -y git  python3-pip apache2 php libapache2-mod-php php-mysql php-curl mariadb-server mariadb-client php-xml php-mbstring vim
+sudo apt install -y git  python3-pip apache2 unzip php libapache2-mod-php php-mysql php-curl mariadb-server mariadb-client php-xml php-mbstring vim
 
 sudo systemctl enable apache2
 sudo systemctl enable mysqld
