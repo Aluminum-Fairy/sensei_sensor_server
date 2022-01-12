@@ -4,7 +4,7 @@
 
 << COMMENTOUT
 
-mysql_secure_installation
+sudo mysql_secure_installation
 sudo mysql - u root -p
 MariaDB [(none)] > ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'enter_password_here';
 
