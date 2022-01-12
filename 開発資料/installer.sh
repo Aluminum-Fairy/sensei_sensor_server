@@ -6,8 +6,8 @@
 
 sudo mysql_secure_installation
 sudo mysql -u root -p
-MariaDB [(none)] > ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'enter_password_here';
-
+MariaDB [(none)] > ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password;
+MariaDB [(none)] > ALTER USER 'root'@'localhost' IDENTIFIED BY 'YOUR PASSWORD';
 ---## If you can't run this command. ##---
     MariaDB [(none)] > UPDATE mysql.user SET plugin = 'mysql_native_password' WHERE user = 'root';
 
