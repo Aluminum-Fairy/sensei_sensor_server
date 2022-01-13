@@ -65,7 +65,7 @@ class UserInfo
             $userAuthObj = $this->dbh->prepare($userAuthSql);
             $userAuthObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $userAuthObj->execute();
-            var_dump(password_verify($password, $userAuthObj->fetch()["passwd"]));
+            return password_verify($password, $userAuthObj->fetch()["passwd"]);
         } catch (PDOException $e) {
             return false;
         }
