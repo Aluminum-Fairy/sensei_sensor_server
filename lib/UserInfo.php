@@ -53,7 +53,7 @@ class UserInfo
 
     public function userAuth($userId, $password)
     {
-        if ($this->userExist($userId)) {
+        if (!$this->userExist($userId)) {
             return false;
         }
 
