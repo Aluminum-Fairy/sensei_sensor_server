@@ -14,4 +14,5 @@ $groupId = explode('/', $matches[1])[0];
 $requestMethod=strtolower($_SERVER["REQUEST_METHOD"]);
 
 if ($requestMethod === "get") {
+    require(__DIR__."/getGroupList.php");
 }
