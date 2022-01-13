@@ -12,7 +12,6 @@ use  Firebase\JWT\JWT;
 
 class JwtAuth
 {
-
     protected $dbh;
     protected $UserInfo;
 
@@ -66,7 +65,7 @@ class JwtAuth
                 $password = $input['password'];
 
                 $ok = $this->UserInfo->userAuth($loginUserId, $password); // loginUserId = test, password = test で認証 OK とする (仮)
-                if ($ok) { 
+                if ($ok) {
                     $payload = array(
                         'iss' => JWT_ISSUER,
                         'exp' => time() + JWT_EXPIRES,
