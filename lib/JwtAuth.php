@@ -8,10 +8,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . "/../config/Config.php";
 require_once __DIR__ . "/../lib/UserInfo.php";
 
-use Firebase\JWT\JWT;
+use  Firebase\JWT\JWT;
 
-class JwtAuth extends JWT
+class JwtAuth
 {
+
     protected $dbh;
     protected $UserInfo;
 
@@ -65,14 +66,13 @@ class JwtAuth extends JWT
                 $password = $input['password'];
 
                 $ok = $this->UserInfo->userAuth($loginUserId, $password); // loginUserId = test, password = test で認証 OK とする (仮)
-                if ($ok) {
+                if ($ok) { 
                     $payload = array(
                         'iss' => JWT_ISSUER,
                         'exp' => time() + JWT_EXPIRES,
                         'loginUserId' => $loginUserId,
                     );
-                    $jwt = $this->JWT::encode($payload, JWT_KEY, JWT_ALG);
-
+                    $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
                     header('Content-Type: application/json');
                     header('Access-Control-Allow-Origin: *'); // CORS
                     echo json_encode(array('token' => $jwt)); // token を返却
