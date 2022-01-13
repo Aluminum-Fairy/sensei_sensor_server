@@ -75,7 +75,16 @@ class JwtAuth
                     $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
                     header('Content-Type: application/json');
                     header('Access-Control-Allow-Origin: *'); // CORS
-                    echo json_encode(array('token' => $jwt)); // token を返却
+                    setcookie(
+                        "token",
+                        $jwt,
+                        [
+                        'expires' => time() + 3600,
+                        'path' => '/',
+                        'secure' => false,
+                        'httponly' => true,
+                        ]
+                    ); // token をCookieにセット
                     return;
                 }
             }
