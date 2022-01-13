@@ -4,13 +4,13 @@ require(__DIR__ . "/../../../../lib/UserGroup.php");
 
 $UserGroup = new UserGroup($loginInfo);
 
-$groupName=filter_input(INPUT_POST,"groupName");
+$groupName=filter_input(INPUT_POST, "groupName");
 
-if($groupName === false){
+if ($groupName === false) {
     http_response_code(400);
 }
 
-if($UserGroup->addUserGroup($groupName)){
+if ($UserGroup->addUserGroup($groupName)) {
     $result = json_encode($UserGroup->getGroupList());
     if ($result === false) {
         http_response_code(500);
@@ -18,6 +18,6 @@ if($UserGroup->addUserGroup($groupName)){
         http_response_code(200);
         echo $result;
     }
-}else{
+} else {
     http_response_code(500);
 }

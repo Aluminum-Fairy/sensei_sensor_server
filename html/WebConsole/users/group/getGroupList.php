@@ -7,9 +7,9 @@ $UserGroup = new UserGroup($loginInfo);
 
 $result = json_encode($UserGroup->getGroupList());
 
-if ($result === false){
+if ($result === false) {
     http_response_code(500);
-}else{
+} else {
     http_response_code(200);
     echo $result;
 }

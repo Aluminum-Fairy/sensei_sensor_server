@@ -8,7 +8,7 @@ trait Verify
         $checkSql = "SELECT sensorId FROM sensor WHERE sensorId =:sensorId";
         try {
             $checkObj = $this->dbh->prepare($checkSql);
-            $checkObj->bindValue(":sensorId", $sensorId,PDO::PARAM_INT);
+            $checkObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $checkObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -70,17 +70,16 @@ trait Verify
     public function groupMemberExist($groupId)
     {
         $checkSql = "SELECT COUNT(userId) FROM userGroup WHERE groupId = :groupId";
-        try{
+        try {
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
     }
 
-    public function Exist(){
-
+    public function Exist()
+    {
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 #センサー側の同期システム
 
 require_once __DIR__ . "/../../lib/Sensor.php";
@@ -18,13 +19,13 @@ $postData = json_encode($payload);
 $resStr = postCurl("http://" . URL . "/API/getLastLogTime.php", $postData);
 
 #応答元のセンサーの最新時刻(サーバー内の)を受信、入力
-$resArr = json_decode($resStr,true);
+$resArr = json_decode($resStr, true);
 
-foreach($resArr["newDiscvLog"] as $discvLog){
+foreach ($resArr["newDiscvLog"] as $discvLog) {
     var_dump($discvLog);
     $Sensor2->inputDiscvLog($discvLog['time'], $discvLog['sensorId'], $discvLog['userId']);
 }
 
 #応答元のセンサーの差分データをサーバへ送信
-$newDiscvLog = $Sensor2->getDiscvLog(ThisSensorId,$resArr["lastLogTime"][0]["time"],MATCH);
-postCurl("http://".URL."/API/insertDiscvLog.php",json_encode($newDiscvLog));
+$newDiscvLog = $Sensor2->getDiscvLog(ThisSensorId, $resArr["lastLogTime"][0]["time"], MATCH);
+postCurl("http://".URL."/API/insertDiscvLog.php", json_encode($newDiscvLog));

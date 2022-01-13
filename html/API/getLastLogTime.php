@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/../../lib/Sensor.php";
 require_once __DIR__ . "/../../config/Config.php";
 
@@ -13,6 +14,6 @@ foreach ($sensorInfo["discvLogTime"] as $sensorArr) {
     $result["newDiscvLog"]+=($Sensor->getDiscvLog($sensorArr["sensorId"], $sensorArr["time"], MATCH));
 }
 $result +=array("lastLogTime"=>array());
-$result["lastLogTime"]=$Sensor->getLastLogTime($sensorInfo["thisSensorId"],MATCH);
+$result["lastLogTime"]=$Sensor->getLastLogTime($sensorInfo["thisSensorId"], MATCH);
 
 print(json_encode($result));

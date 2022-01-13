@@ -13,7 +13,7 @@ $userId = 1;
 if ($userId !== false) {
     $config = $UserInfo->getViewConfig($userId);
     $result = array("publicationDays"=>array());
-    foreach($config as $weekNum => $weekConfig){
+    foreach ($config as $weekNum => $weekConfig) {
         $result["publicationDays"] += array(getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
     }
     echo json_encode($result);
