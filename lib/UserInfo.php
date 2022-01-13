@@ -60,12 +60,12 @@ class UserInfo
             return false;
         }
 
-        $userAuthSql = "SELECT password FROM user WHERE userId = :userId";
+        $userAuthSql = "SELECT passwd FROM user WHERE userId = :userId";
         try {
             $userAuthObj = $this->dbh->prepare($userAuthSql);
             $userAuthObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $userAuthObj->execute();
-            return password_verify($password, ($userAuthObj->fetch())["passwd"]);
+            var_dump(password_verify($password, $userAuthObj->fetch()["passwd"]));
         } catch (PDOException $e) {
             return false;
         }
