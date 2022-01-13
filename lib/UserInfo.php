@@ -8,10 +8,10 @@ require_once __DIR__ . "/Define.php";
 
 class UserInfo
 {
-    protected $dbh;
     use Verify;
+    protected $dbh;
 
-    function __construct($loginInfo)
+    public function __construct($loginInfo)
     //初期化時にデータベースへの接続
     {
         try {
@@ -23,15 +23,18 @@ class UserInfo
         }
     }
 
-    public function beginTransaction(){
+    public function beginTransaction()
+    {
         $this->dbh->beginTransaction();
     }
 
-    public function commit(){
+    public function commit()
+    {
         $this->dbh->commit();
     }
 
-    public function rollBack(){
+    public function rollBack()
+    {
         $this->dbh->rollBack();
     }
 
@@ -42,8 +45,8 @@ class UserInfo
         try {
             $addUserObj = $this->dbh->prepare($addUserSql);
             $addUserObj->bindValue(":userName", htmlspecialchars($userName), PDO::PARAM_STR);
-            $addUserObj->bindValue(":password", password_hash($password, PASSWORD_DEFAULT),PDO::PARAM_STR);
-            $addUserObj->bindValue(":description", htmlspecialchars($description),PDO::PARAM_STR);
+            $addUserObj->bindValue(":password", password_hash($password, PASSWORD_DEFAULT), PDO::PARAM_STR);
+            $addUserObj->bindValue(":description", htmlspecialchars($description), PDO::PARAM_STR);
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
@@ -101,64 +104,62 @@ class UserInfo
         }
     }
 
-    public function setAllWeekCfg($userId,$startTime, $endTime)
+    public function setAllWeekCfg($userId, $startTime, $endTime)
     #全ての登録済みの曜日における公開時間を設定する
     {
-        if(!$this->viewConfigExist($userId)){
+        if (!$this->viewConfigExist($userId)) {
             return false;
         }
         $setAllWeekCfgSql = "UPDATE viewConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
-            $setAllWeekCfgObj->bindValue(":startTime",$startTime.PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":startTime", $startTime.PDO::PARAM_INT);
             $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_INT);
             $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_INT);
             $setAllWeekCfgObj->execute();
             return true;
-
         } catch (PDOException $e) {
-
         }
     }
 
-    public function setPubViewCfg($userId,$weekNum,$value){
+    public function setPubViewCfg($userId, $weekNum, $value)
+    {
         if (!$this->viewConfigExist($userId)) {
             return false;
         }
 
-        if($value){
+        if ($value) {
             $pubView = 1;
-        }else{
+        } else {
             $pubView = 0;
         }
 
         $setPubViewCfgSql = "UPDATE viewConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
-        try{
+        try {
             $setPubViewCfgObj = $this->dbh->prepare($setPubViewCfgSql);
-            $setPubViewCfgObj->bindValue(":value",$pubView,PDO::PARAM_INT);
-            $setPubViewCfgObj->bindValue(":userId",$userId,PDO::PARAM_INT);
-            $setPubViewCfgObj->bindValue(":weekNum",$weekNum,PDO::PARAM_INT);
+            $setPubViewCfgObj->bindValue(":value", $pubView, PDO::PARAM_INT);
+            $setPubViewCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $setPubViewCfgObj->bindValue(":weekNum", $weekNum, PDO::PARAM_INT);
             $setPubViewCfgObj->execute();
             return true;
-        }catch (PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
-
     }
 
-    public function getViewConfig($userId){
+    public function getViewConfig($userId)
+    {
         if (!$this->viewConfigExist($userId)) {
             return false;
         }
 
         $getViewConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewConfig WHERE userId =:userId";
-        try{
+        try {
             $getViewConfigObj = $this->dbh->prepare($getViewConfigSql);
-            $getViewConfigObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $getViewConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getViewConfigObj->execute();
             return $getViewConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-        }catch (PDOException $e){
+        } catch (PDOException $e) {
         }
     }
 }

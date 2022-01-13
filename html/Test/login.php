@@ -1,4 +1,5 @@
 <?php
+
 #composer
 require_once(__DIR__ . '/../../vendor/autoload.php');
 
@@ -6,7 +7,7 @@ require_once(__DIR__ . '/../../vendor/autoload.php');
 require_once __DIR__ . "/../../lib/UserInfo.php";
 require_once __DIR__ . "/../../config/Config.php";
 
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 
 $userInfo = new UserInfo($loginInfo);
 

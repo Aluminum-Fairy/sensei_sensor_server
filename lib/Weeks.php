@@ -1,6 +1,7 @@
 <?php
 
-function getWeek($weekNumber){
+function getWeek($weekNumber)
+{
     /*
     Sunday:1
     Saturday:7
@@ -9,15 +10,16 @@ function getWeek($weekNumber){
     return $WeekArr[($weekNumber)];
 }
 
-function getWeekNum($week){
+function getWeekNum($week)
+{
     /*
     1:Sunday
     7:Saturday
     */
     static $WeekArr = array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
-    if($result=array_search($week, $WeekArr) !== false){
+    if ($result=array_search($week, $WeekArr) !== false) {
         return $result -1;
-    }else{
+    } else {
         return false;
     }
 }

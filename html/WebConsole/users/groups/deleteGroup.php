@@ -7,15 +7,15 @@ require __DIR__ . "/../../../../lib/UserGroup.php";
 $UserGroup = new UserGroup($loginInfo);
 $UserGroup->beginTransaction();
 
-if($UserGroup->delAllUserFromGroup($groupId)){
-    if($UserGroup->delUserGroup($groupId)){
+if ($UserGroup->delAllUserFromGroup($groupId)) {
+    if ($UserGroup->delUserGroup($groupId)) {
         http_response_code(200);
         $UserGroup->commit();
-    }else{
+    } else {
         http_response_code(500);
         $UserGroup->rollBack();
     }
-}else{
+} else {
     http_response_code(500);
     $UserGroup->rollBack();
 }
