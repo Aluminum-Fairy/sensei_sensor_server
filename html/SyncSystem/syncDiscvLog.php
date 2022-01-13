@@ -16,7 +16,7 @@ $payload += array("thisSensorId"=>ThisSensorId);
 $postData = json_encode($payload);
 
 #サーバーへ送信、各センサーの差分データを受信,
-$resStr = postCurl("http://" . URL . "/API/getLastLogTime.php", $postData);
+$resStr = postCurl("http://" . URL . "/SyncAPI/getLastLogTime.php", $postData);
 
 #応答元のセンサーの最新時刻(サーバー内の)を受信、入力
 $resArr = json_decode($resStr, true);
@@ -28,4 +28,4 @@ foreach ($resArr["newDiscvLog"] as $discvLog) {
 
 #応答元のセンサーの差分データをサーバへ送信
 $newDiscvLog = $Sensor2->getDiscvLog(ThisSensorId, $resArr["lastLogTime"][0]["time"], MATCH);
-postCurl("http://".URL."/API/insertDiscvLog.php", json_encode($newDiscvLog));
+postCurl("http://".URL."/SyncAPI/insertDiscvLog.php", json_encode($newDiscvLog));

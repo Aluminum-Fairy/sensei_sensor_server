@@ -13,7 +13,7 @@ $Sensor2 = new Sensor(array('mysql:host=localhost;dbname=sensei_sensor2;charset=
 #センサーに格納された各センサーの設定が変更されたとされる時刻リストを取得
 $lastUpdateList=$Sensor2->getLastSensorUpdateTime();
 
-$resStr =  postCurl("http://".URL."/API/getSensorUpdate.php", json_encode($lastUpdateList));
+$resStr =  postCurl("http://".URL."/SyncAPI/getSensorUpdate.php", json_encode($lastUpdateList));
 
 $resArr = json_decode($resStr, true);
 
