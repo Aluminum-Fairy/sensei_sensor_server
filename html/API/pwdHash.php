@@ -1,3 +1,3 @@
 <?php
 
-echo password_hash($argv[0], PASSWORD_DEFAULT);
+echo password_hash($argv[1], PASSWORD_DEFAULT);
