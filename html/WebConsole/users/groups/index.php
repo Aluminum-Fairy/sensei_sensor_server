@@ -11,10 +11,9 @@ $groupId = explode('/', $matches[1])[0];
 
 $requestMethod=strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "get"){
+if ($requestMethod === "get") {
     require "./getGroupUser.php";
-}else if($requestMethod === "put"){
+} elseif ($requestMethod === "put") {
     require "./groupEdit.php";
-}else if($requestMethod=="delete"){
-    
+} elseif ($requestMethod=="delete") {
 }

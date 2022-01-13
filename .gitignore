@@ -1,3 +1,7 @@
 html/db/
 config/SQL_Login.php
 config/Config.php
+
+.php-cs-fixer.cache
+composer.lock
+vendor/

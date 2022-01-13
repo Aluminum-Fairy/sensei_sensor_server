@@ -9,17 +9,16 @@ $userId = $JWT->auth();
 //$userId = 1;
 
 
-if($userId !== false){
+if ($userId !== false) {
     $json = file_get_contents("php://input");
     $pubDayInfo = json_decode($json, true);
     $UserInfo->beginTransaction();
-    foreach($pubDayInfo["publicationDays"] as $week => $pubCfg){
-        if(!$UserInfo->setPubViewCfg($userId, getWeekNum($week), $pubCfg)){
+    foreach ($pubDayInfo["publicationDays"] as $week => $pubCfg) {
+        if (!$UserInfo->setPubViewCfg($userId, getWeekNum($week), $pubCfg)) {
             $UserInfo->rollBack();
             http_response_code(500);
             exit();
         }
     }
     $UserInfo->commit();
-
 }

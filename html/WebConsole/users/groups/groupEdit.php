@@ -9,8 +9,8 @@ $groupInfo = json_decode($jsonText);
 #1．指定されたグループID一覧削除
 #2．削除後追加
 $UserGroup->beginTransaction();
-if($UserGroup->editGroup($groupId,$groupInfo["groupName"],$groupInfo["users"])){
+if ($UserGroup->editGroup($groupId, $groupInfo["groupName"], $groupInfo["users"])) {
     $UserGroup->commit();
-}else{
+} else {
     $UserGroup->rollBack();
 }
