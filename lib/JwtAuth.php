@@ -84,6 +84,6 @@ class JwtAuth extends JWT
     }
 
     function logout(){
-        $this->JWT->;
+
     }
 }
