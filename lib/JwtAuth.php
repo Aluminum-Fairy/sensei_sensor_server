@@ -1,4 +1,5 @@
 <?php
+
 #DB Connection
 require_once __DIR__ . "/../config/SQL_Login.php";
 #composer
@@ -7,7 +8,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 require_once __DIR__ . "/../config/Config.php";
 require_once __DIR__ . "/../lib/UserInfo.php";
 
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
 
 class JwtAuth extends JWT
 {
@@ -15,7 +16,7 @@ class JwtAuth extends JWT
     protected $UserInfo;
 
 
-    function __construct($loginInfo)
+    public function __construct($loginInfo)
     //初期化時にデータベースへの接続
     {
         try {
@@ -83,7 +84,7 @@ class JwtAuth extends JWT
         }
     }
 
-    function logout(){
-
+    public function logout()
+    {
     }
 }
