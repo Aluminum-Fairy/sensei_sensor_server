@@ -5,3 +5,4 @@ vendor/
 autoload/
 composer.lock
 composer.phar
+.php-cs-fixer.cache
