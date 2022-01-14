@@ -53,17 +53,14 @@ class JwtAuth
 
     public function login()
     {
-
         // POST 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $inputString = file_get_contents('php://input'); // JSON 文字列取得
             $input = @json_decode($inputString, true);
-
             if (is_array($input)) {
                 $input = array_merge(array('userName' => '', 'password' => ''), $input);
                 $loginUserId = $input['userName'];
                 $password = $input['password'];
-
                 $ok = $this->UserInfo->userAuth($loginUserId, $password); // loginUserId = test, password = test で認証 OK とする (仮)
                 if ($ok) {
                     $payload = array(
