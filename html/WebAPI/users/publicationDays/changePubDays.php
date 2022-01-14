@@ -5,6 +5,7 @@ require_once(__DIR__ . "/../../../../lib/UserInfo.php");
 require_once(__DIR__ . "/../../../../lib/Weeks.php");
 $JWT = new JwtAuth($loginInfo);
 $UserInfo = new UserInfo($loginInfo);
+$Weeks = new Weeks();
 $userId = $JWT->auth();
 //$userId = 1;
 
@@ -14,7 +15,7 @@ if ($userId !== false) {
     $pubDayInfo = json_decode($json, true);
     $UserInfo->beginTransaction();
     foreach ($pubDayInfo["publicationDays"] as $week => $pubCfg) {
-        if (!$UserInfo->setPubViewCfg($userId, getWeekNum($week), $pubCfg)) {
+        if (!$UserInfo->setPubViewCfg($userId, $Weeks->getWeekNum($week), $pubCfg)) {
             $UserInfo->rollBack();
             http_response_code(500);
             exit();

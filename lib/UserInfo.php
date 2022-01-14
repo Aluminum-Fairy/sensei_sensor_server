@@ -5,8 +5,9 @@ use Symfony\Component\Cache\Simple\PdoCache;
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
+require_once __DIR__ . "/Weeks.php";
 
-class UserInfo
+class UserInfo extends Weeks
 {
     use Verify;
     protected $dbh;
@@ -161,5 +162,21 @@ class UserInfo
             return $getViewConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
         }
+    }
+
+    public function getViewDays($userId){
+        $config = $this->getViewConfig($userId);
+        $result = array("publicationDays"=>array());
+        foreach ($config as $weekNum => $weekConfig) {
+            $result["publicationDays"] += array($this->getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
+        }
+        return $result;
+    }
+
+    public function getViewTime($userId){
+        $config = $this->getViewConfig($userId);
+        $result = array("publicationTime"=>array("start"=>$config[0]["startTime"]));
+        $result["publicationTime"] += array("end"=>$config[0]["endTime"]);
+        return $result;
     }
 }

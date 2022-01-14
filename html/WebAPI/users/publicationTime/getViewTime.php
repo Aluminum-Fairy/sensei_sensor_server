@@ -11,8 +11,5 @@ $UserInfo = new UserInfo($loginInfo);
 $userId = $JWT->auth();
 
 if ($userId !== false) {
-    $config = $UserInfo->getViewConfig($userId);
-    $result = array("publicationTime"=>array("start"=>$config[0]["startTime"]));
-    $result["publicationTime"] += array("end"=>$config[0]["endTime"]);
-    echo json_encode($result);
+    echo json_encode($UserInfo->getViewTime($userId));
 }

@@ -9,14 +9,10 @@ header('Content-Type: application/json');
 
 $JWT = new JwtAuth($loginInfo);
 $UserInfo = new UserInfo($loginInfo);
+$Weeks = new Weeks();
 //$userId = $JWT->auth();
 $userId = 1;
 
 if ($userId !== false) {
-    $config = $UserInfo->getViewConfig($userId);
-    $result = array("publicationDays"=>array());
-    foreach ($config as $weekNum => $weekConfig) {
-        $result["publicationDays"] += array(getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
-    }
-    echo json_encode($result);
+    echo json_encode($UserInfo->getViewDays($userId));
 }
