@@ -9,6 +9,6 @@ $JWT = new JwtAuth($loginInfo);
 
 if ($JWT->auth() && $JWT->logout()){
     http_response_code(200);
-}else{
+} else {
     http_response_code(401);
 }
