@@ -103,7 +103,7 @@ class JwtAuth
                 ]
             ); // token を削除
             return true;
-        }else{
+        } else {
             return false;
         }
     }
