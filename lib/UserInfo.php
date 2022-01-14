@@ -164,7 +164,8 @@ class UserInfo extends Weeks
         }
     }
 
-    public function getViewDays($userId){
+    public function getViewDays($userId)
+    {
         $config = $this->getViewConfig($userId);
         $result = array("publicationDays"=>array());
         foreach ($config as $weekNum => $weekConfig) {
@@ -173,7 +174,8 @@ class UserInfo extends Weeks
         return $result;
     }
 
-    public function getViewTime($userId){
+    public function getViewTime($userId)
+    {
         $config = $this->getViewConfig($userId);
         $result = array("publicationTime"=>array("start"=>$config[0]["startTime"]));
         $result["publicationTime"] += array("end"=>$config[0]["endTime"]);

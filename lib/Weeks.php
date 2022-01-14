@@ -1,5 +1,7 @@
 <?php
-class Weeks{
+
+class Weeks
+{
     public function getWeek($weekNumber)
     {
         /*
@@ -9,7 +11,7 @@ class Weeks{
         static $WeekArr = array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
         return $WeekArr[($weekNumber)];
     }
-    
+
     public function getWeekNum($week)
     {
         /*
@@ -24,4 +26,3 @@ class Weeks{
         }
     }
 }
-
