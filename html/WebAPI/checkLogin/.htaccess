@@ -1,0 +1,6 @@
+RewriteEngine On
+RewriteBase /WebAPI/checkLogin/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-l
+RewriteRule ^.*$ /WebAPI/checkLogin/ [L,QSA]

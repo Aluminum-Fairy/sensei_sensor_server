@@ -9,6 +9,7 @@ require_once __DIR__ . "/../config/Config.php";
 require_once __DIR__ . "/../lib/UserInfo.php";
 
 use  Firebase\JWT\JWT;
+use PhpMyAdmin\Utils\HttpRequest;
 
 class JwtAuth
 {
@@ -37,12 +38,38 @@ class JwtAuth
             try {
                 $payload = $this->JWT::decode($jwt, JWT_KEY, array(JWT_ALG)); // JWT デコード (失敗時は例外)
                 $loginUserId = $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
-
+                $newPayload = array(
+                    'iss' => JWT_ISSUER,
+                    'exp' => time() + JWT_EXPIRES,
+                    'loginUserId' => $loginUserId,
+                );
+                $newJwt = JWT::encode($newPayload, JWT_KEY, JWT_ALG);
                 header('Content-Type: application/json');
                 header('Access-Control-Allow-Origin: *'); // CORS
+                setcookie(
+                    "token",
+                    $newJwt,
+                    [
+                    'expires' => time() + 3600,
+                    'path' => '/',
+                    'secure' => false,
+                    'httponly' => true,
+                    ]
+                ); // token をCookieにセット
                 return $loginUserId;
             } catch (Exception $e) {
             }
+        }
+        http_response_code(401);
+        return false;
+    }
+
+    public function checkLogin()
+    {
+        $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
+        if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
+            http_response_code(200);
+            return true;
         }
         http_response_code(401);
         return false;
