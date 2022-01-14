@@ -32,6 +32,21 @@ COMMENTOUT
 sudo apt update
 sudo apt upgrade
 sudo apt install -y git  python3-pip apache2 unzip php libapache2-mod-php php-mysql php-curl mariadb-server mariadb-client php-xml php-mbstring vim
+sudo a2enmod rewrite
+
+#apache2.conf
+<< COMMENTOUT
+
+## Edit Apache2 Config
+
+<Directory "/var/www/html">
+    Options Indexes FollowSymLinks
+-   AllowOverride None
++   AllowOverride ALL
+    Require all granted
+</Directory>
+
+COMMENTOUT
 
 sudo systemctl enable apache2
 sudo systemctl enable mysqld
@@ -42,3 +57,5 @@ pip3 install pyserial bitarray pymysql bluepy
 #Repository Clone
 cd ~/
 git clone https://github.com/sensei-sensor/sensei-sensor-device.git
+
+

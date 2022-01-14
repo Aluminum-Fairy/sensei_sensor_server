@@ -1,6 +1,6 @@
 RewriteEngine On
-RewriteBase /WebConsole/users/groups/
+RewriteBase /WebAPI/users/groups/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /WebConsole/users/group/ [L,QSA]
+RewriteRule ^.*$ /WebAPI/users/group/ [L,QSA]

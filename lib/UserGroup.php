@@ -153,6 +153,7 @@ class UserGroup
             $getGroupNameObj = $this->dbh->prepare($getGroupNameSql);
             $getGroupNameObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $getGroupNameObj->execute();
+
             return $getGroupNameObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             return false;
