@@ -1,6 +1,7 @@
 <?php
 
 require_once(__DIR__ . "/../../../../lib/UserGroup.php");
+header('Content-Type: application/json');
 
 $UserGroup = new UserGroup($loginInfo);
 
