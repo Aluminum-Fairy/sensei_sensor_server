@@ -11,7 +11,7 @@ $JwtAuth = new JwtAuth($loginInfo);
 
 $userId = $JwtAuth->auth();
 $userId = 1;
-if($userId !== false){
+if ($userId !== false) {
     $result = $UserInfo->getViewDays($userId);
     echo json_encode($result);
 }
