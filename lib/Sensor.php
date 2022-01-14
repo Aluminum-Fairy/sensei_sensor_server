@@ -209,7 +209,12 @@ class Sensor
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
-                SELECT user.userName,discoveryLog.userId,sensor.placeName,discoveryLog.time, viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
+                SELECT 
+                user.userName,discoveryLog.userId,
+                    sensor.placeName,
+                    discoveryLog.time, 
+                    viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 
+                    60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
                 FROM `viewConfig`
                 LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
@@ -232,11 +237,17 @@ class Sensor
 
     public function getAllowedGroupUsersDiscvList($groupId){
         $getAllowedGroupUsersDiscvListSql=
-        "SELECT View.userName,View.placeName,View.time FROM
+        "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
         (
-            SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
+            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
             (
-                SELECT user.userName,discoveryLog.userId,sensor.placeName,discoveryLog.time, viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
+                SELECT 
+                    user.userName,discoveryLog.userId,
+                    sensor.placeName,
+                    discoveryLog.time, 
+                    viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 
+                    60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week,
+                    userGroup.groupId 
                 FROM `viewConfig`
                 LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
@@ -251,6 +262,9 @@ class Sensor
         */
         try{
             $getAGUDObj = $this->dbh->prepare($getAllowedGroupUsersDiscvListSql);
+            $getAGUDObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $getAGUDObj->execute();
+            return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         }catch(PDOException $e){
 
         }
