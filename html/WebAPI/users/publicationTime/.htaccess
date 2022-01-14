@@ -1,6 +1,6 @@
 RewriteEngine On
-RewriteBase /WebConsole/users/publicationTime/
+RewriteBase /WebAPI/users/publicationTime/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /WebConsole/users/publicationTime/ [L,QSA]
+RewriteRule ^.*$ /WebAPI/users/publicationTime/ [L,QSA]

@@ -1,6 +1,6 @@
 RewriteEngine On
-RewriteBase /WebConsole/login/
+RewriteBase /WebAPI/login/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /WebConsole/login/ [L,QSA]
+RewriteRule ^.*$ /WebAPI/login/ [L,QSA]
