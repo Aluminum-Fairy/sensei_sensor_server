@@ -91,5 +91,17 @@ class JwtAuth
 
     public function logout()
     {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *'); // CORS
+        setcookie(
+            "token",
+            "",
+            [
+            'expires' => time() + 3600,
+            'path' => '/',
+            'secure' => false,
+            'httponly' => true,
+            ]
+        ); // token を削除
     }
 }

@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/../../lib/Sensor.php";
 require_once __DIR__ . "/../../config/Config.php";
+header('Content-Type: application/json');
 
 $Sensor = new Sensor($loginInfo);
 
