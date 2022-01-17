@@ -167,7 +167,6 @@ class UserInfo extends Weeks
     public function getViewSensorConfig($userId)
     {
         if (!$this->viewSensorConfigExist($userId)) {
-            echo 1;
             return false;
         }
         $getViewSensorConfigSql = "SELECT viewSensorConfig.sensorId AS roomId,sensor.placeName AS roomName,viewSensorConfig.publicView AS publicView FROM viewSensorConfig LEFT JOIN sensor ON viewSensorConfig.sensorId = sensor.sensorId WHERE userId = :userId";
@@ -193,6 +192,9 @@ class UserInfo extends Weeks
     public function getViewDays($userId)
     {
         $config = $this->getViewTimeConfig($userId);
+        if ($config === false) {
+            return false;
+        }
         $result = array("publicationDays"=>array());
         foreach ($config as $weekNum => $weekConfig) {
             $result["publicationDays"] += array($this->getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
@@ -203,6 +205,9 @@ class UserInfo extends Weeks
     public function getViewTime($userId)
     {
         $config = $this->getViewTimeConfig($userId);
+        if ($config === false) {
+            return false;
+        }
         $firstWeekNum = array_keys($config)[0];
         $result = array("publicationTime"=>array("start"=>$config[$firstWeekNum]["startTime"]));
         $result["publicationTime"] += array("end"=>$config[$firstWeekNum]["endTime"]);

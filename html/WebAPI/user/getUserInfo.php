@@ -8,10 +8,13 @@ $UserInfo = new UserInfo($loginInfo);
 $JwtAuth = new JwtAuth($loginInfo);
 
 $userId = $JwtAuth->auth();
-$userId = 1;
 if ($userId !== false) {
     $result = $UserInfo->getViewDays($userId);
     $result += $UserInfo->getViewTime($userId);
     $result +=$UserInfo->getViewSensorConfig($userId);
+    $result +=array("groupList"=>array("groups"=>$UserGroup->getUserFromGroupList($userId)));
     echo json_encode($result);
+    http_response_code(200);
+} else {
+    http_response_code(401);
 }
