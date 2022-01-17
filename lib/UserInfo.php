@@ -164,29 +164,29 @@ class UserInfo extends Weeks
         }
     }
 
-    public function getViewSensorConfig($userId){
-        if(!$this->viewSensorConfigExist($userId)){
+    public function getViewSensorConfig($userId)
+    {
+        if (!$this->viewSensorConfigExist($userId)) {
             echo 1;
             return false;
         }
         $getViewSensorConfigSql = "SELECT viewSensorConfig.sensorId AS roomId,sensor.placeName AS roomName,viewSensorConfig.publicView AS publicView FROM viewSensorConfig LEFT JOIN sensor ON viewSensorConfig.sensorId = sensor.sensorId WHERE userId = :userId";
-        try{
+        try {
             $getViewSensorConfigObj = $this->dbh->prepare($getViewSensorConfigSql);
             $getViewSensorConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getViewSensorConfigObj->execute();
             $ViewSensorConfig = $getViewSensorConfigObj->fetchAll(PDO::FETCH_ASSOC);
             $public = array();
             $private = array();
-            foreach($ViewSensorConfig as $SensorConfig){
-                if($SensorConfig["publicView"] === "1"){
-                    array_push($public,array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
-                }else{
-                    array_push($private,array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
+            foreach ($ViewSensorConfig as $SensorConfig) {
+                if ($SensorConfig["publicView"] === "1") {
+                    array_push($public, array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
+                } else {
+                    array_push($private, array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
                 }
             }
             return array("publicationPlace"=>array("public"=>$public , "private"=>$private));
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
     }
 
