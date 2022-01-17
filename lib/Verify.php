@@ -51,7 +51,6 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
-
         }
     }
 
