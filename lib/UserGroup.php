@@ -125,13 +125,31 @@ class UserGroup
         }
     }
 
+    public function getUserFromGroupList($userId){
+        if(!$this->userExist($userId)){
+            return false;
+        }
+        $getUserFromGroupListSql = "SELECT userGroup.groupId,userGroupList.groupName
+                                    FROM `user`
+                                    RIGHT JOIN userGroup ON user.userId = userGroup.userId
+                                    LEFT JOIN userGroupList ON userGroupList.groupId = userGroup.groupId
+                                    WHERE userGroup.userId = :userId ";
+        try{
+            $getUserFromGroupListObj = $this->dbh->prepare($getUserFromGroupListSql);
+            $getUserFromGroupListObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $getUserFromGroupListObj->execute();
+            return $getUserFromGroupListObj->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+
+        }
+    }
+
     public function getGroupUser($groupId)
     {
         $getGroupUserSql = "SELECT user.userId,user.userName,user.description
                             FROM `user`
                             RIGHT JOIN userGroup ON user.userId = userGroup.userId
-                            LEFT JOIN userGroupList ON userGroupList.groupId = userGroup.groupId
-                            WHERE userGroupList.groupId = :groupId;";
+                            WHERE userGroup.groupId = :groupId;";
         try {
             $getGroupUserObj = $this->dbh->prepare($getGroupUserSql);
             $getGroupUserObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
