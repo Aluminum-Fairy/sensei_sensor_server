@@ -108,10 +108,10 @@ class UserInfo extends Weeks
     public function setAllWeekCfg($userId, $startTime, $endTime)
     #全ての登録済みの曜日における公開時間を設定する
     {
-        if (!$this->viewConfigExist($userId)) {
+        if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
-        $setAllWeekCfgSql = "UPDATE viewConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
+        $setAllWeekCfgSql = "UPDATE viewTimeConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
             $setAllWeekCfgObj->bindValue(":startTime", $startTime.PDO::PARAM_INT);
@@ -125,7 +125,7 @@ class UserInfo extends Weeks
 
     public function setPubViewCfg($userId, $weekNum, $value)
     {
-        if (!$this->viewConfigExist($userId)) {
+        if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
 
@@ -135,7 +135,7 @@ class UserInfo extends Weeks
             $pubView = 0;
         }
 
-        $setPubViewCfgSql = "UPDATE viewConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
+        $setPubViewCfgSql = "UPDATE viewTimeConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
         try {
             $setPubViewCfgObj = $this->dbh->prepare($setPubViewCfgSql);
             $setPubViewCfgObj->bindValue(":value", $pubView, PDO::PARAM_INT);
@@ -148,25 +148,25 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function getViewConfig($userId)
+    public function getviewTimeConfig($userId)
     {
-        if (!$this->viewConfigExist($userId)) {
+        if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
 
-        $getViewConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewConfig WHERE userId =:userId";
+        $getviewTimeConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewTimeConfig WHERE userId =:userId";
         try {
-            $getViewConfigObj = $this->dbh->prepare($getViewConfigSql);
-            $getViewConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $getViewConfigObj->execute();
-            return $getViewConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+            $getviewTimeConfigObj = $this->dbh->prepare($getviewTimeConfigSql);
+            $getviewTimeConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $getviewTimeConfigObj->execute();
+            return $getviewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
         }
     }
 
     public function getViewDays($userId)
     {
-        $config = $this->getViewConfig($userId);
+        $config = $this->getviewTimeConfig($userId);
         $result = array("publicationDays"=>array());
         foreach ($config as $weekNum => $weekConfig) {
             $result["publicationDays"] += array($this->getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
@@ -176,9 +176,10 @@ class UserInfo extends Weeks
 
     public function getViewTime($userId)
     {
-        $config = $this->getViewConfig($userId);
-        $result = array("publicationTime"=>array("start"=>$config[0]["startTime"]));
-        $result["publicationTime"] += array("end"=>$config[0]["endTime"]);
+        $config = $this->getviewTimeConfig($userId);
+        $firstWeekNum = array_keys($config)[0];
+        $result = array("publicationTime"=>array("start"=>$config[$firstWeekNum]["startTime"]));
+        $result["publicationTime"] += array("end"=>$config[$firstWeekNum]["endTime"]);
         return $result;
     }
 }

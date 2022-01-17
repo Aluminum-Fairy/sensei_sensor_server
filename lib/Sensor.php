@@ -213,10 +213,10 @@ class Sensor
                 user.userName,discoveryLog.userId,
                     sensor.placeName,
                     discoveryLog.time, 
-                    viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 
+                    viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
                     60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
-                FROM `viewConfig`
-                LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
+                FROM `viewTimeConfig`
+                LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
                 LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
             WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.publicView = 1) as View
@@ -245,11 +245,11 @@ class Sensor
                     user.userName,discoveryLog.userId,
                     sensor.placeName,
                     discoveryLog.time, 
-                    viewConfig.weekNum,viewConfig.startTime,viewConfig.endTime,viewConfig.publicView, 
+                    viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
                     60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week,
                     userGroup.groupId 
-                FROM `viewConfig`
-                LEFT JOIN discoveryLog ON viewConfig.userId = discoveryLog.userId
+                FROM `viewTimeConfig`
+                LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
                 LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId
                 LEFT JOIN userGroup ON discoveryLog.userId = userGroup.userId) AS discvView
