@@ -15,6 +15,6 @@ if ($userId !== false) {
     $result +=array("groupList"=>array("groups"=>$UserGroup->getUserFromGroupList($userId)));
     echo json_encode($result);
     http_response_code(200);
-}else{
+} else {
     http_response_code(401);
 }

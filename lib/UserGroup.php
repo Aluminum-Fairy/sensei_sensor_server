@@ -125,8 +125,9 @@ class UserGroup
         }
     }
 
-    public function getUserFromGroupList($userId){
-        if(!$this->userExist($userId)){
+    public function getUserFromGroupList($userId)
+    {
+        if (!$this->userExist($userId)) {
             return false;
         }
         $getUserFromGroupListSql = "SELECT userGroup.groupId,userGroupList.groupName
@@ -134,13 +135,12 @@ class UserGroup
                                     RIGHT JOIN userGroup ON user.userId = userGroup.userId
                                     LEFT JOIN userGroupList ON userGroupList.groupId = userGroup.groupId
                                     WHERE userGroup.userId = :userId ";
-        try{
+        try {
             $getUserFromGroupListObj = $this->dbh->prepare($getUserFromGroupListSql);
-            $getUserFromGroupListObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $getUserFromGroupListObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getUserFromGroupListObj->execute();
             return $getUserFromGroupListObj->fetchAll(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
     }
 
