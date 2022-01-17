@@ -64,7 +64,8 @@ class JwtAuth
         return false;
     }
 
-    public function checkLogin(){
+    public function checkLogin()
+    {
         $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
         if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
             http_response_code(200);
