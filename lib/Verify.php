@@ -30,9 +30,9 @@ trait Verify
         }
     }
 
-    public function viewConfigExist($userId)
+    public function viewTimeConfigExist($userId)
     {
-        $checkSql = "SELECT COUNT(userId) FROM viewConfig WHERE userId = :userId";
+        $checkSql = "SELECT COUNT(userId) FROM viewTimeConfig WHERE userId = :userId";
         try {
             $checkObj = $this->dbh->prepare($checkSql);
             $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);

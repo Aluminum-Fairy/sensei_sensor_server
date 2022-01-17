@@ -1,7 +1,5 @@
 <?php
 
-use Firebase\JWT\JWT;
-
 require_once(__DIR__ . "/../../../lib/UserGroup.php");
 require_once(__DIR__ . "/../../../lib/UserInfo.php");
 require_once(__DIR__ . "/../../../lib/JwtAuth.php");
@@ -13,5 +11,6 @@ $userId = $JwtAuth->auth();
 $userId = 1;
 if ($userId !== false) {
     $result = $UserInfo->getViewDays($userId);
+    $result += $UserInfo->getViewTime($userId);
     echo json_encode($result);
 }
