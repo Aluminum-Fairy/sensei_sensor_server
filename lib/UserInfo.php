@@ -148,25 +148,51 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function getviewTimeConfig($userId)
+    public function getViewTimeConfig($userId)
     {
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
 
-        $getviewTimeConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewTimeConfig WHERE userId =:userId";
+        $getViewTimeConfigSql = "SELECT weekNum,startTime,endTime,publicView FROM viewTimeConfig WHERE userId =:userId";
         try {
-            $getviewTimeConfigObj = $this->dbh->prepare($getviewTimeConfigSql);
-            $getviewTimeConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $getviewTimeConfigObj->execute();
-            return $getviewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+            $getViewTimeConfigObj = $this->dbh->prepare($getViewTimeConfigSql);
+            $getViewTimeConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $getViewTimeConfigObj->execute();
+            return $getViewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
+        }
+    }
+
+    public function getViewSensorConfig($userId){
+        if(!$this->viewSensorConfigExist($userId)){
+            echo 1;
+            return false;
+        }
+        $getViewSensorConfigSql = "SELECT viewSensorConfig.sensorId AS roomId,sensor.placeName AS roomName,viewSensorConfig.publicView AS publicView FROM viewSensorConfig LEFT JOIN sensor ON viewSensorConfig.sensorId = sensor.sensorId WHERE userId = :userId";
+        try{
+            $getViewSensorConfigObj = $this->dbh->prepare($getViewSensorConfigSql);
+            $getViewSensorConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $getViewSensorConfigObj->execute();
+            $ViewSensorConfig = $getViewSensorConfigObj->fetchAll(PDO::FETCH_ASSOC);
+            $public = array();
+            $private = array();
+            foreach($ViewSensorConfig as $SensorConfig){
+                if($SensorConfig["publicView"] === "1"){
+                    array_push($public,array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
+                }else{
+                    array_push($private,array("roomId"=>$SensorConfig["roomId"],"roomName"=>$SensorConfig["roomName"]));
+                }
+            }
+            return array("publicationPlace"=>array("public"=>$public , "private"=>$private));
+        }catch(PDOException $e){
+
         }
     }
 
     public function getViewDays($userId)
     {
-        $config = $this->getviewTimeConfig($userId);
+        $config = $this->getViewTimeConfig($userId);
         $result = array("publicationDays"=>array());
         foreach ($config as $weekNum => $weekConfig) {
             $result["publicationDays"] += array($this->getWeek($weekNum-1)=>$weekConfig["publicView"] == 1);
@@ -176,7 +202,7 @@ class UserInfo extends Weeks
 
     public function getViewTime($userId)
     {
-        $config = $this->getviewTimeConfig($userId);
+        $config = $this->getViewTimeConfig($userId);
         $firstWeekNum = array_keys($config)[0];
         $result = array("publicationTime"=>array("start"=>$config[$firstWeekNum]["startTime"]));
         $result["publicationTime"] += array("end"=>$config[$firstWeekNum]["endTime"]);

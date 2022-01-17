@@ -42,6 +42,19 @@ trait Verify
         }
     }
 
+    public function viewSensorConfigExist($userId)
+    {
+        $checkSql = "SELECT COUNT(userId) FROM viewSensorConfig WHERE userId = :userId";
+        try {
+            $checkObj = $this->dbh->prepare($checkSql);
+            $checkObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $checkObj->execute();
+            return $checkObj->fetchColumn() != 0;
+        } catch (PDOException $e) {
+
+        }
+    }
+
     public function groupIdExist($groupId)
     {
         $checkSql = "SELECT COUNT(groupId) FROM userGroupList WHERE groupId = :groupId";
