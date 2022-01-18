@@ -113,7 +113,7 @@ class JwtAuth
             }
             // JSON 取得失敗、認証に失敗した場合は 401
             http_response_code(401);
-        }else{
+        } else {
             //POST以外だとBad Request
             http_response_code(400);
         }
