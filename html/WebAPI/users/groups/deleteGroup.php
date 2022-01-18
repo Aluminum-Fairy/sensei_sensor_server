@@ -10,7 +10,7 @@ $JwtAuth = new JwtAuth($loginInfo);
 
 $userId = $JwtAuth->auth();
 
-if($userId !== false){
+if ($userId !== false) {
     $UserGroup->beginTransaction();
     if ($UserGroup->delAllUserFromGroup($groupId)) {
         if ($UserGroup->delUserGroup($groupId)) {
@@ -25,4 +25,3 @@ if($userId !== false){
         $UserGroup->rollBack();
     }
 }
-

@@ -8,7 +8,7 @@ $UserGroup = new UserGroup($loginInfo);
 $JwtAuth = new JwtAuth($loginInfo);
 
 $userId = $JwtAuth->auth();
-if(!$userId !== false){
+if (!$userId !== false) {
     $jsonText = file_get_contents("php://input");
     $groupInfo = json_decode($jsonText);
     #グループの更新作業としては
@@ -23,5 +23,3 @@ if(!$userId !== false){
         http_response_code(500);
     }
 }
-
-
