@@ -32,6 +32,8 @@ class JwtAuth
 
     public function auth()
     {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin:'.URL); // CORS
         $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
         if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
             $jwt = $m[1];
@@ -44,8 +46,6 @@ class JwtAuth
                     'loginUserId' => $loginUserId,
                 );
                 $newJwt = JWT::encode($newPayload, JWT_KEY, JWT_ALG);
-                header('Content-Type: application/json');
-                header('Access-Control-Allow-Origin: *'); // CORS
                 setcookie(
                     "token",
                     $newJwt,
@@ -66,6 +66,8 @@ class JwtAuth
 
     public function checkLogin()
     {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin:'.URL); // CORS
         $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
         if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
             http_response_code(200);
@@ -77,6 +79,8 @@ class JwtAuth
 
     public function login()
     {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin:'.URL); // CORS
         // POST 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $inputString = file_get_contents('php://input'); // JSON 文字列取得
@@ -93,8 +97,7 @@ class JwtAuth
                         'loginUserId' => $loginUserId,
                     );
                     $jwt = JWT::encode($payload, JWT_KEY, JWT_ALG);
-                    header('Content-Type: application/json');
-                    header('Access-Control-Allow-Origin: *'); // CORS
+
                     setcookie(
                         "token",
                         $jwt,
@@ -115,10 +118,10 @@ class JwtAuth
 
     public function logout()
     {
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin:'.URL); // CORS
         // POST 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
-            header('Content-Type: application/json');
-            header('Access-Control-Allow-Origin: *'); // CORS
             setcookie(
                 "token",
                 "",
