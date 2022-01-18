@@ -123,13 +123,14 @@ class UserInfo extends Weeks
         }
     }
 
-    public function setPubViewCfg($userId, $weekNum, $value)
+    public function setPubViewCfg($userId, $weekNum, $publicMode)
+        //曜日ごとに公開時間を変更するための関数.将来のために実装
     {
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
 
-        if ($value) {
+        if ($publicMode) {
             $pubView = 1;
         } else {
             $pubView = 0;
@@ -144,6 +145,32 @@ class UserInfo extends Weeks
             $setPubViewCfgObj->execute();
             return true;
         } catch (PDOException $e) {
+        }
+        return false;
+    }
+
+    public function  setPubPlaceCfg($userId,$sensorId,$publicMode)
+    {
+        if(!$this->viewSensorConfigExist($userId)){
+            return false;
+        }
+
+        if ($publicMode) {
+            $pubView = 1;
+        } else {
+            $pubView = 0;
+        }
+
+        $setPubPlaceCfgSql = "UPDATE viewSensorConfig SET publicView = :publicView WHERE userId = :userId AND sensorId = :sensorId";
+        try{
+            $setPubPlaceCfgObj = $this->dbh->prepare($setPubPlaceCfgSql);
+            $setPubPlaceCfgObj->bindValue(":publicView",$pubView,PDO::PARAM_INT);
+            $setPubPlaceCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $setPubPlaceCfgObj->bindValue(":sensorId",$sensorId,PDO::PARAM_INT);
+            $setPubPlaceCfgObj->execute();
+            return  true;
+        }catch(PDOException $e){
+
         }
         return false;
     }
