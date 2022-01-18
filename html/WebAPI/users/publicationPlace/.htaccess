@@ -1,4 +1,5 @@
 RewriteEngine On
+Header set Access-Control-Allow-Origin "*"
 RewriteBase /WebAPI/users/publicationPlace/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

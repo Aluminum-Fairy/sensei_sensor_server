@@ -33,6 +33,7 @@ sudo apt update
 sudo apt upgrade
 sudo apt install -y git  python3-pip apache2 unzip php libapache2-mod-php php-mysql php-curl mariadb-server mariadb-client php-xml php-mbstring vim
 sudo a2enmod rewrite
+sudo a2enmod headers
 
 #apache2.conf
 << COMMENTOUT
