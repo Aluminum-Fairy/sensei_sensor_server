@@ -12,10 +12,10 @@ $userId = $JWT->auth();
 
 if ($userId !== false) {
     $result = $UserInfo->getViewSensorConfig($userId);
-    if($result !== false){
+    if ($result !== false) {
         echo json_encode($result);
         http_response_code(200);
-    }else{
+    } else {
         http_response_code(500);
     }
 }
