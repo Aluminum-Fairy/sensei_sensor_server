@@ -149,9 +149,9 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function  setPubPlaceCfg($userId,$sensorId,$publicMode)
+    public function setPubPlaceCfg($userId, $sensorId, $publicMode)
     {
-        if(!$this->viewSensorConfigExist($userId)){
+        if (!$this->viewSensorConfigExist($userId)) {
             return false;
         }
 
@@ -162,15 +162,14 @@ class UserInfo extends Weeks
         }
 
         $setPubPlaceCfgSql = "UPDATE viewSensorConfig SET publicView = :publicView WHERE userId = :userId AND sensorId = :sensorId";
-        try{
+        try {
             $setPubPlaceCfgObj = $this->dbh->prepare($setPubPlaceCfgSql);
-            $setPubPlaceCfgObj->bindValue(":publicView",$pubView,PDO::PARAM_INT);
+            $setPubPlaceCfgObj->bindValue(":publicView", $pubView, PDO::PARAM_INT);
             $setPubPlaceCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $setPubPlaceCfgObj->bindValue(":sensorId",$sensorId,PDO::PARAM_INT);
+            $setPubPlaceCfgObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $setPubPlaceCfgObj->execute();
             return  true;
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }
