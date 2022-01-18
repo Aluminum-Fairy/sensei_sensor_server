@@ -16,4 +16,5 @@ if ($requestMethod === "get") {
 } elseif ($requestMethod === "put") {
     require "./groupEdit.php";
 } elseif ($requestMethod=="delete") {
+    require "./deleteGroup.php";
 }
