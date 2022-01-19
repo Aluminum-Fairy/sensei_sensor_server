@@ -33,7 +33,7 @@ jobs:
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
           source: "SyncAPI/"
-          target: "/var/www/sensei-sensor-php/SyncAPI/"
+          target: "/var/www/SyncAPI/"
           rm: true
           
       - name: copy file via ssh password 2
@@ -47,7 +47,7 @@ jobs:
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
           source: "WebAPI/"
-          target: "/var/www/sensei-sensor-php/WebAPI/"
+          target: "/var/www/WebAPI/"
           rm: true
           
       - name: copy file via ssh password 3
@@ -61,7 +61,7 @@ jobs:
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
           source: "lib/"
-          target: "/var/www/sensei-sensor-php/lib/"
+          target: "/var/www/lib/"
           rm: true
           
 
@@ -75,4 +75,4 @@ jobs:
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           source: "composer.json"
-          target: "/var/www/html/sensei-sensor-php/"
+          target: "/var/www/html/"
