@@ -47,4 +47,4 @@ jobs:
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           source: "composer.json"
-          target: "/var/www/"html/sensei-sensor-php/
+          target: "/var/www/html/sensei-sensor-php/"
