@@ -33,4 +33,3 @@ jobs:
           proxy_password: ${{ secrets.PASSWORD }}
           source: "SyncAPI/,WebAPI/,lib/,composer.json"
           target: "/var/www/html/sensei-sensor-php/"
-          rm: true
