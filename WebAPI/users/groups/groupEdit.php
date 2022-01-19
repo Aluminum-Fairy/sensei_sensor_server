@@ -1,7 +1,7 @@
 <?php
 
-require __DIR__ . "/../../../../lib/UserGroup.php";
-require __DIR__ . "/../../../../lib/JwtAuth.php";
+require __DIR__ . "/../../../lib/UserGroup.php";
+require __DIR__ . "/../../../lib/JwtAuth.php";
 
 
 $UserGroup = new UserGroup($loginInfo);

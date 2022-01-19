@@ -1,11 +1,9 @@
 <?php
 
-require(__DIR__ . "/../../../../lib/UserGroup.php");
-header('Content-Type: application/json');
+require(__DIR__ . "/../../../lib/UserGroup.php");
+
 
 $UserGroup = new UserGroup($loginInfo);
-
-
 
 
 $result = json_encode($UserGroup->getGroupList());

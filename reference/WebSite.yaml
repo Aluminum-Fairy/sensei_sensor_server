@@ -8,7 +8,7 @@ paths:
   /user:
     get:
       summary: 'ユーザーページ: ユーザー情報の全取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -104,11 +104,11 @@ paths:
           description: JWT Token
           required: true
       description: ''
-    parameters: []
+    parameters: [ ]
   /users/publicationTime:
     get:
       summary: 'ユーザーページ: 公開時間の取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -124,7 +124,7 @@ paths:
                         type: integer
                       end:
                         type: integer
-              examples: {}
+              examples: { }
         '401':
           description: Unauthorized
       operationId: get-users-publicationTime
@@ -136,7 +136,7 @@ paths:
           description: JWT Token
           required: true
       description: ''
-    parameters: []
+    parameters: [ ]
     put:
       summary: 'ユーザーページ: 公開時間の更新'
       operationId: put-users-publicationTime
@@ -181,7 +181,7 @@ paths:
   /users/publicationDays:
     get:
       summary: 'ユーザーページ: 公開曜日の取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -233,7 +233,7 @@ paths:
           name: token
           description: JWT Token
       description: ''
-    parameters: []
+    parameters: [ ]
     put:
       summary: 'ユーザーページ: 公開曜日の更新'
       operationId: put-users-publicationDays
@@ -292,7 +292,7 @@ paths:
   /users/publicationPlace:
     get:
       summary: 'ユーザーページ: 公開場所の取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -343,7 +343,7 @@ paths:
           description: JWT Token
           required: true
       description: ''
-    parameters: []
+    parameters: [ ]
     put:
       summary: 'ユーザーページ: 公開場所の更新'
       operationId: put-users-publicationPlace
@@ -410,7 +410,7 @@ paths:
   /users/group:
     get:
       summary: 'ユーザーページ: グループ一覧の取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -460,7 +460,7 @@ paths:
           name: token
           description: JWT Token
           required: true
-    parameters: []
+    parameters: [ ]
     post:
       summary: 'ユーザーページ: グループの追加'
       operationId: post-users-group
@@ -524,7 +524,7 @@ paths:
                   type: string
               required:
                 - groupName
-            examples: {}
+            examples: { }
       parameters:
         - schema:
             type: string
@@ -623,8 +623,8 @@ paths:
                   users:
                     type: array
                     items:
-                      required: []
-                      properties: {}
+                      required: [ ]
+                      properties: { }
                 required:
                   - groupName
                   - users
@@ -655,7 +655,7 @@ paths:
   /users/userList:
     get:
       summary: 'ユーザーページ: 先生一覧取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK
@@ -677,7 +677,7 @@ paths:
                           type: string
                         userName:
                           type: string
-              examples: {}
+              examples: { }
       operationId: get-users-userList
       parameters:
         - schema:
@@ -689,7 +689,7 @@ paths:
   '/groups/{groupId}':
     get:
       summary: 'メインページ: グループの取得'
-      tags: []
+      tags: [ ]
       responses:
         '200':
           description: OK

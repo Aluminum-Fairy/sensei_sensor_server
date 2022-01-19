@@ -2,10 +2,10 @@
 
 use Firebase\JWT\JWT;
 
-require_once(__DIR__ . "/../../../../lib/JwtAuth.php");
-require_once(__DIR__ . "/../../../../lib/UserInfo.php");
-require_once(__DIR__ . "/../../../../lib/Weeks.php");
-header('Content-Type: application/json');
+require_once(__DIR__ . "/../../../lib/JwtAuth.php");
+require_once(__DIR__ . "/../../../lib/UserInfo.php");
+require_once(__DIR__ . "/../../../lib/Weeks.php");
+
 
 $JWT = new JwtAuth($loginInfo);
 $UserInfo = new UserInfo($loginInfo);

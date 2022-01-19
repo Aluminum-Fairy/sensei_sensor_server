@@ -18,7 +18,7 @@ class JwtAuth
 
 
     public function __construct($loginInfo)
-    //初期化時にデータベースへの接続
+        //初期化時にデータベースへの接続
     {
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
@@ -32,8 +32,6 @@ class JwtAuth
 
     public function auth()
     {
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin:'.URL); // CORS
         $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
         if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
             $jwt = $m[1];
@@ -50,10 +48,10 @@ class JwtAuth
                     "token",
                     $newJwt,
                     [
-                    'expires' => time() + 3600,
-                    'path' => '/',
-                    'secure' => false,
-                    'httponly' => true,
+                        'expires' => time() + 3600,
+                        'path' => '/',
+                        'secure' => false,
+                        'httponly' => true,
                     ]
                 ); // token をCookieにセット
                 return $loginUserId;
@@ -66,8 +64,6 @@ class JwtAuth
 
     public function checkLogin()
     {
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin:'.URL); // CORS
         $auth = isset($_SERVER['HTTP_AUTHORIZATION']) ? $_SERVER['HTTP_AUTHORIZATION'] : '';
         if (preg_match('#\ABearer\s+(.+)\z#', $auth, $m)) { // Bearer xxxx...
             http_response_code(200);
@@ -79,8 +75,6 @@ class JwtAuth
 
     public function login()
     {
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin:'.URL); // CORS
         // POST 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             $inputString = file_get_contents('php://input'); // JSON 文字列取得
@@ -102,10 +96,10 @@ class JwtAuth
                         "token",
                         $jwt,
                         [
-                        'expires' => time() + 3600,
-                        'path' => '/',
-                        'secure' => false,
-                        'httponly' => true,
+                            'expires' => time() + 3600,
+                            'path' => '/',
+                            'secure' => false,
+                            'httponly' => true,
                         ]
                     ); // token をCookieにセット
                     return;
@@ -121,18 +115,16 @@ class JwtAuth
 
     public function logout()
     {
-        header('Content-Type: application/json');
-        header('Access-Control-Allow-Origin:'.URL); // CORS
         // POST 時
         if (strtoupper($_SERVER['REQUEST_METHOD']) == 'POST') {
             setcookie(
                 "token",
                 "",
                 [
-                'expires' => time() + 3600,
-                'path' => '/',
-                'secure' => false,
-                'httponly' => true,
+                    'expires' => time() + 3600,
+                    'path' => '/',
+                    'secure' => false,
+                    'httponly' => true,
                 ]
             ); // token を削除
             return true;

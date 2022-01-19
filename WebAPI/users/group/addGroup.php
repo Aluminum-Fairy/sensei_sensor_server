@@ -1,11 +1,11 @@
 <?php
 
-require(__DIR__ . "/../../../../lib/UserGroup.php");
-header('Content-Type: application/json');
+require(__DIR__ . "/../../../lib/UserGroup.php");
+
 
 $UserGroup = new UserGroup($loginInfo);
 
-$groupName=filter_input(INPUT_POST, "groupName");
+$groupName = filter_input(INPUT_POST, "groupName");
 
 if ($groupName === false) {
     http_response_code(400);

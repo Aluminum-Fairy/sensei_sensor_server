@@ -19,8 +19,8 @@ class Weeks
         7:Saturday
         */
         static $WeekArr = array("sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday");
-        if ($result=array_search($week, $WeekArr) !== false) {
-            return $result -1;
+        if ($result = array_search($week, $WeekArr) !== false) {
+            return $result - 1;
         } else {
             return false;
         }

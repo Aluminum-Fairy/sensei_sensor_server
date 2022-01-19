@@ -1,7 +1,7 @@
 {
-    "require": {
-        "firebase/php-jwt": "^5.5",
-        "friendsofphp/php-cs-fixer": "^3.4",
-        "ext-pdo": "*"
-    }
+  "require": {
+    "firebase/php-jwt": "^5.5",
+    "friendsofphp/php-cs-fixer": "^3.4",
+    "ext-pdo": "*"
+  }
 }

@@ -3,7 +3,7 @@
 trait Verify
 {                                                                                                                        //入力データの検証用各データ処理用クラスファイルよりも先に読み込ませる必要があるため注意
     public function sensorExist($sensorId)
-    #センサーがすでに登録されている場合はTrueを返す。
+        #センサーがすでに登録されている場合はTrueを返す。
     {
         $checkSql = "SELECT sensorId FROM sensor WHERE sensorId =:sensorId";
         try {

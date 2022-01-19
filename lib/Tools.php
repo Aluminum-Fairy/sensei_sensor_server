@@ -18,7 +18,7 @@ function postCurl($url, $postData)
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // サーバー証明書の検証を行わない
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
-    $resStr =  curl_exec($ch);
+    $resStr = curl_exec($ch);
     curl_close($ch);
     return $resStr;
 }
@@ -26,5 +26,5 @@ function postCurl($url, $postData)
 function convertTime($time)
 #XX:XX ([0]:[1]) -> 0 ~1,440
 {
-    return 60*$time[0] + $time[1];
+    return 60 * $time[0] + $time[1];
 }

@@ -1,8 +1,8 @@
 <?php
 
 require_once __DIR__ . "/../../lib/Sensor.php";
-require_once __DIR__ . "/../../config/Config.php";
-header('Content-Type: application/json');
+require_once __DIR__ . "/../config/Config.php";
+
 
 $Sensor = new Sensor($loginInfo);
 
@@ -11,8 +11,8 @@ $json = file_get_contents("php://input");
 $sensorInfoArr = json_decode($json, true);
 
 #結果を入れる配列の準備
-$result = array("change"=>array());
-$result += array("delete"=>array());
+$result = array("change" => array());
+$result += array("delete" => array());
 
 #新たに追加されたセンサーをセンサーIDから検索、$result["change"]に格納
 $sensorListFromDB = $Sensor->getSensorIdList();
@@ -30,8 +30,8 @@ foreach ($newSenosrIdArr as $newSenosrId) {
 foreach ($sensorInfoArr as $sensorInfo) {
     $res = $Sensor->checkSensorUpdate($sensorInfo);
     if (false === $res) {
-    } elseif ($res ===0) {
-        $result["delete"][] =$sensorInfo["sensorId"];
+    } elseif ($res === 0) {
+        $result["delete"][] = $sensorInfo["sensorId"];
     } else {
         $result["change"][] = $res;
     }

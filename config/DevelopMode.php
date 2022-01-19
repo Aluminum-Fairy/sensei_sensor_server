@@ -1,3 +1,2 @@
 <?php
-
-define("ReleaseMode", true);
+define("ReleaseMode", TRUE);

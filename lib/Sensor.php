@@ -3,13 +3,15 @@
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
+
 class Sensor
 {
     use Verify;
+
     protected $dbh;
 
     public function __construct($loginInfo)
-    //初期化時にデータベースへの接続
+        //初期化時にデータベースへの接続
     {
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
@@ -21,8 +23,8 @@ class Sensor
     }
 
     public function setSensor($sensorInfo)
-    #センサーをDB追加するための関数センサーID(int)と場所の名前(String)とマスターとして稼働するかどうか(intで0,1)、Webサーバー機能を搭載しているかどうか(intで0,1)
-    #XSS対策として$placeNameはhtmlspecialcharsを使ってスクリプト挿入対策をしている
+        #センサーをDB追加するための関数センサーID(int)と場所の名前(String)とマスターとして稼働するかどうか(intで0,1)、Webサーバー機能を搭載しているかどうか(intで0,1)
+        #XSS対策として$placeNameはhtmlspecialcharsを使ってスクリプト挿入対策をしている
     {
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
@@ -116,7 +118,7 @@ class Sensor
 
     public function getLastSensorUpdateTime()
     {
-        $getLastSensorUpdateTimeSql ="SELECT sensorId,updateTime FROM sensor";
+        $getLastSensorUpdateTimeSql = "SELECT sensorId,updateTime FROM sensor";
         try {
             $getLastSensorUpdateTimeObj = $this->dbh->prepare($getLastSensorUpdateTimeSql);
             $getLastSensorUpdateTimeObj->execute();
@@ -137,14 +139,14 @@ class Sensor
     }
 
     public function getLastLogTime($sensorId, $searchConfition)
-    #各センサーの最後の更新時間
-    #forは誰が使うかを書く
+        #各センサーの最後の更新時間
+        #forは誰が使うかを書く
     {
-        if ($searchConfition == MATCH) {
-            $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId = :sensorId GROUP BY sensorId";
-        } else {
-            $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId != :sensorId GROUP BY sensorId";
-        }
+        if ($searchConfition == match) {
+                $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId = :sensorId GROUP BY sensorId";
+    } else {
+        $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId != :sensorId GROUP BY sensorId";
+    }
         try {
             $getLLTObj = $this->dbh->prepare($getLLTSql);
             $getLLTObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
@@ -157,17 +159,17 @@ class Sensor
     }
 
     public function getDiscvLog($sensorId, $time, $searchConfition)
-    #センサーの検出情報を一括で読み出す関数(特定時刻以降を指定する)
-    #forは誰が使うかを書く
+        #センサーの検出情報を一括で読み出す関数(特定時刻以降を指定する)
+        #forは誰が使うかを書く
     {
         if ($searchConfition == EXCLUSION) {
             $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId != :sensorId GROUP by sensorId,userId;";
-        } elseif ($searchConfition == MATCH) {
-            $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
-        } else {
-            header("Error:" . "Option Error");
-            exit();
-        }
+        } elseif ($searchConfition == match) {
+                $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
+    } else {
+        header("Error:" . "Option Error");
+        exit();
+    }
         try {
             $getDiscvLogObj = $this->dbh->prepare($getDiscvLogSql);
             $getDiscvLogObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
@@ -182,7 +184,7 @@ class Sensor
     }
 
     public function inputDiscvLog($time, $sensorId, $userId)
-    #センサの検出情報をDBに取り込む
+        #センサの検出情報をDBに取り込む
     {
         if (!$this->sensorExist(($sensorId))) {
             return false;
@@ -205,7 +207,7 @@ class Sensor
     public function getAllowedDiscvList()
     {
         $getAllowedDiscvListSql =
-        "SELECT View.userName,View.placeName,View.time FROM
+            "SELECT View.userName,View.placeName,View.time FROM
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
@@ -235,9 +237,10 @@ class Sensor
         }
     }
 
-    public function getAllowedGroupUsersDiscvList($groupId){
-        $getAllowedGroupUsersDiscvListSql=
-        "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
+    public function getAllowedGroupUsersDiscvList($groupId)
+    {
+        $getAllowedGroupUsersDiscvListSql =
+            "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
         (
             SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
             (
@@ -260,12 +263,12 @@ class Sensor
         次のSELECTでTimeNumから許可されたものを出す
         最後のSELECTで一番新しいことを示すrownumの1のみ取り出す
         */
-        try{
+        try {
             $getAGUDObj = $this->dbh->prepare($getAllowedGroupUsersDiscvListSql);
-            $getAGUDObj->bindValue(":groupId",$groupId,PDO::PARAM_INT);
+            $getAGUDObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $getAGUDObj->execute();
             return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
 
         }
     }

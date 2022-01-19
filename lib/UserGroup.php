@@ -8,10 +8,11 @@ require_once __DIR__ . "/Define.php";
 class UserGroup
 {
     use Verify;
+
     protected $dbh;
 
     public function __construct($loginInfo)
-    //初期化時にデータベースへの接続
+        //初期化時にデータベースへの接続
     {
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
@@ -50,20 +51,6 @@ class UserGroup
         }
     }
 
-    public function editGroupName($groupId, $newGroupName)
-    {
-        $editGroupNameSql = "UPDATE userGroupList SET groupName = :groupName WHERE groupId = :groupId";
-        try {
-            $editGroupNameObj = $this->dbh->prepare($editGroupNameSql);
-            $editGroupNameObj->bindValue(":groupName", $newGroupName, PDO::PARAM_STR);
-            $editGroupNameObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
-            $editGroupNameObj->execute();
-            return true;
-        } catch (PDOException $e) {
-            return false;
-        }
-    }
-
     public function delUserGroup($groupId)
     {
         if (!$this->groupIdExist($groupId) || !$this->groupMemberExist($groupId)) {
@@ -76,28 +63,6 @@ class UserGroup
             $delUserGroupObj->execute();
         } catch (PDOException $e) {
         }
-    }
-
-    public function regUser2Group($userId, $groupId)
-    {
-        if (!$this->userExist($userId) || !$this->groupIdExist($groupId)) {
-            return false;
-        }
-
-        if ($this->relatedUserId2GroupExist($userId, $groupId)) {
-            return false;
-        }
-
-        $regUser2GroupSql = "INSERT INTO userGroup (groupId,userId)VALUES(:groupId,:userId)";
-        try {
-            $regUser2GroupObj = $this->dbh->prepare($regUser2GroupSql);
-            $regUser2GroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
-            $regUser2GroupObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $regUser2GroupObj->execute();
-        } catch (PDOException $e) {
-            return false;
-        }
-        return true;
     }
 
     public function delAllUserFromGroup($groupId)
@@ -165,7 +130,7 @@ class UserGroup
         if (!$this->groupIdExist($groupId)) {
             return false;
         }
-        $getGroupNameSql ="SELECT groupName FROM userGroupList WHERE groupId = :groupId";
+        $getGroupNameSql = "SELECT groupName FROM userGroupList WHERE groupId = :groupId";
 
         try {
             $getGroupNameObj = $this->dbh->prepare($getGroupNameSql);
@@ -191,6 +156,42 @@ class UserGroup
                 }
             }
             return $this->editGroupName($groupId, $newGroupName);
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+
+    public function regUser2Group($userId, $groupId)
+    {
+        if (!$this->userExist($userId) || !$this->groupIdExist($groupId)) {
+            return false;
+        }
+
+        if ($this->relatedUserId2GroupExist($userId, $groupId)) {
+            return false;
+        }
+
+        $regUser2GroupSql = "INSERT INTO userGroup (groupId,userId)VALUES(:groupId,:userId)";
+        try {
+            $regUser2GroupObj = $this->dbh->prepare($regUser2GroupSql);
+            $regUser2GroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
+            $regUser2GroupObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $regUser2GroupObj->execute();
+        } catch (PDOException $e) {
+            return false;
+        }
+        return true;
+    }
+
+    public function editGroupName($groupId, $newGroupName)
+    {
+        $editGroupNameSql = "UPDATE userGroupList SET groupName = :groupName WHERE groupId = :groupId";
+        try {
+            $editGroupNameObj = $this->dbh->prepare($editGroupNameSql);
+            $editGroupNameObj->bindValue(":groupName", $newGroupName, PDO::PARAM_STR);
+            $editGroupNameObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
+            $editGroupNameObj->execute();
+            return true;
         } catch (PDOException $e) {
             return false;
         }

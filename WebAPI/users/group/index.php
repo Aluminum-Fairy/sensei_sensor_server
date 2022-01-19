@@ -2,7 +2,7 @@
 
 use ReCaptcha\RequestMethod;
 
-require_once(__DIR__ . "/../../../../config/Config.php");
+require_once(__DIR__ . "/../../../config/Config.php");
 header("Content-Type: application/json; charset=utf-8");
 
 
@@ -10,9 +10,9 @@ preg_match('|' . dirname($_SERVER["SCRIPT_NAME"]) . '/([\w%/]*)|', $_SERVER["REQ
 $paths = explode('/', $matches[1]);
 
 
-$requestMethod=strtolower($_SERVER["REQUEST_METHOD"]);
+$requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod=== "get") {
+if ($requestMethod === "get") {
     require "./getGroupList.php";
 } elseif ($requestMethod == "post") {
     require "./addGroup.php";
