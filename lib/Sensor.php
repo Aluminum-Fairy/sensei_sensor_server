@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
-require_once __DIR__."/Define.php";
+require_once __DIR__ . "/Define.php";
 class Sensor
 {
     use Verify;
