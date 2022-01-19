@@ -47,8 +47,8 @@ class UserGroup
             $addUserGroupObj->execute();
             return true;
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function delUserGroup($groupId)
@@ -73,8 +73,8 @@ class UserGroup
             $delAllUserFromGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             return $delAllUserFromGroupObj->execute();
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function getGroupList()
@@ -86,8 +86,8 @@ class UserGroup
             $getGroupListObj->execute();
             return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function getUserFromGroupList($userId)
@@ -121,8 +121,8 @@ class UserGroup
             $getGroupUserObj->execute();
             return $getGroupUserObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function getGroupName($groupId)
@@ -139,8 +139,8 @@ class UserGroup
 
             return $getGroupNameObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function editGroup($groupId, $newGroupName, $userIdArr)
@@ -157,8 +157,8 @@ class UserGroup
             }
             return $this->editGroupName($groupId, $newGroupName);
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 
     public function regUser2Group($userId, $groupId)
@@ -177,10 +177,10 @@ class UserGroup
             $regUser2GroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $regUser2GroupObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $regUser2GroupObj->execute();
+            return true;
         } catch (PDOException $e) {
-            return false;
         }
-        return true;
+        return false;
     }
 
     public function editGroupName($groupId, $newGroupName)
@@ -193,7 +193,7 @@ class UserGroup
             $editGroupNameObj->execute();
             return true;
         } catch (PDOException $e) {
-            return false;
         }
+        return false;
     }
 }
