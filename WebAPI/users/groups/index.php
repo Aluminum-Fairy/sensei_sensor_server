@@ -11,7 +11,9 @@ $groupId = explode('/', $matches[1])[0];
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "get") {
+if ($requestMethod === "options"){
+    exit();
+}else if ($requestMethod === "get") {
     require "./getGroupUser.php";
 } elseif ($requestMethod === "put") {
     require "./groupEdit.php";

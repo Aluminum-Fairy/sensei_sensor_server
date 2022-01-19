@@ -11,7 +11,9 @@ $groupId = explode('/', $matches[1])[0];
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "get") {
+if ($requestMethod === "options"){
+    exit();
+}else if ($requestMethod === "get") {
     require(__DIR__ . "/getViewDays.php");
 } elseif ($requestMethod === "put") {
     require(__DIR__ . "/changePubDays.php");
