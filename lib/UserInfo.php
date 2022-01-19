@@ -52,8 +52,9 @@ class UserInfo extends Weeks
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
-            return false;
+
         }
+        return false;
     }
 
     public function chPasswd($userId, $oldPasswd, $newPasswd)
@@ -69,8 +70,9 @@ class UserInfo extends Weeks
             $chPasswdObj->execute();
             return true;
         } catch (PDOException $e) {
-            return false;
+
         }
+        return false;
     }
 
     public function userAuth($userId, $password)
@@ -86,8 +88,9 @@ class UserInfo extends Weeks
             $userAuthObj->execute();
             return password_verify($password, $userAuthObj->fetch()["passwd"]);
         } catch (PDOException $e) {
-            return false;
+
         }
+        return false;
     }
 
     public function getUserInfo($userId)
@@ -104,6 +107,7 @@ class UserInfo extends Weeks
             return $getUserInfoObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function setAllWeekCfg($userId, $startTime, $endTime)
@@ -122,6 +126,7 @@ class UserInfo extends Weeks
             return true;
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function setPubViewCfg($userId, $weekNum, $publicMode)
@@ -198,6 +203,7 @@ class UserInfo extends Weeks
             return array("publicationPlace" => array("public" => $public, "private" => $private));
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function getViewDays($userId)
@@ -227,6 +233,7 @@ class UserInfo extends Weeks
             return $getViewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function getViewTime($userId)
@@ -239,5 +246,21 @@ class UserInfo extends Weeks
         $result = array("publicationTime" => array("start" => $config[$firstWeekNum]["startTime"]));
         $result["publicationTime"] += array("end" => $config[$firstWeekNum]["endTime"]);
         return $result;
+    }
+
+    public function getUserListGroupByCourse(){
+        $getUserListSql = "SELECT ifnull(courseList.courseId,0) as courseId, ifnull(courseList.courseName,\"未所属\") AS courseName,user.userId,user.userName 
+                                FROM `courseList` 
+                                LEFT JOIN courseUserList ON courseList.courseId = courseUserList.courseId 
+                                RIGHT JOIN user ON user.userId = courseUserList.userId";
+
+        try{
+            $getUserListObj = $this->dbh->prepare($getUserListSql);
+            $getUserListObj->execute();
+            return $getUserListObj->fetchAll(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+
+        }
+        return false;
     }
 }

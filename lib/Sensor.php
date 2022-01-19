@@ -142,7 +142,7 @@ class Sensor
         #各センサーの最後の更新時間
         #forは誰が使うかを書く
     {
-        if ($searchConfition == match) {
+        if ($searchConfition == MATCH) {
                 $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId = :sensorId GROUP BY sensorId";
     } else {
         $getLLTSql = "SELECT sensor.sensorId,ifnull(max(time),0) as time FROM discoveryLog RIGHT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId WHERE sensor.sensorId != :sensorId GROUP BY sensorId";
@@ -164,7 +164,7 @@ class Sensor
     {
         if ($searchConfition == EXCLUSION) {
             $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId != :sensorId GROUP by sensorId,userId;";
-        } elseif ($searchConfition == match) {
+        } elseif ($searchConfition == MATCH) {
                 $getDiscvLogSql = "SELECT max(time)as time,sensorId,userId FROM discoveryLog WHERE time >:time AND sensorId = :sensorId GROUP by sensorId,userId;";
     } else {
         header("Error:" . "Option Error");
