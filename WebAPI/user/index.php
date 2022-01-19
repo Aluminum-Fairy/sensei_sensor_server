@@ -10,8 +10,8 @@ preg_match('|' . dirname($_SERVER["SCRIPT_NAME"]) . '/([\w%/]*)|', $_SERVER["REQ
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "options"){
+if ($requestMethod === "options") {
     exit();
-}else if ($requestMethod === "get") {
+} elseif ($requestMethod === "get") {
     require(__DIR__ . "/getUserInfo.php");
 }

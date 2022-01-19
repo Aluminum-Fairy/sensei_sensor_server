@@ -13,7 +13,7 @@ $groupId = explode('/', $matches[1])[0];
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "options"){
+if ($requestMethod === "options") {
     exit();
-}else if ($requestMethod === "get") {
+} elseif ($requestMethod === "get") {
 }

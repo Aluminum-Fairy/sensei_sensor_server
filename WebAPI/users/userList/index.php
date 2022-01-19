@@ -6,8 +6,8 @@ require_once(__DIR__ . "/../../../config/Config.php");
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "options"){
+if ($requestMethod === "options") {
     exit();
-}else if ($requestMethod === "get") {
+} elseif ($requestMethod === "get") {
     require(__DIR__ . "/getViewTime.php");
 }
