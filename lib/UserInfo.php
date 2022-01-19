@@ -52,7 +52,6 @@ class UserInfo extends Weeks
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -70,7 +69,6 @@ class UserInfo extends Weeks
             $chPasswdObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -88,7 +86,6 @@ class UserInfo extends Weeks
             $userAuthObj->execute();
             return password_verify($password, $userAuthObj->fetch()["passwd"]);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -248,18 +245,18 @@ class UserInfo extends Weeks
         return $result;
     }
 
-    public function getUserListGroupByCourse(){
+    public function getUserListGroupByCourse()
+    {
         $getUserListSql = "SELECT ifnull(courseList.courseId,0) as courseId, ifnull(courseList.courseName,\"未所属\") AS courseName,user.userId,user.userName 
                                 FROM `courseList` 
                                 LEFT JOIN courseUserList ON courseList.courseId = courseUserList.courseId 
                                 RIGHT JOIN user ON user.userId = courseUserList.userId";
 
-        try{
+        try {
             $getUserListObj = $this->dbh->prepare($getUserListSql);
             $getUserListObj->execute();
             return $getUserListObj->fetchAll(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }

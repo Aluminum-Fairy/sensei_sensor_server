@@ -47,7 +47,6 @@ class UserGroup
             $addUserGroupObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -74,7 +73,6 @@ class UserGroup
             $delAllUserFromGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             return $delAllUserFromGroupObj->execute();
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -88,7 +86,6 @@ class UserGroup
             $getGroupListObj->execute();
             return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -124,7 +121,6 @@ class UserGroup
             $getGroupUserObj->execute();
             return $getGroupUserObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -143,7 +139,6 @@ class UserGroup
 
             return $getGroupNameObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -162,7 +157,6 @@ class UserGroup
             }
             return $this->editGroupName($groupId, $newGroupName);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -185,7 +179,6 @@ class UserGroup
             $regUser2GroupObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -200,7 +193,6 @@ class UserGroup
             $editGroupNameObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
