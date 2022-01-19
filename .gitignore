@@ -1,8 +1,9 @@
-html/db/
+db/
 config/SQL_Login.php
 config/Config.php
 vendor/
-autoload/
 composer.lock
 composer.phar
 .php-cs-fixer.cache
+.idea/
+gen/
