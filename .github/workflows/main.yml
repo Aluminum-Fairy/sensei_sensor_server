@@ -32,10 +32,11 @@ jobs:
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
           strip_components: 1
-          source: "SyncAPI/"
-          target: "/var/www/SyncAPI/"
+          source: "SyncAPI/,WebAPI/,lib/"
+          target: "/var/www/html/"
           rm: true
           
+
       - name: copy file via ssh password 2
         uses: appleboy/scp-action@master
         with:
@@ -45,34 +46,5 @@ jobs:
           proxy_host: ${{ secrets.PROXY_HOST }}
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
-          strip_components: 1
-          source: "WebAPI/"
-          target: "/var/www/WebAPI/"
-          rm: true
-          
-      - name: copy file via ssh password 3
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          proxy_host: ${{ secrets.PROXY_HOST }}
-          proxy_username: ${{ secrets.USERNAME }}
-          proxy_password: ${{ secrets.PASSWORD }}
-          strip_components: 1
-          source: "lib/"
-          target: "/var/www/lib/"
-          rm: true
-          
-
-      - name: copy file via ssh password 4
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-          proxy_host: ${{ secrets.PROXY_HOST }}
-          proxy_username: ${{ secrets.USERNAME }}
-          proxy_password: ${{ secrets.PASSWORD }}
           source: "composer.json"
-          target: "/var/www/html/"
+          target: "/var/www/htmlhtml/"
