@@ -2,6 +2,7 @@ RewriteEngine On
 <IfModule mod_headers.c>
     SetEnvIfNoCase Origin "http://?(172.31.50.70|localhost)(:\d+)?$" AccessControlAllowOrigin=$0
     Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+    Header set Access-Control-Allow-Credentials true
 </IfModule>
 RewriteBase /sensei-sensor-php/WebAPI/users/userList/
 RewriteCond %{REQUEST_FILENAME} !-f
