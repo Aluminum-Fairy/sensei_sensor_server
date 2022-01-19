@@ -1,6 +1,6 @@
 RewriteEngine On
 <IfModule mod_headers.c>
-    SetEnvIfNoCase Origin "https://?(172.31.50.70|localhost)(:\d+)?$" AccessControlAllowOrigin=$0
+    SetEnvIfNoCase Origin "http://?(172.31.50.70|localhost)(:\d+)?$" AccessControlAllowOrigin=$0
     Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
 </IfModule>
 RewriteBase /sensei-sensor-php/WebAPI/logout
