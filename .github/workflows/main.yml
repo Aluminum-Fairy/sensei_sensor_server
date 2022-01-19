@@ -31,6 +31,6 @@ jobs:
           proxy_host: ${{ secrets.PROXY_HOST }}
           proxy_username: ${{ secrets.USERNAME }}
           proxy_password: ${{ secrets.PASSWORD }}
-          source: "./*,!./SyncSystem/,!./config/,!./reference/,!./.gitignore"
+          source: "SyncAPI/,WebAPI/,lib/,composer.json"
           target: "/var/www/html/sensei-sensor-php/"
           rm: true
