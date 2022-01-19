@@ -12,7 +12,9 @@ $paths = explode('/', $matches[1]);
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 
-if ($requestMethod === "get") {
+if ($requestMethod === "options"){
+    exit();
+}else if ($requestMethod === "get") {
     require "./getGroupList.php";
 } elseif ($requestMethod == "post") {
     require "./addGroup.php";
