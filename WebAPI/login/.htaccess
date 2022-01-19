@@ -5,8 +5,8 @@ RewriteEngine On
     Header set Access-Control-Allow-Credentials true
     Header set Access-Control-Allow-Headers "X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept"
 </IfModule>
-RewriteBase /sensei-sensor-php/WebAPI/login
+RewriteBase /sensei-sensor-php/WebAPI/login/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /sensei-sensor-php/WebAPI/login [L,QSA]
+RewriteRule ^.*$ /sensei-sensor-php/WebAPI/login/ [L,QSA]

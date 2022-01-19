@@ -9,4 +9,4 @@ RewriteBase /sensei-sensor-php/WebAPI/users/userList/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
-RewriteRule ^.*$ /sensei-sensor-php/WebAPI/users/userList [L,QSA]
+RewriteRule ^.*$ /sensei-sensor-php/WebAPI/users/userList/ [L,QSA]
