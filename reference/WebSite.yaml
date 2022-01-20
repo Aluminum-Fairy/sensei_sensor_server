@@ -747,49 +747,63 @@ paths:
           content:
             application/json:
               schema:
+                type: array
                 description: ''
-                type: object
-                properties:
-                  groupName:
-                    type: string
-                    minLength: 1
-                  users:
-                    type: array
-                    uniqueItems: true
-                    minItems: 1
-                    items:
-                      required:
-                        - userName
-                        - detectionTime
-                        - roomName
-                      properties:
-                        userName:
-                          type: string
-                          minLength: 1
-                        detectionTime:
-                          type: string
-                          minLength: 1
-                        roomName:
-                          type: string
-                          minLength: 1
-                required:
-                  - groupName
-                  - users
+                minItems: 1
+                uniqueItems: true
+                items:
+                  type: object
+                  required:
+                    - groupName
+                    - users
+                  properties:
+                    groupName:
+                      type: string
+                      minLength: 1
+                    users:
+                      type: array
+                      uniqueItems: true
+                      minItems: 1
+                      items:
+                        required:
+                          - userName
+                          - detectionTime
+                          - roomName
+                        properties:
+                          userName:
+                            type: string
+                            minLength: 1
+                          detectionTime:
+                            type: string
+                            minLength: 1
+                          roomName:
+                            type: string
+                            minLength: 1
                 x-examples:
                   example-1:
-                    groupName: 謎の組織
-                    users:
-                      - userName: 誰か
-                        detectionTime: '2021-10-01 10:00:11'
-                        roomName: どこか
+                    - groupName: string
+                      users:
+                        - userName: string
+                          detectionTime: string
+                          roomName: string
+                    - groupName: string
+                      users:
+                        - userName: string
+                          detectionTime: string
+                          roomName: string
               examples:
                 example-1:
                   value:
-                    groupName: string
-                    users:
-                      - userName: string
-                        detectionTime: string
-                        roomName: string
+                    - groupName: string
+                      users:
+                        - userName: string
+                          detectionTime: string
+                          roomName: string
+                    - groupName: string
+                      users:
+                        - userName: string
+                          detectionTime: string
+                          roomName: string
       requestBody:
         content:
           application/json:
