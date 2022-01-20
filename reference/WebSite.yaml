@@ -739,7 +739,7 @@ paths:
         required: true
   /groups/:
     post:
-      summary: 'メインページ: 1つ以上のグループの取得'
+      summary: 'メインページ: 1つ以上のグループを取得'
       operationId: post-groups
       responses:
         '200':
