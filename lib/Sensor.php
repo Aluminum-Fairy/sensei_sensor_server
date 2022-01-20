@@ -29,7 +29,7 @@ class Sensor
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         } else {
-            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTime)";
         }
 
         try {
@@ -38,9 +38,7 @@ class Sensor
             $setSensorObj->bindValue(":placeName", htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
             $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
             $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
-            if ($this->sensorExist(($sensorInfo["sensorId"]))) {
-                $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
-            }
+            $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -108,7 +106,7 @@ class Sensor
         $getSensorUpdateSql = "SELECT * FROM sensor WHERE updateTime >:updateTime AND sensorId = :sensorId";
         try {
             $getSensorUpdateObj = $this->dbh->prepare($getSensorUpdateSql);
-            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_INT);
+            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $getSensorUpdateObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
             $getSensorUpdateObj->execute();
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
