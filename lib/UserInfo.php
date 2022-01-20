@@ -90,16 +90,47 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function getUserInfo($userId)
-    {
-        if ($this->userExist($userId)) {
-            return false;
+    public function setSensorsUser($userId,$userName,$description,$updateTime){
+        if($this->userExist($userId)){
+            $setSensorsUserSql = "UPDATE user SET userName = :userName, description = :description,updateTime = :updateTime WHERE userId = :userId";
+        }else{
+            $setSensorsUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES (:userId,:userName,:description,updateTime)";
         }
 
-        $getUserInfoSql = "SELECT userName , description FROM user WHERE userId = :userId";
+        try{
+            $setSensorsUserObj = $this->dbh->prepare($setSensorsUserSql);
+            $setSensorsUserObj->bindValue(":userName",$userName,PDO::PARAM_STR);
+            $setSensorsUserObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $setSensorsUserObj->bindValue(":description",$description,PDO::PARAM_STR);
+            $setSensorsUserObj->bindValue(":updateTime",$updateTime,PDO::PARAM_STR);
+            $setSensorsUserObj->execute();
+            return false;
+        }catch(PDOException $e) {
+            http_response_code(500);
+            header("Error:" . $e);
+            exit();
+        }
+    }
+
+    public function getUserInfo()
+        #引数なしではすべてのユーザーリストを返す,引数を1つ渡すとそのユーザーを検索して1件返す(存在しなければFalse)
+    {
+        $args = func_num_args();
+        if($args == 1){
+            $userId = func_get_arg()[0];
+            if ($this->userExist($userId)) {
+                return false;
+            }
+            $getUserInfoSql = "SELECT userName , description ,updateTime FROM user WHERE userId = :userId";
+        }else{
+            $getUserInfoSql = "SELECT userName , description ,updateTime FROM user";
+        }
+
         try {
             $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
-            $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            if($args == 1){
+                $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            }
             $getUserInfoObj->execute();
             return $getUserInfoObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
@@ -107,10 +138,57 @@ class UserInfo extends Weeks
         return false;
     }
 
+    public function checkUserUpdate($userId,$updateTime){
+        if(!$this->userExist($userId)){
+            return false;
+        }
+
+        $checkUserUpdateSql = "SELECT userName , description ,updateTime FROM user WHERE updateTime > :updateTime AND userId = :userId";
+        try{
+            $checkUserUpdateObj = $this->dbh->prepare($checkUserUpdateSql);
+            $checkUserUpdateObj->bindValue("updateTime",$updateTime,PDO::PARAM_STR);
+            $checkUserUpdateObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $checkUserUpdateObj->execute();
+            return $checkUserUpdateObj->fetch(PDO::FETCH_ASSOC);
+        }catch(PDOException $e){
+
+        }
+        return false;
+    }
+
+    public function getLastUserUpdatTime()
+    {
+        $getLastUserUpdateTimeSql = "SELECT sensorId,updateTime FROM sensor";
+        try {
+            $getLastUserUpdateTimeObj = $this->dbh->prepare($getLastUserUpdateTimeSql);
+            $getLastUserUpdateTimeObj->execute();
+            return $getLastUserUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+
+        }
+        return false;
+    }
+
+    public function getUserIdList()
+    {
+        $getUserIdListSql = "SELECT userId FROM user";
+        try {
+            $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
+            $getUserIdListObj->execute();
+            return $getUserIdListObj->fetchAll(PDO::FETCH_COLUMN);
+        }catch(PDOException $e){
+
+        }
+        return false;
+    }
+
+
+
+
     protected function genWeekCfg($userId)
     {
         $genWeekCfgSql = "INSERT INTO viewTimeConfig (`userId`, `weekNum`, `startTime`, `endTime`, `publicView`) VALUES (:userId,:weekNum,:startTime,:endTime,:publicView)";
-        for ($weekNum = 0;$weekNum <=6;$weekNum++) {
+        for ($weekNum = 0; $weekNum <= 6; $weekNum++) {
             try {
                 $genWeekCfgObj = $this->dbh->prepare($genWeekCfgSql);
                 $genWeekCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
@@ -212,9 +290,9 @@ class UserInfo extends Weeks
             $private = array();
             foreach ($ViewSensorConfig as $SensorConfig) {
                 if ($SensorConfig["publicView"] === "1") {
-                    array_push($public, array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]));
+                    $public[] = array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]);
                 } else {
-                    array_push($private, array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]));
+                    $private[] = array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]);
                 }
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));

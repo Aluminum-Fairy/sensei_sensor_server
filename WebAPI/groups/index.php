@@ -17,4 +17,6 @@ if ($requestMethod === "options") {
     exit();
 } elseif ($requestMethod === "get") {
     require(__DIR__ . "/getGroupList.php");
+} elseif ($requestMethod === "post"){
+    require (__DIR__."/getMergedGroupList.php");
 }
