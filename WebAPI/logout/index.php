@@ -1,11 +1,9 @@
 <?php
+
 require_once(__DIR__ . "/../../config/Config.php");
 require_once(__DIR__ . "/../../lib/JwtAuth.php");
 
 use ReCaptcha\RequestMethod;
-
-
-
 
 $JWT = new JwtAuth($loginInfo);
 

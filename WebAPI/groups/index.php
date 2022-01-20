@@ -1,9 +1,9 @@
 <?php
+
 require_once(__DIR__ . "/../../config/Config.php");
 require_once(__DIR__ . "/../../lib/UserGroup.php");
 
 use ReCaptcha\RequestMethod;
-
 
 $UserGroup = new UserGroup($loginInfo);
 

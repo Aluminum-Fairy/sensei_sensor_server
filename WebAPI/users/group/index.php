@@ -4,7 +4,6 @@ require_once(__DIR__ . "/../../../config/Config.php");
 
 use ReCaptcha\RequestMethod;
 
-
 header("Content-Type: application/json; charset=utf-8");
 
 

@@ -5,7 +5,6 @@ require_once(__DIR__ . "/../../lib/JwtAuth.php");
 
 use ReCaptcha\RequestMethod;
 
-
 preg_match('|' . dirname($_SERVER["SCRIPT_NAME"]) . '/([\w%/]*)|', $_SERVER["REQUEST_URI"], $matches);
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);

@@ -107,23 +107,23 @@ class UserInfo extends Weeks
         return false;
     }
 
-    protected function genWeekCfg($userId){
+    protected function genWeekCfg($userId)
+    {
         $genWeekCfgSql = "INSERT INTO viewTimeConfig (`userId`, `weekNum`, `startTime`, `endTime`, `publicView`) VALUES (:userId,:weekNum,:startTime,:endTime,:publicView)";
-        for ($weekNum = 0;$weekNum <=6;$weekNum++){
-            try{
+        for ($weekNum = 0;$weekNum <=6;$weekNum++) {
+            try {
                 $genWeekCfgObj = $this->dbh->prepare($genWeekCfgSql);
-                $genWeekCfgObj->bindValue(":userId",$userId,PDO::PARAM_INT);
-                $genWeekCfgObj->bindValue(":weekNum",$weekNum,PDO::PARAM_INT);
-                $genWeekCfgObj->bindValue(":startTime",DEFAULT_STAR_TIMR,PDO::PARAM_INT);
-                $genWeekCfgObj->bindValue(":endTime",DEFAULT_END_TIMR,PDO::PARAM_INT);
-                $genWeekCfgObj->bindValue(":publicView",DEFAULT_PUBLIC_CONFIG,PDO::PARAM_INT);
+                $genWeekCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+                $genWeekCfgObj->bindValue(":weekNum", $weekNum, PDO::PARAM_INT);
+                $genWeekCfgObj->bindValue(":startTime", DEFAULT_STAR_TIMR, PDO::PARAM_INT);
+                $genWeekCfgObj->bindValue(":endTime", DEFAULT_END_TIMR, PDO::PARAM_INT);
+                $genWeekCfgObj->bindValue(":publicView", DEFAULT_PUBLIC_CONFIG, PDO::PARAM_INT);
                 $genWeekCfgObj->execute();
-            }catch(PDOException $e) {
+            } catch (PDOException $e) {
                 return false;
             }
         }
         return true;
-
     }
 
 

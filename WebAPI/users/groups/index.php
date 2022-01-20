@@ -4,7 +4,6 @@ require_once(__DIR__ . "/../../../config/Config.php");
 
 use ReCaptcha\RequestMethod;
 
-
 preg_match('|' . dirname($_SERVER["SCRIPT_NAME"]) . '/([\w%/]*)|', $_SERVER["REQUEST_URI"], $matches);
 $groupId = explode('/', $matches[1])[0];
 
