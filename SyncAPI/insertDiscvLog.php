@@ -1,7 +1,8 @@
 <?php
 
-require_once __DIR__ . "/../../lib/Sensor.php";
 require_once __DIR__ . "/../config/Config.php";
+require_once __DIR__ . "/../../lib/Sensor.php";
+
 $Sensor = new Sensor($loginInfo);
 
 $json = file_get_contents("php://input");

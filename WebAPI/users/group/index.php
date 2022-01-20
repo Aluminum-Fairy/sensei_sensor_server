@@ -1,8 +1,10 @@
 <?php
 
+require_once(__DIR__ . "/../../../config/Config.php");
+
 use ReCaptcha\RequestMethod;
 
-require_once(__DIR__ . "/../../../config/Config.php");
+
 header("Content-Type: application/json; charset=utf-8");
 
 

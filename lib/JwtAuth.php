@@ -1,12 +1,12 @@
 <?php
 
+#自作ライブラリ
+require_once __DIR__ . "/../config/Config.php";
+require_once __DIR__ . "/../lib/UserInfo.php";
 #DB Connection
 require_once __DIR__ . "/../config/SQL_Login.php";
 #composer
 require_once __DIR__ . '/../vendor/autoload.php';
-#自作ライブラリ
-require_once __DIR__ . "/../config/Config.php";
-require_once __DIR__ . "/../lib/UserInfo.php";
 
 use  Firebase\JWT\JWT;
 use PhpMyAdmin\Utils\HttpRequest;
