@@ -15,11 +15,11 @@ $result = array("change" => array());
 #新たに追加されたセンサーをusrIdから検索、$result["change"]に格納
 $userListFromDB = $UserInfo->getUserIdList();
 $userListFromReq = array();
-foreach ($userInfoArr AS $userInfo) {
+foreach ($userInfoArr as $userInfo) {
     $userListFromReq[] = $userInfo;
 }
-$newUserIdArr = array_diff($userListFromDB,$userListFromReq);
-foreach ($newUserIdArr AS $newUserId){
+$newUserIdArr = array_diff($userListFromDB, $userListFromReq);
+foreach ($newUserIdArr as $newUserId) {
     $result["change"][] = $UserInfo->getUserInfo($newUserId);
 }
 
@@ -28,7 +28,7 @@ foreach ($newUserIdArr AS $newUserId){
 foreach ($userInfoArr as $userInfo) {
     $res = $UserInfo->checkUserUpdate($userInfo);
     if (false === $res) {
-    }  else {
+    } else {
         $result["change"][] = $res;
     }
 }

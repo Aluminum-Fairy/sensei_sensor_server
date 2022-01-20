@@ -90,22 +90,23 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function setSensorsUser($userId,$userName,$description,$updateTime){
-        if($this->userExist($userId)){
+    public function setSensorsUser($userId, $userName, $description, $updateTime)
+    {
+        if ($this->userExist($userId)) {
             $setSensorsUserSql = "UPDATE user SET userName = :userName, description = :description,updateTime = :updateTime WHERE userId = :userId";
-        }else{
+        } else {
             $setSensorsUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES (:userId,:userName,:description,updateTime)";
         }
 
-        try{
+        try {
             $setSensorsUserObj = $this->dbh->prepare($setSensorsUserSql);
-            $setSensorsUserObj->bindValue(":userName",$userName,PDO::PARAM_STR);
-            $setSensorsUserObj->bindValue(":userId",$userId,PDO::PARAM_INT);
-            $setSensorsUserObj->bindValue(":description",$description,PDO::PARAM_STR);
-            $setSensorsUserObj->bindValue(":updateTime",$updateTime,PDO::PARAM_STR);
+            $setSensorsUserObj->bindValue(":userName", $userName, PDO::PARAM_STR);
+            $setSensorsUserObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $setSensorsUserObj->bindValue(":description", $description, PDO::PARAM_STR);
+            $setSensorsUserObj->bindValue(":updateTime", $updateTime, PDO::PARAM_STR);
             $setSensorsUserObj->execute();
             return false;
-        }catch(PDOException $e) {
+        } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);
             exit();
@@ -116,19 +117,19 @@ class UserInfo extends Weeks
         #引数なしではすべてのユーザーリストを返す,引数を1つ渡すとそのユーザーを検索して1件返す(存在しなければFalse)
     {
         $args = func_num_args();
-        if($args == 1){
+        if ($args == 1) {
             $userId = func_get_arg()[0];
             if ($this->userExist($userId)) {
                 return false;
             }
             $getUserInfoSql = "SELECT userName , description ,updateTime FROM user WHERE userId = :userId";
-        }else{
+        } else {
             $getUserInfoSql = "SELECT userName , description ,updateTime FROM user";
         }
 
         try {
             $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
-            if($args == 1){
+            if ($args == 1) {
                 $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             }
             $getUserInfoObj->execute();
@@ -138,20 +139,20 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function checkUserUpdate($userId,$updateTime){
-        if(!$this->userExist($userId)){
+    public function checkUserUpdate($userId, $updateTime)
+    {
+        if (!$this->userExist($userId)) {
             return false;
         }
 
         $checkUserUpdateSql = "SELECT userName , description ,updateTime FROM user WHERE updateTime > :updateTime AND userId = :userId";
-        try{
+        try {
             $checkUserUpdateObj = $this->dbh->prepare($checkUserUpdateSql);
-            $checkUserUpdateObj->bindValue("updateTime",$updateTime,PDO::PARAM_STR);
-            $checkUserUpdateObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            $checkUserUpdateObj->bindValue("updateTime", $updateTime, PDO::PARAM_STR);
+            $checkUserUpdateObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $checkUserUpdateObj->execute();
             return $checkUserUpdateObj->fetch(PDO::FETCH_ASSOC);
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }
@@ -164,7 +165,6 @@ class UserInfo extends Weeks
             $getLastUserUpdateTimeObj->execute();
             return $getLastUserUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -176,8 +176,7 @@ class UserInfo extends Weeks
             $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
             $getUserIdListObj->execute();
             return $getUserIdListObj->fetchAll(PDO::FETCH_COLUMN);
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }

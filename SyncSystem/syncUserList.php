@@ -8,10 +8,10 @@ $UserInfo = new UserInfo($loginInfo);
 
 $lastUpdateList = $UserInfo->getLastUserUpdatTime();
 
-$resStr = postCurl("http://".URL."/SyncAPI/",json_encode($lastUpdateList));
-$resArr = json_decode($resStr,true);
+$resStr = postCurl("http://".URL."/SyncAPI/", json_encode($lastUpdateList));
+$resArr = json_decode($resStr, true);
 
 #ユーザーの更新があった場合は更新,または新規挿入
 foreach ($resArr["change"] as $userInfo) {
-    $UserInfo->setSensorsUser($userInfo["userId"],$userInfo["userName"],$userInfo["description"],$userInfo["updateTime"]);
+    $UserInfo->setSensorsUser($userInfo["userId"], $userInfo["userName"], $userInfo["description"], $userInfo["updateTime"]);
 }
