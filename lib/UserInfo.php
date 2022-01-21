@@ -1,7 +1,5 @@
 <?php
 
-use Symfony\Component\Cache\Simple\PdoCache;
-
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
@@ -43,7 +41,7 @@ class UserInfo extends Weeks
 
     public function addUser($userName, $password, $description)
     {
-        $addUserSql = "INSERT INTO user (userName,password,description) VALUES (:userName,:password,:description)";
+        $addUserSql = "INSERT INTO user (userName,passwd,description) VALUES (:userName,:password,:description)";
         try {
             $addUserObj = $this->dbh->prepare($addUserSql);
             $addUserObj->bindValue(":userName", htmlspecialchars($userName), PDO::PARAM_STR);
@@ -90,76 +88,9 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function setSensorsUser($userId, $userName, $description, $updateTime)
+    public function getLastUserUpdateTime()
     {
-        if ($this->userExist($userId)) {
-            $setSensorsUserSql = "UPDATE user SET userName = :userName, description = :description,updateTime = :updateTime WHERE userId = :userId";
-        } else {
-            $setSensorsUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES (:userId,:userName,:description,updateTime)";
-        }
-
-        try {
-            $setSensorsUserObj = $this->dbh->prepare($setSensorsUserSql);
-            $setSensorsUserObj->bindValue(":userName", $userName, PDO::PARAM_STR);
-            $setSensorsUserObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $setSensorsUserObj->bindValue(":description", $description, PDO::PARAM_STR);
-            $setSensorsUserObj->bindValue(":updateTime", $updateTime, PDO::PARAM_STR);
-            $setSensorsUserObj->execute();
-            return false;
-        } catch (PDOException $e) {
-            http_response_code(500);
-            header("Error:" . $e);
-            exit();
-        }
-    }
-
-    public function getUserInfo()
-        #引数なしではすべてのユーザーリストを返す,引数を1つ渡すとそのユーザーを検索して1件返す(存在しなければFalse)
-    {
-        $args = func_num_args();
-        if ($args == 1) {
-            $userId = func_get_arg()[0];
-            if ($this->userExist($userId)) {
-                return false;
-            }
-            $getUserInfoSql = "SELECT userName , description ,updateTime FROM user WHERE userId = :userId";
-        } else {
-            $getUserInfoSql = "SELECT userName , description ,updateTime FROM user";
-        }
-
-        try {
-            $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
-            if ($args == 1) {
-                $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            }
-            $getUserInfoObj->execute();
-            return $getUserInfoObj->fetchAll(PDO::FETCH_COLUMN);
-        } catch (PDOException $e) {
-        }
-        return false;
-    }
-
-    public function checkUserUpdate($userId, $updateTime)
-    {
-        if (!$this->userExist($userId)) {
-            return false;
-        }
-
-        $checkUserUpdateSql = "SELECT userName , description ,updateTime FROM user WHERE updateTime > :updateTime AND userId = :userId";
-        try {
-            $checkUserUpdateObj = $this->dbh->prepare($checkUserUpdateSql);
-            $checkUserUpdateObj->bindValue("updateTime", $updateTime, PDO::PARAM_STR);
-            $checkUserUpdateObj->bindValue(":userId", $userId, PDO::PARAM_INT);
-            $checkUserUpdateObj->execute();
-            return $checkUserUpdateObj->fetch(PDO::FETCH_ASSOC);
-        } catch (PDOException $e) {
-        }
-        return false;
-    }
-
-    public function getLastUserUpdatTime()
-    {
-        $getLastUserUpdateTimeSql = "SELECT sensorId,updateTime FROM sensor";
+        $getLastUserUpdateTimeSql = "SELECT userId,updateTime FROM user";
         try {
             $getLastUserUpdateTimeObj = $this->dbh->prepare($getLastUserUpdateTimeSql);
             $getLastUserUpdateTimeObj->execute();
@@ -169,9 +100,67 @@ class UserInfo extends Weeks
         return false;
     }
 
+    public function getUserInfo($userId)
+    {
+        if ($this->userExist($userId)) {
+            return false;
+        }
+
+        $getUserInfoSql = "SELECT userName , description FROM user WHERE userId = :userId";
+        try {
+            $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
+            $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
+            $getUserInfoObj->execute();
+            return $getUserInfoObj->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+        }
+        return false;
+    }
+
+    public function setUser($userInfo)
+    {
+        if ($this->userExist($userInfo["userId"])) {
+            $setUserSql = "UPDATE user SET userName = :userName ,description = :description,updateTime = :updateTime WHERE userId = :userId";
+        } else {
+            $setUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES  (:userId,:userName,:description,:updateTime)";
+        }
+
+        try {
+            $setUserObj = $this->dbh->prepare($setUserSql);
+            $setUserObj ->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $setUserObj->bindValue(":userName", $userInfo["username"], PDO::PARAM_STR);
+            $setUserObj->bindValue(":description", $userInfo["description"], PDO::PARAM_STR);
+            $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
+            $setUserObj->execute();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            header("Error:" . $e);
+            exit();
+        }
+
+        return true;
+    }
+
+    public function checkUserUpdate($userInfo)
+    {
+        #センサのアップデート確認
+        if (!$this->userExist($userInfo["userId"])) {
+            return false;
+        }
+        $getUserUpdateSql = "SELECT userId,userName,description,updateTime FROM user WHERE updateTime >:updateTime AND userId = :userId";
+        try {
+            $getUserUpdateObj = $this->dbh->prepare($getUserUpdateSql);
+            $getUserUpdateObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_STR);
+            $getUserUpdateObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $getUserUpdateObj->execute();
+            return $getUserUpdateObj->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+        }
+    }
+
     public function getUserIdList()
     {
-        $getUserIdListSql = "SELECT userId FROM user";
+        $getUserIdListSql ="SELECT userId FROM user";
         try {
             $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
             $getUserIdListObj->execute();
@@ -180,9 +169,6 @@ class UserInfo extends Weeks
         }
         return false;
     }
-
-
-
 
     protected function genWeekCfg($userId)
     {
@@ -236,7 +222,7 @@ class UserInfo extends Weeks
             $pubView = 0;
         }
 
-        $setPubViewCfgSql = "UPDATE viewTimeConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
+        $setPubViewCfgSql = "UPDATE viewTimeConfig SET publicView = :value WHERE userId = :userId AND weekNum = :weekNum";
         try {
             $setPubViewCfgObj = $this->dbh->prepare($setPubViewCfgSql);
             $setPubViewCfgObj->bindValue(":value", $pubView, PDO::PARAM_INT);
@@ -289,9 +275,9 @@ class UserInfo extends Weeks
             $private = array();
             foreach ($ViewSensorConfig as $SensorConfig) {
                 if ($SensorConfig["publicView"] === "1") {
-                    $public[] = array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]);
+                    array_push($public, array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]));
                 } else {
-                    $private[] = array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]);
+                    array_push($private, array("roomId" => $SensorConfig["roomId"], "roomName" => $SensorConfig["roomName"]));
                 }
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));

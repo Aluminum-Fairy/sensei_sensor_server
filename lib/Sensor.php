@@ -29,7 +29,7 @@ class Sensor
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         } else {
-            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTime)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTiime)";
         }
 
         try {
@@ -62,8 +62,10 @@ class Sensor
             $changeSensorConfigObj->bindValue(":isWebServer", $isWebServer, PDO::PARAM_INT);
             $changeSensorConfigObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $changeSensorConfigObj->execute();
+            return true;
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function getSensorInfo($sensorId)
@@ -93,8 +95,10 @@ class Sensor
             $deleteSensorObj = $this->dbh->prepare($deleteSensorSql);
             $deleteSensorObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $deleteSensorObj->execute();
+            return true;
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function checkSensorUpdate($sensorInfo)
@@ -112,6 +116,7 @@ class Sensor
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
+        return  false;
     }
 
     public function getLastSensorUpdateTime()
@@ -240,7 +245,7 @@ class Sensor
         $getAllowedGroupUsersDiscvListSql =
             "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
         (
-            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
+            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
                 SELECT 
                     user.userName,discoveryLog.userId,
