@@ -91,12 +91,11 @@ class UserInfo extends Weeks
     public function getLastUserUpdateTime()
     {
         $getLastUserUpdateTimeSql = "SELECT userId,updateTime FROM user";
-        try{
+        try {
             $getLastUserUpdateTimeObj = $this->dbh->prepare($getLastUserUpdateTimeSql);
             $getLastUserUpdateTimeObj->execute();
             return $getLastUserUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
-        }catch (PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }
@@ -118,21 +117,22 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function setUser($userInfo){
-        if($this->userExist($userInfo["userId"])){
+    public function setUser($userInfo)
+    {
+        if ($this->userExist($userInfo["userId"])) {
             $setUserSql = "UPDATE user SET userName = :userName ,description = :description,updateTime = :updateTime WHERE userId = :userId";
-        }else{
+        } else {
             $setUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES  (:userId,:userName,:description,:updateTime)";
         }
 
-        try{
+        try {
             $setUserObj = $this->dbh->prepare($setUserSql);
-            $setUserObj ->bindValue(":userId",$userInfo["userId"],PDO::PARAM_INT);
-            $setUserObj->bindValue(":userName",$userInfo["username"],PDO::PARAM_STR);
-            $setUserObj->bindValue(":description",$userInfo["description"],PDO::PARAM_STR);
-            $setUserObj->bindValue(":updateTime",$userInfo["updateTime"],PDO::PARAM_INT);
+            $setUserObj ->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $setUserObj->bindValue(":userName", $userInfo["username"], PDO::PARAM_STR);
+            $setUserObj->bindValue(":description", $userInfo["description"], PDO::PARAM_STR);
+            $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
             $setUserObj->execute();
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
             http_response_code(500);
             header("Error:" . $e);
             exit();
@@ -158,14 +158,14 @@ class UserInfo extends Weeks
         }
     }
 
-    public function getUserIdList(){
+    public function getUserIdList()
+    {
         $getUserIdListSql ="SELECT userId FROM user";
-        try{
+        try {
             $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
             $getUserIdListObj->execute();
             return $getUserIdListObj->fetchAll(PDO::FETCH_COLUMN);
-        }catch (PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }
