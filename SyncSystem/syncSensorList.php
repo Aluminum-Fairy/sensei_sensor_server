@@ -3,8 +3,8 @@
 #センサー側のセンサーリスト同期システム
 
 require_once __DIR__ . "/../config/Config.php";
-require_once __DIR__ . "/../../lib/Sensor.php";
-require_once __DIR__ . "/../../lib/Tools.php";
+require_once __DIR__ . "/../lib/Sensor.php";
+require_once __DIR__ . "/../lib/Tools.php";
 require_once __DIR__ . "/../config/SensorConfig.php";
 
 $Sensor = new Sensor($loginInfo);

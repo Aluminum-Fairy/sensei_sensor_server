@@ -29,7 +29,7 @@ class Sensor
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         } else {
-            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTiime)";
         }
 
         try {
@@ -38,9 +38,7 @@ class Sensor
             $setSensorObj->bindValue(":placeName", htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
             $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
             $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
-            if ($this->sensorExist(($sensorInfo["sensorId"]))) {
-                $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
-            }
+            $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
@@ -64,8 +62,10 @@ class Sensor
             $changeSensorConfigObj->bindValue(":isWebServer", $isWebServer, PDO::PARAM_INT);
             $changeSensorConfigObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $changeSensorConfigObj->execute();
+            return true;
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function getSensorInfo($sensorId)
@@ -95,8 +95,10 @@ class Sensor
             $deleteSensorObj = $this->dbh->prepare($deleteSensorSql);
             $deleteSensorObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $deleteSensorObj->execute();
+            return true;
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function checkSensorUpdate($sensorInfo)
@@ -108,12 +110,13 @@ class Sensor
         $getSensorUpdateSql = "SELECT * FROM sensor WHERE updateTime >:updateTime AND sensorId = :sensorId";
         try {
             $getSensorUpdateObj = $this->dbh->prepare($getSensorUpdateSql);
-            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_INT);
+            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $getSensorUpdateObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
             $getSensorUpdateObj->execute();
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
+        return  false;
     }
 
     public function getLastSensorUpdateTime()
@@ -242,7 +245,7 @@ class Sensor
         $getAllowedGroupUsersDiscvListSql =
             "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
         (
-            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
+            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
                 SELECT 
                     user.userName,discoveryLog.userId,
