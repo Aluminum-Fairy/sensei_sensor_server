@@ -9,7 +9,7 @@ class UserInfo extends Weeks
 {
     use Verify;
 
-    protected $dbh;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -128,8 +128,8 @@ class UserInfo extends Weeks
         try {
             $setUserObj = $this->dbh->prepare($setUserSql);
             $setUserObj ->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
-            $setUserObj->bindValue(":userName", $userInfo["username"], PDO::PARAM_STR);
-            $setUserObj->bindValue(":description", $userInfo["description"], PDO::PARAM_STR);
+            $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["username"]), PDO::PARAM_STR);
+            $setUserObj->bindValue(":description", htmlspecialchars($userInfo["description"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
             $setUserObj->execute();
         } catch (PDOException $e) {

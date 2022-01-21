@@ -13,7 +13,7 @@ use PhpMyAdmin\Utils\HttpRequest;
 
 class JwtAuth
 {
-    protected $dbh;
+    protected PDO $dbh;
     protected $UserInfo;
 
 

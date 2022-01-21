@@ -9,7 +9,7 @@ class UserGroup
 {
     use Verify;
 
-    protected $dbh;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -188,7 +188,7 @@ class UserGroup
         $editGroupNameSql = "UPDATE userGroupList SET groupName = :groupName WHERE groupId = :groupId";
         try {
             $editGroupNameObj = $this->dbh->prepare($editGroupNameSql);
-            $editGroupNameObj->bindValue(":groupName", $newGroupName, PDO::PARAM_STR);
+            $editGroupNameObj->bindValue(":groupName", htmlspecialchars($newGroupName), PDO::PARAM_STR);
             $editGroupNameObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $editGroupNameObj->execute();
             return true;
