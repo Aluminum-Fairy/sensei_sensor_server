@@ -52,21 +52,40 @@ class Tag
         return false;
     }
 
-    public function delTag($tagId){
-        if(!$this->tagExist($tagId)){
+    public function delTag($tagId)
+    {
+        if (!$this->tagExist($tagId)) {
             return false;
         }
 
         $delTagSql = "DELETE FROM tag WHERE tagId = :tagId";
-        try{
+        try {
             $delTagObj = $this->dbh->prepare($delTagSql);
-            $delTagObj->bindValue(":tagId",$tagId,PDO::PARAM_INT);
+            $delTagObj->bindValue(":tagId", $tagId, PDO::PARAM_INT);
             $delTagObj->execute();
             return true;
-        }catch(PDOException $e){
+        } catch (PDOException $e) {
 
         }
         return false;
+    }
+
+    public function getTagInfo($tagId)
+    {
+        if (!$this->tagExist($tagId)) {
+            return false;
+        }
+
+        $getTagInfoSql = "SELECT * FROM tag WHERE tagId = :tagId";
+        try{
+            $getTagInfoObj = $this->dbh->prepare($getTagInfoSql);
+            $getTagInfoObj->bindValue(":tagId",$tagId,PDO::PARAM_INT);
+            $getTagInfoObj->execute();
+            return $getTagInfoObj->fetchAll(PDO::FETCH_COLUMN);
+        }catch (PDOException $e){
+
+        }
+        return  false;
     }
 
     public function setTag($tagInfo)
@@ -86,6 +105,52 @@ class Tag
             $tagSetObj->bindValue(":updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $tagSetObj->execute();
         } catch (PDOException $e) {
+
+        }
+        return false;
+    }
+
+    public function checkTagUpdate($tagInfo)
+    {
+        #タグのアップデート情報
+        if (!$this->tagExist($tagInfo["tagId"])) {
+            return false;
+        }
+        $getTagUpdateSql = "SELECT tagId , tagId, description, MACAddress, updateTime FROM tag WHERE tagId = :tagId AND updateTime > :updateTime";
+        try {
+            $getTagUpdateObj = $this->dbh->prepare($getTagUpdateSql);
+            $getTagUpdateObj->bindValue(":tagId", $tagInfo["tagId"], PDO::PARAM_INT);
+            $getTagUpdateObj->bindValue("updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
+            $getTagUpdateObj->execute();
+            return $getTagUpdateObj->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+
+        }
+        return false;
+
+    }
+
+    public function getTagIdList()
+    {
+        $getTagIdListSql = "SELECT tagId FROM tag ";
+        try {
+            $getTagIdListObj = $this->dbh->prepare($getTagIdListSql);
+            $getTagIdListObj->execute();
+            return $getTagIdListObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+
+        }
+        return false;
+    }
+
+    public function getLastTagUpdateTime()
+    {
+        $getLastTagUpdateTimeSql = "SELECT updateTime FROM tag";
+        try {
+            $getLastTagUpdateTimeObj = $this->dbh->prepare($getLastTagUpdateTimeSql);
+            $getLastTagUpdateTimeObj->execute();
+            return $getLastTagUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException  $e) {
 
         }
         return false;

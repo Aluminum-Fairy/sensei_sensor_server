@@ -106,7 +106,7 @@ class UserInfo extends Weeks
             return false;
         }
 
-        $getUserInfoSql = "SELECT userName , description FROM user WHERE userId = :userId";
+        $getUserInfoSql = "SELECT userId,userName , description,updateTime FROM user WHERE userId = :userId";
         try {
             $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
             $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
@@ -127,7 +127,7 @@ class UserInfo extends Weeks
 
         try {
             $setUserObj = $this->dbh->prepare($setUserSql);
-            $setUserObj ->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $setUserObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
             $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["username"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":description", htmlspecialchars($userInfo["description"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
@@ -156,11 +156,12 @@ class UserInfo extends Weeks
             return $getUserUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function getUserIdList()
     {
-        $getUserIdListSql ="SELECT userId FROM user";
+        $getUserIdListSql = "SELECT userId FROM user";
         try {
             $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
             $getUserIdListObj->execute();
