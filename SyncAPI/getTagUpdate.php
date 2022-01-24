@@ -21,9 +21,9 @@ foreach ($tagInfoArr as $tagInfo) {
     $tagListFromReq[] = $tagInfo["tagId"];
 }
 
-$newTagIdArr = array_diff($tagListFRomDB,$tagListFromReq);
+$newTagIdArr = array_diff($tagListFRomDB, $tagListFromReq);
 //var_dump($newTagIdArr);
-foreach ($newTagIdArr as $newTagId){
+foreach ($newTagIdArr as $newTagId) {
     $result["change"][] = $Tag->getTagInfo($newTagId);
 }
 #タグの更新時間とIDから変更点を検索
