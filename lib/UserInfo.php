@@ -102,7 +102,7 @@ class UserInfo extends Weeks
 
     public function getUserInfo($userId)
     {
-        if ($this->userExist($userId)) {
+        if (!$this->userExist($userId)) {
             return false;
         }
 
