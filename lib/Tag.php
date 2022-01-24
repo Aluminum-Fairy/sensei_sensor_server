@@ -47,7 +47,6 @@ class Tag
             $addTagObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -65,7 +64,6 @@ class Tag
             $delTagObj->execute();
             return true;
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -77,13 +75,12 @@ class Tag
         }
 
         $getTagInfoSql = "SELECT * FROM tag WHERE tagId = :tagId";
-        try{
+        try {
             $getTagInfoObj = $this->dbh->prepare($getTagInfoSql);
-            $getTagInfoObj->bindValue(":tagId",$tagId,PDO::PARAM_INT);
+            $getTagInfoObj->bindValue(":tagId", $tagId, PDO::PARAM_INT);
             $getTagInfoObj->execute();
             return $getTagInfoObj->fetchAll(PDO::FETCH_COLUMN);
-        }catch (PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return  false;
     }
@@ -105,7 +102,6 @@ class Tag
             $tagSetObj->bindValue(":updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $tagSetObj->execute();
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -124,10 +120,8 @@ class Tag
             $getTagUpdateObj->execute();
             return $getTagUpdateObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
-
         }
         return false;
-
     }
 
     public function getTagIdList()
@@ -138,7 +132,6 @@ class Tag
             $getTagIdListObj->execute();
             return $getTagIdListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-
         }
         return false;
     }
@@ -151,7 +144,6 @@ class Tag
             $getLastTagUpdateTimeObj->execute();
             return $getLastTagUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException  $e) {
-
         }
         return false;
     }
