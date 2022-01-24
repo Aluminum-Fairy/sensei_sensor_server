@@ -79,7 +79,7 @@ class Tag
             $getTagInfoObj = $this->dbh->prepare($getTagInfoSql);
             $getTagInfoObj->bindValue(":tagId", $tagId, PDO::PARAM_INT);
             $getTagInfoObj->execute();
-            return $getTagInfoObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getTagInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
         return  false;

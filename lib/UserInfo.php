@@ -111,7 +111,7 @@ class UserInfo extends Weeks
             $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
             $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getUserInfoObj->execute();
-            return $getUserInfoObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getUserInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
         return false;
