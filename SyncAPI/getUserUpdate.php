@@ -14,7 +14,6 @@ $result = array("change" => array());
 
 #新たに追加されたユーザーをユーザーIDから検索、$result["change"]に格納
 $userListFromDB = $UserInfo->getUserIdList();
-
 $userListFromReq = array();
 foreach ($userInfoArr as $userInfo) {
     $userListFromReq[] = $userInfo["userId"];
