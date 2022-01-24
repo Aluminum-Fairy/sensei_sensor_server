@@ -8,7 +8,7 @@ class Sensor
 {
     use Verify;
 
-    protected $dbh;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
