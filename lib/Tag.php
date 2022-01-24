@@ -114,7 +114,7 @@ class Tag
     {
         #タグのアップデート情報
         if (!$this->tagExist($tagInfo["tagId"])) {
-            return false;
+            return 0;
         }
         $getTagUpdateSql = "SELECT tagId , tagId, description, MACAddress, updateTime FROM tag WHERE tagId = :tagId AND updateTime > :updateTime";
         try {

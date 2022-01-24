@@ -11,6 +11,7 @@ $tagInfoArr = json_decode($json, true);
 
 #結果を入れる配列の準備
 $result = array("change" => array());
+$result += array("delete" => array());
 
 #新たに追加されたタグをタグIDから検索,$result["change"]に格納
 $tagListFRomDB = $Tag->getTagIdList();
@@ -29,6 +30,8 @@ foreach ($newTagIdArr as $newTagId){
 foreach ($tagInfoArr as $tagInfo) {
     $res = $Tag->checkUserUpdate($tagInfo);
     if (false === $res) {
+    } elseif ($res === 0) {
+        $result["delete"][] = $tagInfo["tagId"];
     } else {
         $result["change"][] = $res;
     }

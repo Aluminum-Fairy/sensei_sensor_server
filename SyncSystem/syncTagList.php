@@ -12,8 +12,13 @@ $lastUpdateList = $Tag->getLastTagUpdateTime();
 $resStr = postCurl("http://" . URL . "/SyncAPI/getTagUpdate.php", json_encode($lastUpdateList));
 
 $resArr = json_decode($resStr, true);
+
 # タグリストのうち,変更と新規追加があった場合はこちらで処理される.
 foreach ($resArr["change"] as $tagInfo) {
     $Tag->setTag($tagInfo);
 }
 
+# タグリストのうち、削除があった場合はこちらで処理される。
+foreach ($resArr["delete"] as $tagId) {
+    $Tag->delTag($tagId);
+}
