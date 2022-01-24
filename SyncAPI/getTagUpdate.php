@@ -22,13 +22,13 @@ foreach ($tagInfoArr as $tagInfo) {
 }
 
 $newTagIdArr = array_diff($tagListFRomDB,$tagListFromReq);
+//var_dump($newTagIdArr);
 foreach ($newTagIdArr as $newTagId){
     $result["change"][] = $Tag->getTagInfo($newTagId);
 }
-
 #タグの更新時間とIDから変更点を検索
 foreach ($tagInfoArr as $tagInfo) {
-    $res = $Tag->checkUserUpdate($tagInfo);
+    $res = $Tag->checkTagUpdate($tagInfo);
     if (false === $res) {
     } elseif ($res === 0) {
         $result["delete"][] = $tagInfo["tagId"];

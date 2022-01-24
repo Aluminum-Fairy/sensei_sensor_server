@@ -116,13 +116,14 @@ class Tag
         if (!$this->tagExist($tagInfo["tagId"])) {
             return 0;
         }
-        $getTagUpdateSql = "SELECT tagId , tagId, description, MACAddress, updateTime FROM tag WHERE tagId = :tagId AND updateTime > :updateTime";
+        $getTagUpdateSql = "SELECT * FROM tag WHERE tagId = :tagId AND updateTime > :updateTime";
         try {
             $getTagUpdateObj = $this->dbh->prepare($getTagUpdateSql);
             $getTagUpdateObj->bindValue(":tagId", $tagInfo["tagId"], PDO::PARAM_INT);
             $getTagUpdateObj->bindValue("updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $getTagUpdateObj->execute();
-            return $getTagUpdateObj->fetchAll(PDO::FETCH_COLUMN);
+
+            return $getTagUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
 
         }
@@ -136,7 +137,7 @@ class Tag
         try {
             $getTagIdListObj = $this->dbh->prepare($getTagIdListSql);
             $getTagIdListObj->execute();
-            return $getTagIdListObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getTagIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
 
         }
@@ -145,7 +146,7 @@ class Tag
 
     public function getLastTagUpdateTime()
     {
-        $getLastTagUpdateTimeSql = "SELECT updateTime FROM tag";
+        $getLastTagUpdateTimeSql = "SELECT tagId,updateTime FROM tag";
         try {
             $getLastTagUpdateTimeObj = $this->dbh->prepare($getLastTagUpdateTimeSql);
             $getLastTagUpdateTimeObj->execute();
