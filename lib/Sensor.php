@@ -79,9 +79,10 @@ class Sensor
             $getSensorInfoObj = $this->dbh->prepare($getSensorInfoSql);
             $getSensorInfoObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $getSensorInfoObj->execute();
-            return $getSensorInfoObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getSensorInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }
+        return false;
     }
 
     public function deleteSenor($sensorId)
