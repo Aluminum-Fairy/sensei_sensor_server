@@ -18,7 +18,7 @@ class UserInfo extends Weeks
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
     }
@@ -134,7 +134,7 @@ class UserInfo extends Weeks
             $setUserObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
 

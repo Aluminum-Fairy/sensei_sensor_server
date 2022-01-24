@@ -9,12 +9,11 @@ require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use  Firebase\JWT\JWT;
-use PhpMyAdmin\Utils\HttpRequest;
 
 class JwtAuth
 {
     protected PDO $dbh;
-    protected $UserInfo;
+    protected UserInfo $UserInfo;
 
 
     public function __construct($loginInfo)
@@ -24,7 +23,7 @@ class JwtAuth
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
         $this->UserInfo = new UserInfo($loginInfo);

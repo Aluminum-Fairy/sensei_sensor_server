@@ -12,7 +12,7 @@ trait Verify
             $checkObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
         return $checkObj->fetchColumn() != 0;

@@ -17,7 +17,7 @@ class Sensor
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
     }
@@ -42,7 +42,7 @@ class Sensor
             $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
         return true;
@@ -157,7 +157,7 @@ class Sensor
             $getLLTObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
         }
         return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -181,7 +181,7 @@ class Sensor
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             exit();
         }
         return $getDiscvLogObj->fetchAll(PDO::FETCH_ASSOC);
@@ -203,7 +203,7 @@ class Sensor
             return true;
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            print "Database Connection Error:  ".$e;
             return false;
         }
     }
