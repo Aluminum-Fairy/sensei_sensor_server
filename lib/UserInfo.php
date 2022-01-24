@@ -128,7 +128,7 @@ class UserInfo extends Weeks
         try {
             $setUserObj = $this->dbh->prepare($setUserSql);
             $setUserObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
-            $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["username"]), PDO::PARAM_STR);
+            $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["userName"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":description", htmlspecialchars($userInfo["description"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
             $setUserObj->execute();
