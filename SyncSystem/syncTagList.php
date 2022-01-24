@@ -1,4 +1,5 @@
 <?php
+
 ##センサー側のタグリスト同期システム
 
 require_once __DIR__ . "/../config/Config.php";
