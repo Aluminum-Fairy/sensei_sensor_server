@@ -21,6 +21,7 @@ $sensorListFromReq = array();
 foreach ($sensorInfoArr as $sensorInfo) {
     $sensorListFromReq[] = $sensorInfo["sensorId"];
 }
+
 $newSensorIdArr = array_diff($sensorListFromDB, $sensorListFromReq);             #センサーリストの比較、無いIDだけピックアップ
 foreach ($newSensorIdArr as $newSenosrId) {
     $result["change"][] = $Sensor->getSensorInfo($newSenosrId);

@@ -88,7 +88,7 @@ class Tag
     public function setTag($tagInfo)
     {
         if ($this->tagExist($tagInfo["tagId"])) {
-            $tagSetSql = "UPDATE tag SET userId = :userId,description = :description,MACAddress = :macAdress ,updateTime = :updateTime WHERE tagId = :tagId";
+            $tagSetSql = "UPDATE tag SET userId = :userId,description = :description,MACAddress = :macAddress ,updateTime = :updateTime WHERE tagId = :tagId";
         } else {
             $tagSetSql = "INSERT INTO tag (tagId, userId, description, MACAddress, updateTime) VALUES (:tagId,:userId,:description,:macAddress,:updateTime)";
         }
