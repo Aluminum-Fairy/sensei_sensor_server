@@ -118,7 +118,6 @@ class Tag
             $getTagUpdateObj->bindValue(":tagId", $tagInfo["tagId"], PDO::PARAM_INT);
             $getTagUpdateObj->bindValue("updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $getTagUpdateObj->execute();
-
             return $getTagUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
         }

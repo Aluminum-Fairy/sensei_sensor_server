@@ -15,6 +15,6 @@ $resStr = postCurl("http://" . URL . "/SyncAPI/getUserUpdate.php", json_encode($
 
 $resArr = json_decode($resStr, true);
 # センサーリストのうち、変更と新規追加があった場合はこちらで処理される。
-foreach ($resArr["change"] as $sensorInfo) {
-    $UserInfo->setUser($sensorInfo);
+foreach ($resArr["change"] as $userInfo) {
+    $UserInfo->setUser($userInfo);
 }
