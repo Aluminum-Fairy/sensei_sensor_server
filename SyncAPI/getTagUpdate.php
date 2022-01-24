@@ -21,8 +21,8 @@ foreach ($tagInfoArr as $tagInfo) {
     $tagListFromReq[] = $tagInfo["tagId"];
 }
 
-$newTagIdArr = array_diff($tagListFRomDB,$tagListFromReq);
-foreach ($newTagIdArr as $newTagId){
+$newTagIdArr = array_diff($tagListFRomDB, $tagListFromReq);
+foreach ($newTagIdArr as $newTagId) {
     $result["change"][] = $Tag->getTagInfo($newTagId);
 }
 

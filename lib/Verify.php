@@ -33,13 +33,12 @@ trait Verify
     public function tagExist($tagId)
     {
         $checkSql = "SELECT COUNT(tagId) FROM tag WHERE tagId = :tagId";
-        try{
+        try {
             $checkObj = $this->dbh->prepare($checkSql);
-            $checkObj->bindValue(":tagId",$tagId,PDO::PARAM_INT);
+            $checkObj->bindValue(":tagId", $tagId, PDO::PARAM_INT);
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
-        }catch(PDOException $e){
-
+        } catch (PDOException $e) {
         }
         return false;
     }
