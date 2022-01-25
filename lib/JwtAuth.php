@@ -13,10 +13,9 @@ use  Firebase\JWT\JWT;
 
 class JwtAuth
 {
+    use LogTrait;
     protected PDO $dbh;
     protected UserInfo $UserInfo;
-
-    use LogTrait;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -25,7 +24,7 @@ class JwtAuth
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__ ,$e);
+            $this->Systemlog(__FUNCTION__, $e);
             exit();
         }
         $this->UserInfo = new UserInfo($loginInfo);
@@ -57,7 +56,7 @@ class JwtAuth
                 ); // token をCookieにセット
                 return $loginUserId;
             } catch (Exception $e) {
-                $this->Systemlog(__FUNCTION__ ,$e);
+                $this->Systemlog(__FUNCTION__, $e);
             }
         }
         http_response_code(401);
@@ -73,7 +72,7 @@ class JwtAuth
                 $loginUserId = $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
                 return $loginUserId;
             } catch (Exception $e) {
-                $this->Systemlog(__FUNCTION__ ,$e);
+                $this->Systemlog(__FUNCTION__, $e);
             }
         }
         http_response_code(401);

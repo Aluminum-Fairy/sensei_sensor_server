@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/LogTrait.php";
 trait Verify
 {
@@ -14,7 +15,7 @@ trait Verify
             $checkObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__ ,$e);
+            $this->Systemlog(__FUNCTION__, $e);
             exit();
         }
         return $checkObj->fetchColumn() != 0;
@@ -29,7 +30,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__ ,$e);
+            $this->Systemlog(__FUNCTION__, $e);
         }
     }
 
@@ -42,7 +43,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__ ,$e);
+            $this->Systemlog(__FUNCTION__, $e);
         }
         return false;
     }
@@ -55,7 +56,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__ ,$e);
+            $this->Systemlog(__FUNCTION__, $e);
         }
     }
 
