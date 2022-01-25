@@ -3,21 +3,23 @@
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
+require_once __DIR__ . "/LogTrait.php";
 
 class Sensor
 {
     use Verify;
-
+    use LogTrait;
     protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
     {
+        $this->filePath = __FILE__;
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
     }
@@ -42,7 +44,7 @@ class Sensor
             $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
         return true;
@@ -64,6 +66,7 @@ class Sensor
             $changeSensorConfigObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -81,6 +84,7 @@ class Sensor
             $getSensorInfoObj->execute();
             return $getSensorInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -98,6 +102,7 @@ class Sensor
             $deleteSensorObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -116,6 +121,7 @@ class Sensor
             $getSensorUpdateObj->execute();
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return  false;
     }
@@ -128,6 +134,7 @@ class Sensor
             $getLastSensorUpdateTimeObj->execute();
             return $getLastSensorUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
@@ -139,6 +146,7 @@ class Sensor
             $getSensorIdListObj->execute();
             return $getSensorIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
@@ -157,8 +165,9 @@ class Sensor
             $getLLTObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+
         return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -181,7 +190,7 @@ class Sensor
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
         return $getDiscvLogObj->fetchAll(PDO::FETCH_ASSOC);
@@ -203,7 +212,7 @@ class Sensor
             return true;
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             return false;
         }
     }
@@ -238,6 +247,7 @@ class Sensor
             $getADLObj->execute();
             return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
@@ -273,7 +283,7 @@ class Sensor
             $getAGUDObj->execute();
             return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
-
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 }
