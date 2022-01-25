@@ -12,10 +12,10 @@ $Sensor = new Sensor($loginInfo);
 $Log = new LogClass(__FILE__);
 #センサーに格納された各センサーの設定が変更されたとされる時刻リストを取得
 $lastUpdateList = $Sensor->getLastSensorUpdateTime();
-$Log->Systemlog("各センサー設定時刻情報送信",$lastUpdateList);
+$Log->Systemlog("各センサー設定時刻情報送信", $lastUpdateList);
 
 $resStr = postCurl("http://" . URL . "/SyncAPI/getSensorUpdate.php", json_encode($lastUpdateList));
-$Log->Systemlog("各センサー設定情報受信",$resStr);
+$Log->Systemlog("各センサー設定情報受信", $resStr);
 $resArr = json_decode($resStr, true);
 
 # センサーリストのうち、変更と新規追加があった場合はこちらで処理される。
