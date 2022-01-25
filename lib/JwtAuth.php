@@ -3,6 +3,7 @@
 #自作ライブラリ
 require_once __DIR__ . "/../config/Config.php";
 require_once __DIR__ . "/../lib/UserInfo.php";
+require_once __DIR__ . "/LogTrait.php";
 #DB Connection
 require_once __DIR__ . "/../config/SQL_Login.php";
 #composer
@@ -15,6 +16,7 @@ class JwtAuth
     protected PDO $dbh;
     protected UserInfo $UserInfo;
 
+    use LogTrait;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -23,7 +25,7 @@ class JwtAuth
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
         $this->UserInfo = new UserInfo($loginInfo);
@@ -55,6 +57,7 @@ class JwtAuth
                 ); // token をCookieにセット
                 return $loginUserId;
             } catch (Exception $e) {
+                $this->Systemlog(__FUNCTION__ ,$e);
             }
         }
         http_response_code(401);
@@ -70,6 +73,7 @@ class JwtAuth
                 $loginUserId = $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
                 return $loginUserId;
             } catch (Exception $e) {
+                $this->Systemlog(__FUNCTION__ ,$e);
             }
         }
         http_response_code(401);

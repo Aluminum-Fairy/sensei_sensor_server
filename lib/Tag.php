@@ -2,10 +2,12 @@
 
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
+require_once __DIR__ . "/LogTrait.php";
 
 class Tag
 {
     use Verify;
+    use LogTrait;
 
     protected PDO $dbh;
 
@@ -16,7 +18,7 @@ class Tag
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            print "Database Connection Error:  ".$e;
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
     }
@@ -47,6 +49,7 @@ class Tag
             $addTagObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -64,6 +67,7 @@ class Tag
             $delTagObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -81,6 +85,7 @@ class Tag
             $getTagInfoObj->execute();
             return $getTagInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return  false;
     }
@@ -102,6 +107,7 @@ class Tag
             $tagSetObj->bindValue(":updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $tagSetObj->execute();
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -120,6 +126,7 @@ class Tag
             $getTagUpdateObj->execute();
             return $getTagUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
@@ -132,6 +139,7 @@ class Tag
             $getTagIdListObj->execute();
             return $getTagIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
         return false;
     }
