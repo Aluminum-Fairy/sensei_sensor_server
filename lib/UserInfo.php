@@ -221,7 +221,7 @@ class UserInfo extends Weeks
         return false;
     }
 
-    public function setPubViewCfg($userId, $weekNum, $publicMode)
+    public function setPubViewTimeCfg($userId, $weekNum, $publicMode)
         //曜日ごとに公開時間を変更するための関数.将来のために実装
     {
         if (!$this->viewTimeConfigExist($userId)) {
