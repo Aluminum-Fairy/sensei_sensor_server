@@ -4,7 +4,7 @@ require_once __DIR__ . "/../config/Config.php";
 
 trait LogTrait
 {
-    protected String $filePath;
+    protected ?string $filePath = null;
 
     public function Systemlog($message, $value)
     {

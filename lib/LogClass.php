@@ -4,7 +4,7 @@ require_once __DIR__ . "/../config/Config.php";
 
 class LogClass
 {
-    protected string $filePath;
+    protected ?string $filePath = null;
 
     public function __construct($filePath)
     {
