@@ -220,7 +220,7 @@ class Sensor
     public function getAllowedDiscvList()
     {
         $getAllowedDiscvListSql =
-            "SELECT View.userName,View.placeName,View.time FROM
+            "SELECT View.userId,View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
@@ -254,7 +254,7 @@ class Sensor
     public function getAllowedGroupUsersDiscvList($groupId)
     {
         $getAllowedGroupUsersDiscvListSql =
-            "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
+            "SELECT View.userId,View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
             (
                 SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
                 (
