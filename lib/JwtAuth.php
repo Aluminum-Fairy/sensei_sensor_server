@@ -71,6 +71,7 @@ class JwtAuth
                 $payload = JWT::decode($jwt, JWT_KEY, array(JWT_ALG)); // JWT デコード (失敗時は例外)
                 return $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
             } catch (Exception $e) {
+                $this->Systemlog(__FUNCTION__, $jwt);
                 $this->Systemlog(__FUNCTION__, $e->getMessage());
             }
         }
