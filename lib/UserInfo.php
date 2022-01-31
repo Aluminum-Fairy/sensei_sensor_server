@@ -207,6 +207,7 @@ class UserInfo extends Weeks
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
+        var_dump($userId);
         $setAllWeekCfgSql = "UPDATE viewTimeConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
