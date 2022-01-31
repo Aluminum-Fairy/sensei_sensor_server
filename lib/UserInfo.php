@@ -20,7 +20,7 @@ class UserInfo extends Weeks
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
     }
@@ -52,7 +52,7 @@ class UserInfo extends Weeks
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -70,7 +70,7 @@ class UserInfo extends Weeks
             $chPasswdObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -88,7 +88,7 @@ class UserInfo extends Weeks
             $userAuthObj->execute();
             return password_verify($password, $userAuthObj->fetch()["passwd"]);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -101,7 +101,7 @@ class UserInfo extends Weeks
             $getLastUserUpdateTimeObj->execute();
             return $getLastUserUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -119,7 +119,7 @@ class UserInfo extends Weeks
             $getUserInfoObj->execute();
             return $getUserInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -141,7 +141,7 @@ class UserInfo extends Weeks
             $setUserObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
 
@@ -162,7 +162,7 @@ class UserInfo extends Weeks
             $getUserUpdateObj->execute();
             return $getUserUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -175,7 +175,7 @@ class UserInfo extends Weeks
             $getUserIdListObj->execute();
             return $getUserIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -193,7 +193,7 @@ class UserInfo extends Weeks
                 $genWeekCfgObj->bindValue(":publicView", DEFAULT_PUBLIC_CONFIG, PDO::PARAM_INT);
                 $genWeekCfgObj->execute();
             } catch (PDOException $e) {
-                $this->Systemlog(__FUNCTION__, $e);
+                $this->Systemlog(__FUNCTION__, $e->getMessage());
                 return false;
             }
         }
@@ -217,7 +217,7 @@ class UserInfo extends Weeks
             $setAllWeekCfgObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -244,7 +244,7 @@ class UserInfo extends Weeks
             $setPubViewCfgObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -270,7 +270,7 @@ class UserInfo extends Weeks
             $setPubPlaceCfgObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -297,7 +297,7 @@ class UserInfo extends Weeks
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -328,7 +328,7 @@ class UserInfo extends Weeks
             $getViewTimeConfigObj->execute();
             return $getViewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -357,7 +357,7 @@ class UserInfo extends Weeks
             $getUserListObj->execute();
             return $getUserListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }

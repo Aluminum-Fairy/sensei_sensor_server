@@ -18,7 +18,7 @@ class Tag
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
     }
@@ -49,7 +49,7 @@ class Tag
             $addTagObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -67,7 +67,7 @@ class Tag
             $delTagObj->execute();
             return true;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -85,7 +85,7 @@ class Tag
             $getTagInfoObj->execute();
             return $getTagInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return  false;
     }
@@ -107,7 +107,7 @@ class Tag
             $tagSetObj->bindValue(":updateTime", $tagInfo["updateTime"], PDO::PARAM_STR);
             $tagSetObj->execute();
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -126,7 +126,7 @@ class Tag
             $getTagUpdateObj->execute();
             return $getTagUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -139,7 +139,7 @@ class Tag
             $getTagIdListObj->execute();
             return $getTagIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }

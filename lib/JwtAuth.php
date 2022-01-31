@@ -24,7 +24,7 @@ class JwtAuth
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
         $this->UserInfo = new UserInfo($loginInfo);
@@ -56,7 +56,7 @@ class JwtAuth
                 ); // token をCookieにセット
                 return $loginUserId;
             } catch (Exception $e) {
-                $this->Systemlog(__FUNCTION__, $e);
+                $this->Systemlog(__FUNCTION__, $e->getMessage());
             }
         }
         http_response_code(401);
@@ -69,10 +69,9 @@ class JwtAuth
         if ($jwt !== false) {
             try {
                 $payload = JWT::decode($jwt, JWT_KEY, array(JWT_ALG)); // JWT デコード (失敗時は例外)
-                $loginUserId = $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
-                return $loginUserId;
+                return $payload->loginUserId; // エンコード時のデータ取得(loginUserId)
             } catch (Exception $e) {
-                $this->Systemlog(__FUNCTION__, $e);
+                $this->Systemlog(__FUNCTION__, $e->getMessage());
             }
         }
         http_response_code(401);
