@@ -15,7 +15,7 @@ trait Verify
             $checkObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
         return $checkObj->fetchColumn() != 0;
@@ -30,7 +30,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
     }
 
@@ -43,7 +43,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -56,7 +56,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
-            $this->Systemlog(__FUNCTION__, $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
     }
 
