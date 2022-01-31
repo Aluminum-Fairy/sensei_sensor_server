@@ -207,13 +207,12 @@ class UserInfo extends Weeks
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
         }
-        var_dump($userId);
         $setAllWeekCfgSql = "UPDATE viewTimeConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
-            $setAllWeekCfgObj->bindValue(":startTime", $startTime . PDO::PARAM_INT);
-            $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_INT);
-            $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":startTime", $startTime , PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":endTime", $endTime , PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":userId", $userId , PDO::PARAM_INT);
             $setAllWeekCfgObj->execute();
             return true;
         } catch (PDOException $e) {
