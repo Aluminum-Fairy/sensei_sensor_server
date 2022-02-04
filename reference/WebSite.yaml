@@ -5,7 +5,7 @@ info:
 servers:
   - url: 'http://localhost:3100'
 paths:
-  /user:
+  /user/:
     get:
       summary: 'ユーザーページ: ユーザー情報の全取得'
       tags: []
@@ -105,7 +105,7 @@ paths:
           required: true
       description: ''
     parameters: []
-  /users/publicationTime:
+  /users/publicationTime/:
     get:
       summary: 'ユーザーページ: 公開時間の取得'
       tags: []
@@ -178,7 +178,7 @@ paths:
           description: JWT Token
           required: true
       description: ''
-  /users/publicationDays:
+  /users/publicationDays/:
     get:
       summary: 'ユーザーページ: 公開曜日の取得'
       tags: []
@@ -289,7 +289,7 @@ paths:
                       wednesday: true
                       thursday: true
                       friday: true
-  /users/publicationPlace:
+  /users/publicationPlace/:
     get:
       summary: 'ユーザーページ: 公開場所の取得'
       tags: []
@@ -407,9 +407,9 @@ paths:
                     public:
                       - roomId: string
                         roomName: string
-  /users/group:
+  /users/group/:
     get:
-      summary: 'ユーザーページ: グループ一覧の取得'
+      summary: 'ユーザーページ: 所属しているグループ一覧の取得'
       tags: []
       responses:
         '200':
@@ -532,7 +532,7 @@ paths:
           name: token
           description: JWT Token
           required: true
-  '/users/groups/{groupId}':
+  '/users/groups/{groupId}/':
     parameters:
       - schema:
           type: string
@@ -652,7 +652,7 @@ paths:
           name: token
           description: JWT Token
           required: true
-  /users/userList:
+  /users/userList/:
     get:
       summary: 'ユーザーページ: 先生一覧取得'
       tags: []
@@ -695,48 +695,7 @@ paths:
           name: token
           description: JWT Token
           required: true
-  '/groups/{groupId}':
-    get:
-      summary: 'メインページ: グループの取得'
-      tags: []
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  groupName:
-                    type: string
-                  users:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        userName:
-                          type: string
-                        detectionTime:
-                          type: string
-                        roomName:
-                          type: string
-              examples:
-                test-group-id:
-                  value:
-                    groupName: 謎の組織
-                    users:
-                      - userName: 誰か
-                        detectionTime: '2021-10-01 10:00:11'
-                        roomName: どこか
-        '400':
-          description: Bad Request
-      operationId: get-group
-    parameters:
-      - schema:
-          type: string
-        name: groupId
-        in: path
-        required: true
+    parameters: []
   /groups/:
     post:
       summary: 'メインページ: 1つ以上のグループを取得'
@@ -819,7 +778,49 @@ paths:
                     - 1
                     - 2
                     - 3
-  /login:
+  '/groups/{groupId}/':
+    get:
+      summary: 'メインページ: グループの取得'
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groupName:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userName:
+                          type: string
+                        detectionTime:
+                          type: string
+                        roomName:
+                          type: string
+              examples:
+                test-group-id:
+                  value:
+                    groupName: 謎の組織
+                    users:
+                      - userName: 誰か
+                        detectionTime: '2021-10-01 10:00:11'
+                        roomName: どこか
+        '400':
+          description: Bad Request
+      operationId: get-group
+    parameters:
+      - schema:
+          type: string
+        name: groupId
+        in: path
+        required: true
+  /login/:
     post:
       summary: 'ユーザーページ: ログイン'
       operationId: post-login
@@ -841,9 +842,10 @@ paths:
                   type: string
                 password:
                   type: string
-  /logout:
+    parameters: []
+  /logout/:
     post:
-      summary: ''
+      summary: 'ユーザーページ: ログアウト'
       operationId: post-logout
       responses:
         '200':
@@ -857,6 +859,7 @@ paths:
           name: token
           description: JWT Token
           required: true
+    parameters: []
 components:
   schemas:
     sensor:
