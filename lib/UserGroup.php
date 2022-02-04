@@ -83,13 +83,21 @@ class UserGroup
         return false;
     }
 
-    public function getGroupList()
+    public function getGroupList($userId)
     {
-        $getGroupListSql = "SELECT * FROM userGroupList";
+        if($limitUserId = func_num_args() == 1){
+            $getGroupListSql = "SELECT userGroupList.groupId AS groupId ,userGroupList.groupName FROM userGroupList LEFT JOIN userGroup ON userGroup.groupId = userGroupList.groupId WHERE userGroup.userId = :userId";
+        }else{
+            $getGroupListSql = "SELECT * FROM userGroupList";
+        }
+
 
         try {
             $getGroupListObj = $this->dbh->prepare($getGroupListSql);
             $getGroupListObj->execute();
+            if($limitUserId){
+                $getGroupListObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            }
             return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__, $e->getMessage());
