@@ -1,7 +1,10 @@
 <?php
 
+require_once __DIR__ . "/LogTrait.php";
 trait Verify
-{                                                                                                                        //入力データの検証用各データ処理用クラスファイルよりも先に読み込ませる必要があるため注意
+{
+    use LogTrait;
+    //入力データの検証用各データ処理用クラスファイルよりも先に読み込ませる必要があるため注意
     public function sensorExist($sensorId)
         #センサーがすでに登録されている場合はTrueを返す。
     {
@@ -12,7 +15,7 @@ trait Verify
             $checkObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
         return $checkObj->fetchColumn() != 0;
@@ -27,9 +30,23 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() == 1;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
     }
 
+    public function tagExist($tagId)
+    {
+        $checkSql = "SELECT COUNT(tagId) FROM tag WHERE tagId = :tagId";
+        try {
+            $checkObj = $this->dbh->prepare($checkSql);
+            $checkObj->bindValue(":tagId", $tagId, PDO::PARAM_INT);
+            $checkObj->execute();
+            return $checkObj->fetchColumn() != 0;
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
+        }
+        return false;
+    }
     public function viewTimeConfigExist($userId)
     {
         $checkSql = "SELECT COUNT(userId) FROM viewTimeConfig WHERE userId = :userId";
@@ -39,6 +56,7 @@ trait Verify
             $checkObj->execute();
             return $checkObj->fetchColumn() != 0;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
     }
 

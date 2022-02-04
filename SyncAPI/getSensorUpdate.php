@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . "/../config/Config.php";
-require_once __DIR__ . "/../../lib/Sensor.php";
+require_once __DIR__ . "/../lib/Sensor.php";
 
 
 
@@ -21,9 +21,10 @@ $sensorListFromReq = array();
 foreach ($sensorInfoArr as $sensorInfo) {
     $sensorListFromReq[] = $sensorInfo["sensorId"];
 }
-$newSenosrIdArr = array_diff($sensorListFromDB, $sensorListFromReq);             #センサーリストの比較、無いIDだけピックアップ
-foreach ($newSenosrIdArr as $newSenosrId) {
-    $result["change"][] = $Sensor->getSensorInfo($newSenosrId);
+
+$newSensorIdArr = array_diff($sensorListFromDB, $sensorListFromReq);             #センサーリストの比較、無いIDだけピックアップ
+foreach ($newSensorIdArr as $newSensorId) {
+    $result["change"][] = $Sensor->getSensorInfo($newSensorId);
 }
 
 #センサーの更新時間とIDから変更点を検索

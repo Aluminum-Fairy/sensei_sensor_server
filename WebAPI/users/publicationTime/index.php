@@ -2,7 +2,6 @@
 
 require_once(__DIR__ . "/../../../config/Config.php");
 
-use ReCaptcha\RequestMethod;
 
 $requestMethod = strtolower($_SERVER["REQUEST_METHOD"]);
 

@@ -1,17 +1,17 @@
 <?php
 
-use Symfony\Component\Cache\Simple\PdoCache;
-
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
 require_once __DIR__ . "/Weeks.php";
+require_once __DIR__ . "/LogTrait.php";
 
 class UserInfo extends Weeks
 {
+    use LogTrait;
     use Verify;
 
-    protected $dbh;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -20,7 +20,7 @@ class UserInfo extends Weeks
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
     }
@@ -43,7 +43,7 @@ class UserInfo extends Weeks
 
     public function addUser($userName, $password, $description)
     {
-        $addUserSql = "INSERT INTO user (userName,password,description) VALUES (:userName,:password,:description)";
+        $addUserSql = "INSERT INTO user (userName,passwd,description) VALUES (:userName,:password,:description)";
         try {
             $addUserObj = $this->dbh->prepare($addUserSql);
             $addUserObj->bindValue(":userName", htmlspecialchars($userName), PDO::PARAM_STR);
@@ -52,6 +52,7 @@ class UserInfo extends Weeks
             $addUserObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -69,6 +70,7 @@ class UserInfo extends Weeks
             $chPasswdObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -86,23 +88,94 @@ class UserInfo extends Weeks
             $userAuthObj->execute();
             return password_verify($password, $userAuthObj->fetch()["passwd"]);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
+        }
+        return false;
+    }
+
+    public function getLastUserUpdateTime()
+    {
+        $getLastUserUpdateTimeSql = "SELECT userId,updateTime FROM user";
+        try {
+            $getLastUserUpdateTimeObj = $this->dbh->prepare($getLastUserUpdateTimeSql);
+            $getLastUserUpdateTimeObj->execute();
+            return $getLastUserUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
 
     public function getUserInfo($userId)
     {
-        if ($this->userExist($userId)) {
+        if (!$this->userExist($userId)) {
             return false;
         }
 
-        $getUserInfoSql = "SELECT userName , description FROM user WHERE userId = :userId";
+        $getUserInfoSql = "SELECT userId,userName , description,updateTime FROM user WHERE userId = :userId";
         try {
             $getUserInfoObj = $this->dbh->prepare($getUserInfoSql);
             $getUserInfoObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getUserInfoObj->execute();
-            return $getUserInfoObj->fetchAll(PDO::FETCH_COLUMN);
+            return $getUserInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
+        }
+        return false;
+    }
+
+    public function setUser($userInfo)
+    {
+        if ($this->userExist($userInfo["userId"])) {
+            $setUserSql = "UPDATE user SET userName = :userName ,description = :description,updateTime = :updateTime WHERE userId = :userId";
+        } else {
+            $setUserSql = "INSERT INTO user (userId,userName,description,updateTime) VALUES  (:userId,:userName,:description,:updateTime)";
+        }
+
+        try {
+            $setUserObj = $this->dbh->prepare($setUserSql);
+            $setUserObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["userName"]), PDO::PARAM_STR);
+            $setUserObj->bindValue(":description", htmlspecialchars($userInfo["description"]), PDO::PARAM_STR);
+            $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
+            $setUserObj->execute();
+        } catch (PDOException $e) {
+            http_response_code(500);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
+            exit();
+        }
+
+        return true;
+    }
+
+    public function checkUserUpdate($userInfo)
+    {
+        #センサのアップデート確認
+        if (!$this->userExist($userInfo["userId"])) {
+            return false;
+        }
+        $getUserUpdateSql = "SELECT userId,userName,description,updateTime FROM user WHERE updateTime >:updateTime AND userId = :userId";
+        try {
+            $getUserUpdateObj = $this->dbh->prepare($getUserUpdateSql);
+            $getUserUpdateObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_STR);
+            $getUserUpdateObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
+            $getUserUpdateObj->execute();
+            return $getUserUpdateObj->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
+        }
+        return false;
+    }
+
+    public function getUserIdList()
+    {
+        $getUserIdListSql = "SELECT userId FROM user";
+        try {
+            $getUserIdListObj = $this->dbh->prepare($getUserIdListSql);
+            $getUserIdListObj->execute();
+            return $getUserIdListObj->fetchAll(PDO::FETCH_COLUMN);
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -110,7 +183,7 @@ class UserInfo extends Weeks
     protected function genWeekCfg($userId)
     {
         $genWeekCfgSql = "INSERT INTO viewTimeConfig (`userId`, `weekNum`, `startTime`, `endTime`, `publicView`) VALUES (:userId,:weekNum,:startTime,:endTime,:publicView)";
-        for ($weekNum = 0;$weekNum <=6;$weekNum++) {
+        for ($weekNum = 0; $weekNum <= 6; $weekNum++) {
             try {
                 $genWeekCfgObj = $this->dbh->prepare($genWeekCfgSql);
                 $genWeekCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
@@ -120,6 +193,7 @@ class UserInfo extends Weeks
                 $genWeekCfgObj->bindValue(":publicView", DEFAULT_PUBLIC_CONFIG, PDO::PARAM_INT);
                 $genWeekCfgObj->execute();
             } catch (PDOException $e) {
+                $this->Systemlog(__FUNCTION__, $e->getMessage());
                 return false;
             }
         }
@@ -136,17 +210,18 @@ class UserInfo extends Weeks
         $setAllWeekCfgSql = "UPDATE viewTimeConfig SET startTime = :startTime,endTime = :endTime WHERE userId = :userId";
         try {
             $setAllWeekCfgObj = $this->dbh->prepare($setAllWeekCfgSql);
-            $setAllWeekCfgObj->bindValue(":startTime", $startTime . PDO::PARAM_INT);
-            $setAllWeekCfgObj->bindValue(":endTime", $endTime . PDO::PARAM_INT);
-            $setAllWeekCfgObj->bindValue(":userId", $userId . PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":startTime", $startTime, PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":endTime", $endTime, PDO::PARAM_INT);
+            $setAllWeekCfgObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $setAllWeekCfgObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
 
-    public function setPubViewCfg($userId, $weekNum, $publicMode)
+    public function setPubViewTimeCfg($userId, $weekNum, $publicMode)
         //曜日ごとに公開時間を変更するための関数.将来のために実装
     {
         if (!$this->viewTimeConfigExist($userId)) {
@@ -159,7 +234,7 @@ class UserInfo extends Weeks
             $pubView = 0;
         }
 
-        $setPubViewCfgSql = "UPDATE viewTimeConfig SET publicView = :value WHERE useId = :userId AND weekNum = :weekNum";
+        $setPubViewCfgSql = "UPDATE viewTimeConfig SET publicView = :value WHERE userId = :userId AND weekNum = :weekNum";
         try {
             $setPubViewCfgObj = $this->dbh->prepare($setPubViewCfgSql);
             $setPubViewCfgObj->bindValue(":value", $pubView, PDO::PARAM_INT);
@@ -168,6 +243,7 @@ class UserInfo extends Weeks
             $setPubViewCfgObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -193,6 +269,7 @@ class UserInfo extends Weeks
             $setPubPlaceCfgObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -219,6 +296,7 @@ class UserInfo extends Weeks
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -249,6 +327,7 @@ class UserInfo extends Weeks
             $getViewTimeConfigObj->execute();
             return $getViewTimeConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -277,6 +356,7 @@ class UserInfo extends Weeks
             $getUserListObj->execute();
             return $getUserListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }

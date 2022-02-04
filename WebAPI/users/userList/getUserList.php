@@ -20,13 +20,13 @@ if ($userId !== false) {
             $userListArray[$courseId] += array("courseName"=>$userInfo["courseName"]);
             $userListArray[$courseId] += array("users"=>array());
         }
-        array_push($userListArray[$courseId]["users"], array("userId"=>$userInfo["userId"],"userName"=>$userInfo["userName"]));
+        $userListArray[$courseId]["users"][] = array("userId" => $userInfo["userId"], "userName" => $userInfo["userName"]);
     }
     $result = array();
     $tmpInfo = array();
     foreach ($userListArray as $courseId => $courseInfo) {
         $tmpInfo = array_merge(array("courseId"=>$courseId), $courseInfo);
-        array_push($result, $tmpInfo);
+        $result[] = $tmpInfo;
     }
     echo json_encode($result);
 }

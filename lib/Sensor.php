@@ -3,21 +3,23 @@
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
+require_once __DIR__ . "/LogTrait.php";
 
 class Sensor
 {
     use Verify;
-
-    protected $dbh;
+    use LogTrait;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
     {
+        $this->filePath = __FILE__;
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
     }
@@ -29,7 +31,7 @@ class Sensor
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         } else {
-            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer) VALUES (:sensorId,:placeName,:isMaster,:isWebServer)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTiime)";
         }
 
         try {
@@ -38,13 +40,11 @@ class Sensor
             $setSensorObj->bindValue(":placeName", htmlspecialchars($sensorInfo["placeName"]), PDO::PARAM_STR);
             $setSensorObj->bindValue(":isMaster", $sensorInfo["isMaster"], PDO::PARAM_INT);
             $setSensorObj->bindValue(":isWebServer", $sensorInfo["isWebServer"], PDO::PARAM_INT);
-            if ($this->sensorExist(($sensorInfo["sensorId"]))) {
-                $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
-            }
+            $setSensorObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $setSensorObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
         return true;
@@ -64,8 +64,11 @@ class Sensor
             $changeSensorConfigObj->bindValue(":isWebServer", $isWebServer, PDO::PARAM_INT);
             $changeSensorConfigObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $changeSensorConfigObj->execute();
+            return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+        return false;
     }
 
     public function getSensorInfo($sensorId)
@@ -79,9 +82,11 @@ class Sensor
             $getSensorInfoObj = $this->dbh->prepare($getSensorInfoSql);
             $getSensorInfoObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $getSensorInfoObj->execute();
-            return $getSensorInfoObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getSensorInfoObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+        return false;
     }
 
     public function deleteSenor($sensorId)
@@ -95,8 +100,11 @@ class Sensor
             $deleteSensorObj = $this->dbh->prepare($deleteSensorSql);
             $deleteSensorObj->bindValue(":sensorId", $sensorId, PDO::PARAM_INT);
             $deleteSensorObj->execute();
+            return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+        return false;
     }
 
     public function checkSensorUpdate($sensorInfo)
@@ -108,12 +116,14 @@ class Sensor
         $getSensorUpdateSql = "SELECT * FROM sensor WHERE updateTime >:updateTime AND sensorId = :sensorId";
         try {
             $getSensorUpdateObj = $this->dbh->prepare($getSensorUpdateSql);
-            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_INT);
+            $getSensorUpdateObj->bindValue(":updateTime", $sensorInfo["updateTime"], PDO::PARAM_STR);
             $getSensorUpdateObj->bindValue(":sensorId", $sensorInfo["sensorId"], PDO::PARAM_INT);
             $getSensorUpdateObj->execute();
             return $getSensorUpdateObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+        return  false;
     }
 
     public function getLastSensorUpdateTime()
@@ -124,6 +134,7 @@ class Sensor
             $getLastSensorUpdateTimeObj->execute();
             return $getLastSensorUpdateTimeObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
@@ -135,6 +146,7 @@ class Sensor
             $getSensorIdListObj->execute();
             return $getSensorIdListObj->fetchAll(PDO::FETCH_COLUMN);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
@@ -153,8 +165,9 @@ class Sensor
             $getLLTObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
+
         return $getLLTObj->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -177,7 +190,7 @@ class Sensor
             $getDiscvLogObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__ ,$e);
             exit();
         }
         return $getDiscvLogObj->fetchAll(PDO::FETCH_ASSOC);
@@ -199,7 +212,7 @@ class Sensor
             return true;
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__ ,$e);
             return false;
         }
     }
@@ -207,7 +220,7 @@ class Sensor
     public function getAllowedDiscvList()
     {
         $getAllowedDiscvListSql =
-            "SELECT View.userName,View.placeName,View.time FROM
+            "SELECT View.userId,View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
         (
             SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
@@ -216,7 +229,7 @@ class Sensor
                     sensor.placeName,
                     discoveryLog.time, 
                     viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
-                    60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week
+                    60*HOUR(convert_tz(discoveryLog.time,'+00:00','+09:00'))+MINUTE(convert_tz(discoveryLog.time,'+00:00','+09:00')) as TimeNum, DAYOFWEEK(convert_tz(discoveryLog.time,'+00:00','+09:00')) as Week
                 FROM `viewTimeConfig`
                 LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
                 LEFT JOIN user ON discoveryLog.userId = user.userId
@@ -234,30 +247,31 @@ class Sensor
             $getADLObj->execute();
             return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 
     public function getAllowedGroupUsersDiscvList($groupId)
     {
         $getAllowedGroupUsersDiscvListSql =
-            "SELECT View.userId,View.userName,View.placeName as roomName,View.time as detectionTime FROM
-        (
-            SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum, discvView.groupId FROM
+            "SELECT View.userId,View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
             (
-                SELECT 
-                    user.userName,discoveryLog.userId,
-                    sensor.placeName,
-                    discoveryLog.time, 
-                    viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
-                    60*HOUR(time)+MINUTE(time) as TimeNum, DAYOFWEEK(discoveryLog.time) as Week,
-                    userGroup.groupId 
-                FROM `viewTimeConfig`
-                LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
-                LEFT JOIN user ON discoveryLog.userId = user.userId
-                LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId
-                LEFT JOIN userGroup ON discoveryLog.userId = userGroup.userId) AS discvView
-            WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.groupId = :groupId AND discvView.publicView = 1) as View
-        WHERE View.rownum =1;";
+                SELECT discvView.userName,discvView.userId,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
+                (
+                    SELECT 
+                        user.userName,discoveryLog.userId,
+                        sensor.placeName,
+                        discoveryLog.time, 
+                        viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
+                        60*HOUR(convert_tz(discoveryLog.time,'+00:00','+09:00'))+MINUTE(convert_tz(discoveryLog.time,'+00:00','+09:00')) as TimeNum, DAYOFWEEK(convert_tz(discoveryLog.time,'+00:00','+09:00')) as Week,
+                        userGroup.groupId 
+                    FROM `viewTimeConfig`
+                    LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
+                    LEFT JOIN user ON discoveryLog.userId = user.userId
+                    LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId
+                    LEFT JOIN userGroup ON discoveryLog.userId = userGroup.userId) AS discvView
+                WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.groupId = :groupId AND discvView.publicView = 1) as View
+            WHERE View.rownum =1;";
         /*
         最初のSELECTでdiscvoryLogとsensorとuserとsensorをJOINさせる、時刻計算用のTimeNumを追加
         次のSELECTでTimeNumから許可されたものを出す
@@ -269,7 +283,7 @@ class Sensor
             $getAGUDObj->execute();
             return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
-
+            $this->Systemlog(__FUNCTION__ ,$e);
         }
     }
 }

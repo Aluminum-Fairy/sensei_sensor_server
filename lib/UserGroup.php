@@ -3,13 +3,15 @@
 require_once __DIR__ . "/../config/SQL_Login.php";
 require_once __DIR__ . "/Verify.php";
 require_once __DIR__ . "/Define.php";
+require_once __DIR__ . "/LogTrait.php";
 
 
 class UserGroup
 {
     use Verify;
+    use LogTrait;
 
-    protected $dbh;
+    protected PDO $dbh;
 
     public function __construct($loginInfo)
         //初期化時にデータベースへの接続
@@ -18,7 +20,7 @@ class UserGroup
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
         } catch (PDOException $e) {
             http_response_code(500);
-            header("Error:" . $e);
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
             exit();
         }
     }
@@ -47,6 +49,7 @@ class UserGroup
             $addUserGroupObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -62,7 +65,9 @@ class UserGroup
             $delUserGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $delUserGroupObj->execute();
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
+        return false;
     }
 
     public function delAllUserFromGroup($groupId)
@@ -73,6 +78,7 @@ class UserGroup
             $delAllUserFromGroupObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             return $delAllUserFromGroupObj->execute();
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -86,6 +92,7 @@ class UserGroup
             $getGroupListObj->execute();
             return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -106,6 +113,7 @@ class UserGroup
             $getUserFromGroupListObj->execute();
             return $getUserFromGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
     }
 
@@ -121,6 +129,7 @@ class UserGroup
             $getGroupUserObj->execute();
             return $getGroupUserObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -139,6 +148,7 @@ class UserGroup
 
             return $getGroupNameObj->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -157,6 +167,7 @@ class UserGroup
             }
             return $this->editGroupName($groupId, $newGroupName);
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -179,6 +190,7 @@ class UserGroup
             $regUser2GroupObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }
@@ -188,11 +200,12 @@ class UserGroup
         $editGroupNameSql = "UPDATE userGroupList SET groupName = :groupName WHERE groupId = :groupId";
         try {
             $editGroupNameObj = $this->dbh->prepare($editGroupNameSql);
-            $editGroupNameObj->bindValue(":groupName", $newGroupName, PDO::PARAM_STR);
+            $editGroupNameObj->bindValue(":groupName", htmlspecialchars($newGroupName), PDO::PARAM_STR);
             $editGroupNameObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $editGroupNameObj->execute();
             return true;
         } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
     }

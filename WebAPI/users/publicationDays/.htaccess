@@ -4,6 +4,7 @@ RewriteEngine On
     Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
     Header set Access-Control-Allow-Credentials true
     Header set Access-Control-Allow-Headers "X-Requested-With, Origin, X-Csrftoken, Content-Type, Accept"
+    Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
 </IfModule>
 RewriteBase /sensei-sensor-php/WebAPI/users/publicationDays/
 RewriteCond %{REQUEST_FILENAME} !-f
