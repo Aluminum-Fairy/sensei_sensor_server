@@ -7,7 +7,7 @@ $UserGroup = new UserGroup($loginInfo);
 $JWT = new JwtAuth($loginInfo);
 $userId = $JWT->auth();
 
-if ($userId !== false){
+if ($userId !== false) {
     $result = json_encode($UserGroup->getGroupList($userId));
     if ($result === false) {
         http_response_code(500);
@@ -16,5 +16,3 @@ if ($userId !== false){
         echo $result;
     }
 }
-
-

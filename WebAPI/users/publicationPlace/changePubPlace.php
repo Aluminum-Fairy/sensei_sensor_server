@@ -15,7 +15,7 @@ if ($userId !== false) {
     foreach ($pubPlaceInfo["publicationPlace"]["private"] as $config) {
         if (!$UserInfo->setPubPlaceCfg($userId, $config["roomId"], false)) {
             $UserInfo->rollBack();
-            $UserInfo->Systemlog(__FILE__,ROLLBACK_Message);
+            $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);
             http_response_code(500);
             exit();
         }
@@ -23,7 +23,7 @@ if ($userId !== false) {
     foreach ($pubPlaceInfo["publicationPlace"]["public"] as $config) {
         if (!$UserInfo->setPubPlaceCfg($userId, $config["roomId"], true)) {
             $UserInfo->rollBack();
-            $UserInfo->Systemlog(__FILE__,ROLLBACK_Message);
+            $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);
             http_response_code(500);
             exit();
         }

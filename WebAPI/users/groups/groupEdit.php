@@ -20,7 +20,7 @@ if (!$userId !== false) {
         http_response_code(200);
     } else {
         $UserGroup->rollBack();
-        $UserGroup->Systemlog(__FILE__,ROLLBACK_Message);
+        $UserGroup->Systemlog(__FILE__, ROLLBACK_Message);
         http_response_code(500);
     }
 }
