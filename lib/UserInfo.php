@@ -295,7 +295,7 @@ class UserInfo extends Weeks
                 }
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             $this->Systemlog(__FUNCTION__, $e->getMessage());
         }
         return false;
