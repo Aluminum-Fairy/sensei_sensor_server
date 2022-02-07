@@ -17,7 +17,7 @@ if ($userId !== false) {
     foreach ($pubDayInfo["publicationDays"] as $week => $pubCfg) {
         if (!$UserInfo->setPubViewTimeCfg($userId, $Weeks->getWeekNum($week), $pubCfg)) {
             $UserInfo->rollBack();
-            $UserInfo->Systemlog(__FILE__,ROLLBACK_Message);
+            $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);
             http_response_code(500);
             exit();
         }

@@ -85,9 +85,9 @@ class UserGroup
 
     public function getGroupList($userId)
     {
-        if($limitUserId = func_num_args() == 1){
+        if ($limitUserId = func_num_args() == 1) {
             $getGroupListSql = "SELECT userGroupList.groupId AS groupId ,userGroupList.groupName FROM userGroupList LEFT JOIN userGroup ON userGroup.groupId = userGroupList.groupId WHERE userGroup.userId = :userId";
-        }else{
+        } else {
             $getGroupListSql = "SELECT * FROM userGroupList";
         }
 
@@ -95,8 +95,8 @@ class UserGroup
         try {
             $getGroupListObj = $this->dbh->prepare($getGroupListSql);
             $getGroupListObj->execute();
-            if($limitUserId){
-                $getGroupListObj->bindValue(":userId",$userId,PDO::PARAM_INT);
+            if ($limitUserId) {
+                $getGroupListObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             }
             return $getGroupListObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {

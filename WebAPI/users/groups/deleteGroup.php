@@ -19,11 +19,11 @@ if ($userId !== false) {
         } else {
             http_response_code(500);
             $UserGroup->rollBack();
-            $UserGroup->Systemlog(__FILE__,ROLLBACK_Message);
+            $UserGroup->Systemlog(__FILE__, ROLLBACK_Message);
         }
     } else {
         http_response_code(500);
         $UserGroup->rollBack();
-        $UserGroup->Systemlog(__FILE__,ROLLBACK_Message);
+        $UserGroup->Systemlog(__FILE__, ROLLBACK_Message);
     }
 }
