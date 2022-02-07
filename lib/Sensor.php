@@ -221,21 +221,22 @@ class Sensor
     {
         $getAllowedDiscvListSql =
             "SELECT View.userId,View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
-        (
-            SELECT discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
             (
-                SELECT 
-                user.userName,discoveryLog.userId,
-                    sensor.placeName,
-                    discoveryLog.time, 
-                    viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
-                    60*HOUR(convert_tz(discoveryLog.time,'+00:00','+09:00'))+MINUTE(convert_tz(discoveryLog.time,'+00:00','+09:00')) as TimeNum, DAYOFWEEK(convert_tz(discoveryLog.time,'+00:00','+09:00')) as Week
-                FROM `viewTimeConfig`
-                LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
-                LEFT JOIN user ON discoveryLog.userId = user.userId
-                LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
-            WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.publicView = 1) as View
-        WHERE View.rownum =1;";
+                SELECT discvView.userId,discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
+                (
+                    SELECT 
+                    user.userName,discoveryLog.userId,
+                        sensor.placeName,
+                        discoveryLog.time, 
+                        viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView AS publicTimeView,viewSensorConfig.publicView AS publicSensorView, 
+                        60*HOUR(convert_tz(discoveryLog.time,'+00:00','+09:00'))+MINUTE(convert_tz(discoveryLog.time,'+00:00','+09:00')) as TimeNum, DAYOFWEEK(convert_tz(discoveryLog.time,'+00:00','+09:00')) as Week
+                    FROM `viewTimeConfig`
+                    LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
+                    LEFT JOIN user ON discoveryLog.userId = user.userId
+                    LEFT JOIN viewSensorConfig ON discoveryLog.userId = viewSensorConfig.userId AND discoveryLog.sensorId = viewSensorConfig.sensorId
+                    LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId ) AS discvView
+                WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.publicTimeView = 1 AND discvView.publicSensorView = 1) as View
+            WHERE View.rownum =1;";
         /*
         最初のSELECTでdiscvoryLogとsensorとuserとsensorをJOINさせる、時刻計算用のTimeNumを追加
         次のSELECTでTimeNumから許可されたものを出す
@@ -262,15 +263,16 @@ class Sensor
                         user.userName,discoveryLog.userId,
                         sensor.placeName,
                         discoveryLog.time, 
-                        viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView, 
+                        viewTimeConfig.weekNum,viewTimeConfig.startTime,viewTimeConfig.endTime,viewTimeConfig.publicView AS publicTimeView,viewSensorConfig.publicView AS publicSensorView,
                         60*HOUR(convert_tz(discoveryLog.time,'+00:00','+09:00'))+MINUTE(convert_tz(discoveryLog.time,'+00:00','+09:00')) as TimeNum, DAYOFWEEK(convert_tz(discoveryLog.time,'+00:00','+09:00')) as Week,
                         userGroup.groupId 
                     FROM `viewTimeConfig`
                     LEFT JOIN discoveryLog ON viewTimeConfig.userId = discoveryLog.userId
                     LEFT JOIN user ON discoveryLog.userId = user.userId
                     LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId
+                    LEFT JOIN viewSensorConfig ON discoveryLog.userId = viewSensorConfig.userId AND discoveryLog.sensorId = viewSensorConfig.sensorId
                     LEFT JOIN userGroup ON discoveryLog.userId = userGroup.userId) AS discvView
-                WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.groupId = :groupId AND discvView.publicView = 1) as View
+                WHERE discvView.TimeNum > discvView.startTime AND discvView.TimeNum < discvView.endTime AND discvView.Week = discvView.WeekNum AND discvView.groupId = :groupId AND discvView.publicTimeView = 1 AND discvView.publicSensorView = 1) as View
             WHERE View.rownum =1;";
         /*
         最初のSELECTでdiscvoryLogとsensorとuserとsensorをJOINさせる、時刻計算用のTimeNumを追加
