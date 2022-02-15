@@ -240,7 +240,7 @@ class Sensor
             $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
             $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_UNIQUE);
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_GROUP);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
@@ -270,7 +270,7 @@ class Sensor
             $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
             $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
@@ -342,7 +342,7 @@ class Sensor
             $getAGUDObj = $this->dbh->prepare($getAllowedGroupUsersDiscvListSql);
             $getAGUDObj->bindValue(":groupId", $groupId, PDO::PARAM_INT);
             $getAGUDObj->execute();
-            return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
+            return $getAGUDObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
