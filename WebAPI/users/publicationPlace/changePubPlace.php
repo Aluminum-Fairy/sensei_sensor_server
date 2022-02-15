@@ -12,7 +12,7 @@ if ($userId !== false) {
     $pubPlaceInfo = json_decode($json, true);
     $UserInfo->beginTransaction();
 
-    foreach ($pubPlaceInfo["publicationPlace"]["private"] as $config) {
+    foreach ($pubPlaceInfo["private"] as $config) {
         if (!$UserInfo->setPubPlaceCfg($userId, $config["roomId"], false)) {
             $UserInfo->rollBack();
             $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);
@@ -20,7 +20,7 @@ if ($userId !== false) {
             exit();
         }
     }
-    foreach ($pubPlaceInfo["publicationPlace"]["public"] as $config) {
+    foreach ($pubPlaceInfo["public"] as $config) {
         if (!$UserInfo->setPubPlaceCfg($userId, $config["roomId"], true)) {
             $UserInfo->rollBack();
             $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);
