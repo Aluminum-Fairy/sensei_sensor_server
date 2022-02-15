@@ -1,6 +1,7 @@
 <?php
+
 require_once(__DIR__ . "/../../lib/Sensor.php");
-require_once (__DIR__."/../../lib/JwtAuth.php");
+require_once(__DIR__."/../../lib/JwtAuth.php");
 
 $JwtAuth = new JwtAuth($loginInfo);
 $Sensor = new Sensor($loginInfo);
