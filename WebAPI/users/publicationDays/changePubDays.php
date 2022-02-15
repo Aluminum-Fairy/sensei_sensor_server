@@ -14,7 +14,7 @@ if ($userId !== false) {
     $json = file_get_contents("php://input");
     $pubDayInfo = json_decode($json, true);
     $UserInfo->beginTransaction();
-    foreach ($pubDayInfo["publicationDays"] as $week => $pubCfg) {
+    foreach ($pubDayInfo as $week => $pubCfg) {
         if (!$UserInfo->setPubViewTimeCfg($userId, $Weeks->getWeekNum($week), $pubCfg)) {
             $UserInfo->rollBack();
             $UserInfo->Systemlog(__FILE__, ROLLBACK_Message);

@@ -310,9 +310,9 @@ class UserInfo extends Weeks
         if ($config === false) {
             return false;
         }
-        $result = array("publicationDays" => array());
+        $result = array();
         foreach ($config as $weekNum => $weekConfig) {
-            $result["publicationDays"] += array($this->getWeek($weekNum - 1) => $weekConfig["publicView"] == 1);
+            $result+= array($this->getWeek($weekNum - 1) => $weekConfig["publicView"] == 1);
         }
         return $result;
     }
@@ -342,8 +342,8 @@ class UserInfo extends Weeks
             return false;
         }
         $firstWeekNum = array_keys($config)[0];
-        $result = array("publicationTime" => array("start" => $config[$firstWeekNum]["startTime"]));
-        $result["publicationTime"] += array("end" => $config[$firstWeekNum]["endTime"]);
+        $result = array("start" => $config[$firstWeekNum]["startTime"]);
+        $result += array("end" => $config[$firstWeekNum]["endTime"]);
         return $result;
     }
 
