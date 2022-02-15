@@ -217,6 +217,65 @@ class Sensor
         }
     }
 
+    public function getNotFoundDiscvList($minutes)
+    {
+        $getAllowedDiscvListSql =
+            "SELECT discvView.userId,discvView.userName,discvView.placeName as roomName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
+                (
+                    SELECT 
+                    user.userName,discoveryLog.userId,
+                        sensor.placeName,
+                        discoveryLog.time,
+                        row_number() over (partition by discoveryLog.userId ORDER BY discoveryLog.time DESC) rownum
+                    FROM discoveryLog
+                    LEFT JOIN user ON discoveryLog.userId = user.userId
+                    LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId 
+                    ) AS discvView
+            WHERE discvView.rownum =1 AND discvView.time < (CURRENT_TIMESTAMP - INTERVAL :minutes MINUTE);";
+        /*
+        30分以内に検出されなかっ人全員出す
+        */
+
+        try {
+            $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
+            $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
+            $getADLObj->execute();
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
+        }
+    }
+
+    public function getAllDiscvList($minutes)
+    {
+        $getAllowedDiscvListSql =
+            "SELECT discvView.userId,discvView.userName,discvView.placeName as roomName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
+                (
+                    SELECT 
+                    user.userName,discoveryLog.userId,
+                        sensor.placeName,
+                        discoveryLog.time,
+                        row_number() over (partition by discoveryLog.userId ORDER BY discoveryLog.time DESC) rownum
+                    FROM discoveryLog
+                    LEFT JOIN user ON discoveryLog.userId = user.userId
+                    LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId 
+                    WHERE discoveryLog.time > (CURRENT_TIMESTAMP - INTERVAL :minutes MINUTE)
+                    ) AS discvView
+            WHERE discvView.rownum =1;";
+        /*
+        30分以内に検出された人全員出す
+        */
+
+        try {
+            $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
+            $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
+            $getADLObj->execute();
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $this->Systemlog(__FUNCTION__ ,$e);
+        }
+    }
+
     public function getAllowedDiscvList()
     {
         $getAllowedDiscvListSql =
