@@ -240,7 +240,7 @@ class Sensor
             $getNFDLObj = $this->dbh->prepare($getNotFoundDiscvSql);
             $getNFDLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getNFDLObj->execute();
-            return $getNFDLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_GROUP);
+            return $getNFDLObj->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
