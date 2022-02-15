@@ -6,7 +6,7 @@ require_once(__DIR__."/../../lib/JwtAuth.php");
 $JwtAuth = new JwtAuth($loginInfo);
 $Sensor = new Sensor($loginInfo);
 header("Content-Type:application/json;charset=utf-8");
-$result ["NotFoundUserList"]= $Sensor->getNotFoundDiscvList(30);
+$result ["notFoundUserList"]= $Sensor->getNotFoundDiscvList(30);
 $allDiscvList = $Sensor->getAllDiscvList(30);
 foreach ($allDiscvList as $roomName => $member) {
     $result ["discoveryUserList"][]=array("roomName"=>$roomName)+array("users"=>$member);
