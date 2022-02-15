@@ -220,7 +220,7 @@ class Sensor
     public function getNotFoundDiscvList($minutes)
     {
         $getAllowedDiscvListSql =
-            "SELECT discvView.userName,discvView.placeName as roomName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
+            "SELECT discvView.placeName as roomName,discvView.userName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
                 (
                     SELECT 
                     user.userName,discoveryLog.userId,
@@ -240,7 +240,7 @@ class Sensor
             $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
             $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
@@ -249,7 +249,7 @@ class Sensor
     public function getAllDiscvList($minutes)
     {
         $getAllowedDiscvListSql =
-            "SELECT discvView.userName,discvView.placeName as roomName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
+            "SELECT discvView.placeName as roomName,discvView.userName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
                 (
                     SELECT 
                     user.userName,discoveryLog.userId,
@@ -270,7 +270,7 @@ class Sensor
             $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
             $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC);
+            return $getADLObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_UNIQUE);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
@@ -281,7 +281,7 @@ class Sensor
         $getAllowedDiscvListSql =
             "SELECT View.userName,View.placeName as roomName,convert_tz(View.time,'+00:00','+09:00') as detectionTime FROM
             (
-                SELECT discvView.userId,discvView.userName,discvView.placeName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
+                SELECT discvView.placeName,discvView.userId,discvView.userName,discvView.time ,row_number() over (partition by discvView.userId ORDER BY discvView.time DESC) rownum FROM
                 (
                     SELECT 
                     user.userName,discoveryLog.userId,
