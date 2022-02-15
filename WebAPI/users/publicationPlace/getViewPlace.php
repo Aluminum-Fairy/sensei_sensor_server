@@ -11,7 +11,7 @@ $UserInfo = new UserInfo($loginInfo);
 $userId = $JWT->auth();
 
 if ($userId !== false) {
-    $result = $UserInfo->getViewSensorConfig($userId);
+    $result = array("publicationPlace"=>$UserInfo->getViewSensorConfig($userId));
     if ($result !== false) {
         echo json_encode($result);
         http_response_code(200);
