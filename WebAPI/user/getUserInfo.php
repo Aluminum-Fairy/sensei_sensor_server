@@ -11,7 +11,7 @@ $userId = $JwtAuth->auth();
 if ($userId !== false) {
     $result = $UserInfo->getViewDays($userId);
     $result += $UserInfo->getViewTime($userId);
-    $result += $UserInfo->getViewSensorConfig($userId);
+    $result += array( "publicationPlace"=>$UserInfo->getViewSensorConfig($userId));
     $result += array("groupList" => array("groups" => $UserGroup->getUserFromGroupList($userId)));
     echo json_encode($result);
     http_response_code(200);

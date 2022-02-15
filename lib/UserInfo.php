@@ -279,11 +279,13 @@ class UserInfo extends Weeks
         if (!$this->viewSensorConfigExist($userId)) {
             return false;
         }
-        $getViewSensorConfigSql = "SELECT viewSensorConfig.sensorId AS roomId,sensor.placeName AS roomName,viewSensorConfig.publicView AS publicView FROM viewSensorConfig LEFT JOIN sensor ON viewSensorConfig.sensorId = sensor.sensorId WHERE userId = :userId";
+        $getViewSensorConfigSql = "SELECT REPLACE(REPLACE(viewSensorConfig.publicView,1,\"public\"),0,\"private\") AS publicView, viewSensorConfig.sensorId AS roomId,sensor.placeName AS roomName FROM viewSensorConfig LEFT JOIN sensor ON viewSensorConfig.sensorId = sensor.sensorId WHERE userId = :userId";
         try {
             $getViewSensorConfigObj = $this->dbh->prepare($getViewSensorConfigSql);
             $getViewSensorConfigObj->bindValue(":userId", $userId, PDO::PARAM_INT);
             $getViewSensorConfigObj->execute();
+            return $getViewSensorConfigObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
+            /*
             $ViewSensorConfig = $getViewSensorConfigObj->fetchAll(PDO::FETCH_ASSOC);
             $public = array();
             $private = array();
@@ -295,6 +297,7 @@ class UserInfo extends Weeks
                 }
             }
             return array("publicationPlace" => array("public" => $public, "private" => $private));
+            */
         } catch (Exception $e) {
             $this->Systemlog(__FUNCTION__, $e->getMessage());
         }

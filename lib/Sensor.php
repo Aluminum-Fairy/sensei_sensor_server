@@ -219,7 +219,7 @@ class Sensor
 
     public function getNotFoundDiscvList($minutes)
     {
-        $getAllowedDiscvListSql =
+        $getNotFoundDiscvSql =
             "SELECT discvView.placeName as roomName,discvView.userName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
                 (
                     SELECT 
@@ -237,10 +237,10 @@ class Sensor
         */
 
         try {
-            $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
-            $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
-            $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_GROUP);
+            $getNFDLObj = $this->dbh->prepare($getNotFoundDiscvSql);
+            $getNFDLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
+            $getNFDLObj->execute();
+            return $getNFDLObj->fetchAll(PDO::FETCH_ASSOC| PDO::FETCH_GROUP);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
@@ -248,7 +248,7 @@ class Sensor
 
     public function getAllDiscvList($minutes)
     {
-        $getAllowedDiscvListSql =
+        $getAllDiscvListSql =
             "SELECT discvView.placeName as roomName,discvView.userName,convert_tz(discvView.time,'+00:00','+09:00') as  detectionTime FROM
                 (
                     SELECT 
@@ -267,10 +267,10 @@ class Sensor
         */
 
         try {
-            $getADLObj = $this->dbh->prepare($getAllowedDiscvListSql);
-            $getADLObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
-            $getADLObj->execute();
-            return $getADLObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
+            $getAllDiscvListObj = $this->dbh->prepare($getAllDiscvListSql);
+            $getAllDiscvListObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
+            $getAllDiscvListObj->execute();
+            return $getAllDiscvListObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
