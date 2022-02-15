@@ -8,7 +8,7 @@ $Sensor = new Sensor($loginInfo);
 header("Content-Type:application/json;charset=utf-8");
 $result ["NotFoundUserList"]= $Sensor->getNotFoundDiscvList(30);
 $allDiscvList = $Sensor->getAllDiscvList(30);
-foreach ($allDiscvList AS $roomName => $member){
+foreach ($allDiscvList as $roomName => $member) {
     $result ["discoveryUserList"][]=array("roomName"=>$roomName)+array("users"=>$member);
 }
 
