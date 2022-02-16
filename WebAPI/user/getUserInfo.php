@@ -9,7 +9,7 @@ $JwtAuth = new JwtAuth($loginInfo);
 
 $userId = $JwtAuth->auth();
 if ($userId !== false) {
-    $result = $UserInfo->getViewDays($userId);
+    $result = array("publicationDays"=>$UserInfo->getViewDays($userId));
     $result += array("publicationTime"=>$UserInfo->getViewTime($userId));
     $result += array( "publicationPlace"=>$UserInfo->getViewSensorConfig($userId));
     $result += array("groupList" => array("groups" => $UserGroup->getUserFromGroupList($userId)));
