@@ -17,10 +17,10 @@ function postCurl($url, $postData)
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // 実行結果を文字列で返す
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // サーバー証明書の検証を行わない
     curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch,CURLOPT_CONNECTTIMEOUT,10);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);
     $resStr = curl_exec($ch);
-    if($resStr === false){
+    if ($resStr === false) {
         $resStr = "URL:".$url." : ".curl_error($ch);
     }
     curl_close($ch);

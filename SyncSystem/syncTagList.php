@@ -16,7 +16,7 @@ $resStr = postCurl("http://" . URL . "/SyncAPI/getTagUpdate.php", json_encode($l
 $Log->Systemlog("各タグ設定受信", $resStr);
 
 $resArr = json_decode($resStr, true);
-if(!is_null($resArr)) {
+if (!is_null($resArr)) {
     # タグリストのうち,変更と新規追加があった場合はこちらで処理される.
 
     foreach ($resArr["change"] as $tagInfo) {
