@@ -7,9 +7,6 @@ $JwtAuth = new JwtAuth($loginInfo);
 $Sensor = new Sensor($loginInfo);
 header("Content-Type:application/json;charset=utf-8");
 $result ["notFoundUserList"]= $Sensor->getNotFoundDiscvList(30);
-$allDiscvList = $Sensor->getAllDiscvList(30);
-foreach ($allDiscvList as $roomName => $member) {
-    $result ["discoveryUserList"][]=array("roomName"=>$roomName)+array("users"=>$member);
-}
+$result ["discoveryUserList"] = $Sensor->getAllDiscvList(30);
 
 echo json_encode($result);
