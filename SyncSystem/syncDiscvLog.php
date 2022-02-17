@@ -11,6 +11,7 @@ require_once __DIR__ . "/../lib/LogClass.php";
 $Sensor = new Sensor($loginInfo);
 $Log = new LogClass(__FILE__);
 
+
 #DB上の各センサーの最新時刻を送信
 $payload = array("discvLogTime" => $Sensor->getLastLogTime(ThisSensorId, EXCLUSION));
 $payload += array("thisSensorId" => ThisSensorId);
@@ -23,11 +24,13 @@ $Log->Systemlog("各センサー時刻情報受信",$resStr);
 
 #応答元のセンサーの最新時刻(サーバー内の)を受信、入力
 $resArr = json_decode($resStr, true);
-foreach ($resArr["newDiscvLog"] as $discvLog) {
-    $Sensor->inputDiscvLog($discvLog['time'], $discvLog['sensorId'], $discvLog['userId']);
-}
+if(!is_null($resArr)) {
+    foreach ($resArr["newDiscvLog"] as $discvLog) {
+        $Sensor->inputDiscvLog($discvLog['time'], $discvLog['sensorId'], $discvLog['userId']);
+    }
 
-#応答元のセンサーの差分データをサーバへ送信
-$newDiscvLog = $Sensor->getDiscvLog(ThisSensorId, $resArr["lastLogTime"][0]["time"], MATCH);
-$Log->Systemlog("差分データ送信",$newDiscvLog);
-postCurl("http://" . URL . "/SyncAPI/insertDiscvLog.php", json_encode($newDiscvLog));
+    #応答元のセンサーの差分データをサーバへ送信
+    $newDiscvLog = $Sensor->getDiscvLog(ThisSensorId, $resArr["lastLogTime"][0]["time"], MATCH);
+    $Log->Systemlog("差分データ送信", $newDiscvLog);
+    postCurl("http://" . URL . "/SyncAPI/insertDiscvLog.php", json_encode($newDiscvLog));
+}
