@@ -21,8 +21,8 @@ class LogClass
         if (!is_string($value) && !is_numeric($value)) {
             ob_start();
             var_dump($value);
-            ob_end_clean();
             fputs($fp, ob_get_contents() . "\n\n");
+            ob_end_clean();
         } else {
             fputs($fp, $value . "\n\n");
         }
