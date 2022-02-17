@@ -261,7 +261,7 @@ class Sensor
                     LEFT JOIN sensor ON discoveryLog.sensorId = sensor.sensorId 
                     WHERE discoveryLog.time > (CURRENT_TIMESTAMP - INTERVAL :minutes MINUTE)
                     ) AS discvView
-            WHERE discvView.rownum =1;";
+            WHERE discvView.rownum =1  ORDER BY detectionTime ASC;";
         /*
         30分以内に検出された人全員出す
         */
@@ -270,7 +270,7 @@ class Sensor
             $getAllDiscvListObj = $this->dbh->prepare($getAllDiscvListSql);
             $getAllDiscvListObj->bindValue(":minutes",$minutes,PDO::PARAM_INT);
             $getAllDiscvListObj->execute();
-            return $getAllDiscvListObj->fetchAll(PDO::FETCH_ASSOC | PDO::FETCH_GROUP);
+            return $getAllDiscvListObj->fetchAll(PDO::FETCH_ASSOC );
         } catch (PDOException $e) {
             $this->Systemlog(__FUNCTION__ ,$e);
         }
