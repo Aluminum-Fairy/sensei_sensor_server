@@ -32,7 +32,7 @@ class Sensor
         if ($this->sensorExist(($sensorInfo["sensorId"]))) {
             $setSensorSql = "UPDATE sensor SET placeName = :placeName,isMaster = :isMaster,isWebServer = :isWebServer ,updateTime=:updateTime WHERE sensorId =:sensorId";
         } else {
-            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTiime)";
+            $setSensorSql = "INSERT INTO sensor (sensorId,placeName,isMaster, isWebServer,updateTime) VALUES (:sensorId,:placeName,:isMaster,:isWebServer,:updateTime)";
         }
 
         try {
