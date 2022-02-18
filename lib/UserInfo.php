@@ -137,7 +137,7 @@ class UserInfo extends Weeks
             $setUserObj->bindValue(":userId", $userInfo["userId"], PDO::PARAM_INT);
             $setUserObj->bindValue(":userName", htmlspecialchars($userInfo["userName"]), PDO::PARAM_STR);
             $setUserObj->bindValue(":description", htmlspecialchars($userInfo["description"]), PDO::PARAM_STR);
-            $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_INT);
+            $setUserObj->bindValue(":updateTime", $userInfo["updateTime"], PDO::PARAM_STR);
             $setUserObj->execute();
         } catch (PDOException $e) {
             http_response_code(500);
