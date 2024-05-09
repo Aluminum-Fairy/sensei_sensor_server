@@ -14,7 +14,7 @@ class UserInfo extends Weeks
     protected PDO $dbh;
 
     public function __construct($loginInfo)
-        //初期化時にデータベースへの接続
+    //初期化時にデータベースへの接続
     {
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));
@@ -203,7 +203,7 @@ class UserInfo extends Weeks
 
 
     public function setAllWeekCfg($userId, $startTime, $endTime)
-        #全ての登録済みの曜日における公開時間を設定する
+    #全ての登録済みの曜日における公開時間を設定する
     {
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
@@ -223,7 +223,7 @@ class UserInfo extends Weeks
     }
 
     public function setPubViewTimeCfg($userId, $weekNum, $publicMode)
-        //曜日ごとに公開時間を変更するための関数.将来のために実装
+    //曜日ごとに公開時間を変更するための関数.将来のために実装
     {
         if (!$this->viewTimeConfigExist($userId)) {
             return false;
@@ -313,7 +313,7 @@ class UserInfo extends Weeks
         }
         $result = array();
         foreach ($config as $weekNum => $weekConfig) {
-            $result+= array($this->getWeek($weekNum - 1) => $weekConfig["publicView"] == 1);
+            $result += array($this->getWeek($weekNum - 1) => $weekConfig["publicView"] == 1);
         }
         return $result;
     }

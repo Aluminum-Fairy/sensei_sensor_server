@@ -12,7 +12,7 @@ class Tag
     protected PDO $dbh;
 
     public function __construct($loginInfo)
-        //初期化時にデータベースへの接続
+    //初期化時にデータベースへの接続
     {
         try {
             $this->dbh = new PDO($loginInfo[0], $loginInfo[1], $loginInfo[2], array(PDO::ATTR_PERSISTENT => true));

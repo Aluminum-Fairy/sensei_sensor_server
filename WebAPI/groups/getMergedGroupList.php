@@ -13,7 +13,7 @@ $result = array();
 
 foreach ($groupList["groupId"] as $groupId) {
     if (($tempRes = $UserGroup->getGroupName($groupId)) !== false) {
-        $tempRes +=array("users" => $Sensor->getAllowedGroupUsersDiscvList($groupId));
+        $tempRes += array("users" => $Sensor->getAllowedGroupUsersDiscvList($groupId));
         $result[] = $tempRes;
     } else {
         http_response_code(400);
